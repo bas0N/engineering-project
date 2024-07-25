@@ -14,7 +14,7 @@ export const SignUpPanel = () => {
   const [passwd, setPasswd] = useState('');
   const [passwdRep, setPasswdRep] = useState('');
 
-  if(token === null){
+  if(token !== null){
     return <Navigate to="/" />;
   }
 

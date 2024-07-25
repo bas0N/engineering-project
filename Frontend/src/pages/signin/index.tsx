@@ -13,7 +13,7 @@ export const SignInPanel = () => {
   const [email, setEmail] = useState('');
   const [passwd, setPasswd] = useState('');
 
-  if(token === null){
+  if(token !== null){
     return <Navigate to="/" />;
   }
 
