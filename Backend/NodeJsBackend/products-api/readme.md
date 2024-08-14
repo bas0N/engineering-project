@@ -4,6 +4,14 @@
 
 This API allows you to fetch a list of products with various filtering, sorting, and pagination options.
 
+## Installation and Running
+
+To run the API, follow these steps:
+
+1. **Install Packages**: Run `npm install` to install all necessary dependencies.
+
+2. **Run the API**: Use `npm run dev` to start the server in development mode.
+
 ## Endpoint
 
 `GET /api/products`
