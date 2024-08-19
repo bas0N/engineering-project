@@ -1,81 +1,99 @@
 package org.example.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.example.auth.token.Token;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
-
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
+@Table(name = "users")
 @Entity
-@Table(name = "users" , uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id")
-    private String userId;
-
-    @Column(name = "email" , nullable=false)
+    @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "users_id_seq",sequenceName = "users_id_seq",allocationSize = 1)
+    private long id;
+    private String uuid;
+    private String login;
     private String email;
 
-    @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(name = "islock")
+    private boolean isLock;
+    @Column(name = "isenabled")
+    private boolean isEnabled;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
-
-
+    public User(){
+        generateUuid();
+    }
+    public User(long id, String uuid, String login, String email, String password, Role role, boolean isLock, boolean isEnabled) {
+        this.id = id;
+        this.uuid = uuid;
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.isLock = isLock;
+        this.isEnabled = isEnabled;
+        generateUuid();
+    }
+    public Role getRole(){
+        return this.role;
+    }
+    public String getUuid(){
+        return this.uuid;
+    }
+    private long getId(){
+        return id;
+    }
+    public String getEmail() {
+        return email;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getGrantedAuthorities();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
     public String getPassword() {
         return password;
     }
+
     @Override
     public String getUsername() {
-        return email;
+        return login;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLock;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
+    }
+    private void generateUuid(){
+        if (uuid == null || uuid.equals("")){
+            setUuid(UUID.randomUUID().toString());
+        }
     }
 }
