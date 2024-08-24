@@ -12,6 +12,7 @@
         <module>gateway</module>
         <module>auth</module>
         <module>user</module>
+        <module>product</module>
     </modules>
 
     <dependencyManagement>
