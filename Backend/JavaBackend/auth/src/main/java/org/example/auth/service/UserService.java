@@ -141,8 +141,10 @@ public class UserService {
             throw new UserExistingWithMail("Users alredy exist with this mail");
         });
         User user = new User();
-        user.setLock(true);
-        user.setEnabled(false);
+//        user.setLock(true);
+//        user.setEnabled(false);
+        user.setLock(false);
+        user.setEnabled(true);
         user.setLogin(userRegisterDTO.getLogin());
         user.setPassword(userRegisterDTO.getPassword());
         user.setEmail(userRegisterDTO.getEmail());
@@ -178,7 +180,6 @@ public class UserService {
         log.info("--STOP LoginService");
         return ResponseEntity.ok(new AuthResponse(Code.A2));
     }
-
 
 
     public void setAsAdmin(UserRegisterDto user) {
