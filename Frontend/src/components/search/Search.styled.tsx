@@ -1,0 +1,27 @@
+import { Button, SearchBox, Text } from "@fluentui/react-components";
+import { styled } from "styled-components";
+
+export const SearchContainer = styled.div`
+    width: calc(100% - 24px);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+`;
+
+export const ItemsSearchBox = styled(SearchBox)`
+    flex: 1;
+`;
+
+export const ItemsSearchButton = styled(Button)`
+    display: none;
+    @media screen and (min-width: 375px){
+        display: block;
+    }
+`;
+
+export const NoItemsBanner = styled(Text).attrs({size: 400, align: 'center'})`
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+`;

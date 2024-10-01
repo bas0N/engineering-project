@@ -12,5 +12,8 @@
     "signInHeader": "Sign in",
     "signUpHeader": "Sign up",
     "signUpButton": "Sign up"
+  },
+  "searchBox": {
+    "placeholder": "Enter the search..."
   }
 }

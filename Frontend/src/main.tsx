@@ -8,6 +8,7 @@ import './i18n/i18n.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { SignInPanel } from './pages/signin/index.tsx'
 import { SignUpPanel } from './pages/signup/index.tsx'
+import { Wrapper } from './main.styled.tsx'
 
 const router = createBrowserRouter([
   {
@@ -22,13 +23,15 @@ const router = createBrowserRouter([
     path: '/signup',
     element: <SignUpPanel />
   },
-])
+]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <FluentProvider theme={webDarkTheme}>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <Wrapper>
+          <RouterProvider router={router} />
+        </Wrapper>
       </AuthProvider>
     </FluentProvider>
   </React.StrictMode>,

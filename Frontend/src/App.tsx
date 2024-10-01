@@ -1,19 +1,17 @@
-import { Text } from '@fluentui/react-components'
-import { Navigate } from 'react-router-dom';
 import './App.css'
-import { useAuth } from './contexts/authContext'
+import { useAuth } from './contexts/authContext';
+import { Search } from './components/search/Search';
 
 function App() {
 
   const {token} = useAuth();
 
-  if(token === null){
-    return <Navigate to="/signin" />
-  }
+  const isLoggedIn = token === null;
+  console.log(isLoggedIn);
 
   return (
     <>
-      <Text>Welcome!</Text>
+      <Search />
     </>
   )
 }
