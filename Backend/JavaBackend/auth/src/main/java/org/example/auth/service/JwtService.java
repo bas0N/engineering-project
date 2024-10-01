@@ -15,33 +15,38 @@ import java.util.Map;
 
 @Component
 public class JwtService {
-    public JwtService(@Value("${jwt.secret}") String secret){
+    public JwtService(@Value("${jwt.secret}") String secret) {
         SECRET = secret;
     }
+
     public final String SECRET;
 
     public void validateToken(final String token) throws ExpiredJwtException, IllegalArgumentException {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
+
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username,int exp){
-        Map<String, Object> claimns = new HashMap<>();
-        return createToken(claimns,username,exp);
+    public String generateToken(String email, String uuid, int exp) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
+        claims.put("uuid", uuid);
+        return createToken(claims, email, exp);
     }
-    public String createToken(Map<String,Object> claims, String username,int exp){
+
+    public String createToken(Map<String, Object> claims, String subject, int exp) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+exp))
+                .setExpiration(new Date(System.currentTimeMillis() + exp))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
-    public String getSubject(final String token){
+    public String getSubject(final String token) {
         return Jwts
                 .parser()
                 .setSigningKey(SECRET)
@@ -49,8 +54,28 @@ public class JwtService {
                 .getBody()
                 .getSubject();
     }
-    public String refreshToken(final String token, int exp){
-        String username = getSubject(token);
-        return generateToken(username,exp);
+
+    public String refreshToken(final String token, int exp) {
+        String email = getSubject(token);
+        String uuid = getUuidFromToken(token);
+        return generateToken(email, uuid, exp);
+    }
+
+    public String getEmailFromToken(String token) {
+        return getClaimFromToken(token, "email");
+    }
+
+    // Pobieranie uuid z tokena
+    public String getUuidFromToken(String token) {
+        return getClaimFromToken(token, "uuid");
+    }
+
+    private String getClaimFromToken(String token, String claimKey) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get(claimKey);
     }
 }

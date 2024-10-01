@@ -19,44 +19,48 @@ public class User implements UserDetails {
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "users_id_seq",sequenceName = "users_id_seq",allocationSize = 1)
     private long id;
+
+    @Getter
     private String uuid;
-    private String login;
+
+    @Getter
     private String email;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
     private String password;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(name = "islock")
-    private boolean isLock;
-    @Column(name = "isenabled")
-    private boolean isEnabled;
 
-    public User(){
-        generateUuid();
-    }
-    public User(long id, String uuid, String login, String email, String password, Role role, boolean isLock, boolean isEnabled) {
+    @Setter
+    @Column(name = "islock")
+    private boolean lock;
+
+    @Column(name = "isenabled")
+    private boolean enabled;
+
+    public User(long id, String uuid, String email, String password, Role role, boolean isLock, boolean isEnabled) {
         this.id = id;
         this.uuid = uuid;
-        this.login = login;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.isLock = isLock;
-        this.isEnabled = isEnabled;
+        this.lock = isLock;
+        this.enabled = isEnabled;
         generateUuid();
     }
-    public Role getRole(){
-        return this.role;
+
+    public User() {
+        generateUuid();
     }
-    public String getUuid(){
-        return this.uuid;
-    }
+
     private long getId(){
         return id;
     }
-    public String getEmail() {
-        return email;
-    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -69,7 +73,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return uuid;
     }
 
     @Override
@@ -79,7 +83,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isLock;
+        return !lock;
     }
 
     @Override
@@ -89,11 +93,15 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
     private void generateUuid(){
         if (uuid == null || uuid.equals("")){
             setUuid(UUID.randomUUID().toString());
         }
+    }
+
+    public boolean getIsLock() {
+        return lock;
     }
 }

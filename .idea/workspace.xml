@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ba04afc-10ab-4f47-af91-863e1f54e0bd" name="Changes" comment="" />
+    <list default="true" id="5ba04afc-10ab-4f47-af91-863e1f54e0bd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ApiRequestException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/CustomGlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ErrorDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ResourceNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/UnauthorizedException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/LikeApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/config/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/controller/LikeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/dto/LikeDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Like.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/repository/LikeRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/LikeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/impl/LikeServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/UserApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/ApiGatewayEndpointConfigurationImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/LoggingFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/dto/UserDetailsDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/service/UserInfoService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/test/java/org/example/user/UserApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/test/java/org/example/like/LikeApplicationTests.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,25 +58,29 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2jLCQIyuQoLqYYM6pBkFh5BLfgF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/kubog/OneDrive/Pulpit/engineering-project",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/LikeService&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kubog/OneDrive/Pulpit/engineering-project/Backend/JavaBackend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -41,6 +90,9 @@
       <option name="presentableId" value="Default" />
       <updated>1721156952452</updated>
       <workItem from="1721156953546" duration="16000" />
+      <workItem from="1726415995272" duration="2124000" />
+      <workItem from="1726681328932" duration="34000" />
+      <workItem from="1726935400146" duration="614000" />
     </task>
     <servers />
   </component>

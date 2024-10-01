@@ -9,12 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-
-    Optional<User> findUserByLogin(String login);
-    @Query(nativeQuery = true, value = "SELECT * FROM users where login=?1 and islock=false and isenabled=true")
-    Optional<User> findUserByLoginAndLockAndEnabled(String login);
-    @Query(nativeQuery = true, value = "SELECT * FROM users where login=?1 and islock=false and isenabled=true and role='ADMIN'")
-    Optional<User> findUserByLoginAndLockAndEnabledAndIsAdmin(String login);
+    @Query(nativeQuery = true, value = "SELECT * FROM users where email=?1 and islock=false and isenabled=true")
+    Optional<User> findUserByEmailAndLockAndEnabled(String login);
     Optional<User> findUserByEmail(String email);
     Optional<User> findUserByUuid(String uuid);
 }
