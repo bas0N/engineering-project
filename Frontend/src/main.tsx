@@ -8,6 +8,7 @@ import './i18n/i18n.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { SignInPanel } from './pages/signin/index.tsx'
 import { SignUpPanel } from './pages/signup/index.tsx'
+import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
 
 const router = createBrowserRouter([
@@ -23,7 +24,11 @@ const router = createBrowserRouter([
     path: '/signup',
     element: <SignUpPanel />
   },
-]);
+  {
+    path: '*',
+    element: <Page404 />
+  }
+])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
