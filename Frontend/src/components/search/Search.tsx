@@ -33,6 +33,7 @@ export const Search = () => {
         const getSearchData = async() => {
             // TODO: this URL is just for the test purposes, change it after we have the backend ready
             const results = await axios.get('http://localhost:3000/items');
+            console.log(results.data);
             setItems(results.data as ItemType[]);
         };
         getSearchData();
