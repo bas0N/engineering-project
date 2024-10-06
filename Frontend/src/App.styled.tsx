@@ -6,10 +6,15 @@ export const AuthCardHeader = styled(Text)`
 `;
 
 export const AuthCard = styled(Card)`
+    width: 40vw;
     padding: 20px 50px;
     align-items: center;
     height: fit-content;
     min-height: 300px !important;
+    display: flex;
+    position: relative;
+    left: 30vw;
+    top: 20vh;
 `;
 
 export const AuthCardPreview = styled(CardPreview)`

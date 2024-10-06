@@ -16,5 +16,8 @@
   "page404": {
     "title": "Something went wrong!",
     "description": "It turns out the page you're looking for does not exist. Please check if your URL is correct"
+  },
+  "searchBox": {
+    "placeholder": "Enter the search..."
   }
 }
