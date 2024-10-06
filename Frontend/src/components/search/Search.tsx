@@ -21,9 +21,9 @@ export const Search = () => {
 
     const handleSearch = (query: string) => {
         if (query) {
-            const fuse = new Fuse(items.map((elem) => elem.name), { keys: [''], threshold: 0.3 });
+            const fuse = new Fuse(items.map((elem) => elem.title), { keys: [''], threshold: 0.3 });
             const fuseResults = fuse.search(query);
-            setFilteredItems(items.filter((item) => fuseResults.some((result) => result.item === item.name)));
+            setFilteredItems(items.filter((item) => fuseResults.some((result) => result.item === item.title)));
           } else {
             setFilteredItems([]);
           }
