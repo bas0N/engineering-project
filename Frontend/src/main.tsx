@@ -10,6 +10,7 @@ import { SignInPanel } from './pages/signin/index.tsx'
 import { SignUpPanel } from './pages/signup/index.tsx'
 import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
+import { Product } from './pages/product/Product.tsx'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUpPanel />
+  },
+  {
+    path: '/products/:productId',
+    element: <Product />
   },
   {
     path: '*',

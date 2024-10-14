@@ -1,0 +1,100 @@
+import { Button, Input, RatingDisplay, Text } from '@fluentui/react-components';
+import { styled } from "styled-components";
+
+export const ProductWrapper = styled.section`
+    width: calc(100% - 20px);
+    padding: 10px;
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+`;
+
+export const ProductPresentationSection = styled.div<{height: number}>`
+    width: calc(100% - 20px);
+    height: calc(${(props) => props.height}vh - 20px);
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+`;
+
+export const ProductPresentationOrderingSection = styled.div`
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+`;
+
+export const ProductPresentationHeader = styled(Text).attrs({weight: 'semibold', size: 900, align: 'center'})`
+    padding-bottom: 10px;
+`;
+
+export const ProductBuyingSection = styled.div`
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: auto auto;
+    gap: 4px;
+    max-height: 15vh;
+    width: 100%;
+    padding-top: 32px;
+`;
+
+export const ProductPrice = styled(Text).attrs({align: 'center', size: 500})`
+    grid-row: 1;
+    grid-columns: 1;
+    padding-bottom: 0;
+`;
+
+export const ProductRatingDisplay = styled(RatingDisplay)`
+    padding-bottom: 32px;
+`;
+
+export const ProductAmountInput = styled(Input).attrs({type: 'number', min: '0'})`
+    grid-row: 2;
+    grid-columns: 1;
+    text-align: center;
+`;
+
+export const ProductAddToTheBaskedButton = styled(Button)`
+    grid-row: 2;
+    grid-columns: 2;
+`;
+
+export const ProductDescriptionSection = styled(Text).attrs({size: 400, align: 'start'})`
+    flex: 1;
+    padding: 10px;
+`;
+
+export const ProductDetailsAndFeatures = styled.section<{gapSize?: number}>`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: ${(props) => props.gapSize ? props.gapSize : 4}px;
+    align-items: center;
+`;
+
+export const ProductsDetailsAndFeaturesHeader = styled(Text).attrs({size: 700, as: 'h2', align: 'center'})`
+    width: 100%;
+    padding-bottom: 32px;
+`;
+
+export const ProductsDetailsAndFeaturesListItem = styled(Text).attrs({size: 400, align: 'center', as: 'p'})``;
+
+export const ProductsDetailWrapper = styled.div`
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 4px;
+`;
+
+export const ProductCategoriesWrapper = styled.section`
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 10px 5px 20px;
+`;

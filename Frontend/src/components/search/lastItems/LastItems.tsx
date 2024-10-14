@@ -9,14 +9,28 @@ import {
 import { RatingDisplay, Text } from '@fluentui/react-components';
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { ProductImage } from '../../product/ImagesCarousel';
 
 export type ItemType = {
-    title: string;
-    image: string;
-    _id: string;
-    average_rating: number;
-    rating_number: number;
-    price: string;
+    id: string;
+    boughtTogether: string | null;
+    categories: string[];
+    description: string[];
+    details: Record<string,string>;
+    features: string[];
+    images: ProductImage[],
+    averageRating: number | null,
+    mainCategory: string | null,
+    parentAsin: string | null,
+    price: string,
+    ratingNumber: number | null,
+    store: string,
+    title: string,
+    videos: {
+        title: string,
+        url: string,
+        userId: string | null,
+    }[],
 }
 
 interface LastItemsProps {
@@ -31,7 +45,7 @@ export const LastItems = ({items}: LastItemsProps) => {
 
     const onRelatedItemClick = () => {
         if(hoveredItem !== null){
-            navigateToProduct(hoveredItem._id);
+            navigateToProduct(hoveredItem.id);
         }
     };
 
@@ -39,10 +53,10 @@ export const LastItems = ({items}: LastItemsProps) => {
            <LastItemsListContainer>
                 {items.map((item, ind) => (
                     <LastItemsListItem 
-                        key={`items-searched-${item._id}`}
+                        key={`items-searched-${item.id}`}
                         bgOpacity={ind % 2 === 0 ? '58' : '38'}
                         onMouseEnter={() => setHoveredItem(item)}
-                        onClick={() => navigateToProduct(item._id)}
+                        onClick={() => navigateToProduct(item.id)}
                     >
                         <Search24Regular />
                         <Text size={400}>{item.title.length > 70 ? item.title.substring(0, 67)+'...' : item.title}</Text>
@@ -52,7 +66,7 @@ export const LastItems = ({items}: LastItemsProps) => {
            {
                 hoveredItem !== null && (
                     <LastItemsRelatedContainer onClick={onRelatedItemClick}>
-                        <LastItemsRelatedItemImage src={hoveredItem.image} alt={hoveredItem.title} /> 
+                        <LastItemsRelatedItemImage src={hoveredItem.images[0].large} alt={hoveredItem.title} /> 
                         <Text 
                             as='h3'
                             align="center" 
@@ -62,10 +76,10 @@ export const LastItems = ({items}: LastItemsProps) => {
                             {hoveredItem.title}
                         </Text>
                         {
-                            Number(hoveredItem.rating_number) === 0 ? <Text>No ratings yet</Text>
+                            hoveredItem.ratingNumber === null || hoveredItem.averageRating === null ? <Text>No ratings yet</Text>
                             : <RatingDisplay 
-                            value={hoveredItem.average_rating} 
-                            count={hoveredItem.rating_number}
+                            value={hoveredItem.averageRating} 
+                            count={hoveredItem.ratingNumber}
                         />
                         }
                     </LastItemsRelatedContainer>
