@@ -98,59 +98,59 @@ export const Product = () => {
                     {t('product.loadingFailed')}
                 </Text> : 
                 <ProductWrapper>
-                <ProductPresentationSection height={80}>
-                    <ImagesCarousel title={item.title} images={item.images} /> 
-                    <ProductPresentationOrderingSection>
-                        <ProductPresentationHeader>
-                            {item.title}
-                        </ProductPresentationHeader>
-                        <ProductCategoriesWrapper>
-                            {item.categories.map((category) => (
-                                <Tag appearance="brand" key={`product-category-${category}`}>
-                                    {category}
-                                </Tag>
+                    <ProductPresentationSection height={80}>
+                        <ImagesCarousel title={item.title} images={item.images} /> 
+                        <ProductPresentationOrderingSection>
+                            <ProductPresentationHeader>
+                                {item.title}
+                            </ProductPresentationHeader>
+                            <ProductCategoriesWrapper>
+                                {item.categories.map((category) => (
+                                    <Tag appearance="brand" key={`product-category-${category}`}>
+                                        {category}
+                                    </Tag>
+                                ))}
+                            </ProductCategoriesWrapper>
+                            {
+                                item.ratingNumber === null || item?.averageRating === null ? <Text>No ratings available</Text>
+                                : <ProductRatingDisplay value={item.averageRating} count={item.ratingNumber} />
+                            }
+                            <ProductBuyingSection>
+                                <ProductPrice>{item.price}</ProductPrice>
+                                <ProductAmountInput />
+                                <ProductAddToTheBaskedButton>
+                                    {t('product.addToBasket')}
+                                </ProductAddToTheBaskedButton>
+                            </ProductBuyingSection>
+                        </ProductPresentationOrderingSection>
+                    </ProductPresentationSection>
+                    <ProductDescriptionSection>
+                        {item.description}
+                    </ProductDescriptionSection>
+                    <ProductPresentationSection height={50}>
+                        <ProductDetailsAndFeatures>
+                            <ProductsDetailsAndFeaturesHeader>
+                                {t('product.detailsHeader')}
+                            </ProductsDetailsAndFeaturesHeader>
+                            {Object.keys(item.details).map((detail) => (
+                                <ProductsDetailWrapper key={`product-detail-${detail}`}>
+                                    <Text weight="semibold" size={400}>{detail}</Text>
+                                    <Text size={400}>{item.details[detail]}</Text>
+                                </ProductsDetailWrapper>
                             ))}
-                        </ProductCategoriesWrapper>
-                        {
-                            item.ratingNumber === null || item?.averageRating === null ? <Text>No ratings available</Text>
-                            : <ProductRatingDisplay value={item.averageRating} count={item.ratingNumber} />
-                        }
-                        <ProductBuyingSection>
-                            <ProductPrice>{item.price}</ProductPrice>
-                            <ProductAmountInput />
-                            <ProductAddToTheBaskedButton>
-                                {t('product.addToBasket')}
-                            </ProductAddToTheBaskedButton>
-                        </ProductBuyingSection>
-                    </ProductPresentationOrderingSection>
-                </ProductPresentationSection>
-                <ProductDescriptionSection>
-                    {item.description}
-                </ProductDescriptionSection>
-                <ProductPresentationSection height={50}>
-                    <ProductDetailsAndFeatures>
-                        <ProductsDetailsAndFeaturesHeader>
-                            {t('product.detailsHeader')}
-                        </ProductsDetailsAndFeaturesHeader>
-                        {Object.keys(item.details).map((detail) => (
-                            <ProductsDetailWrapper key={`product-detail-${detail}`}>
-                                <Text weight="semibold" size={400}>{detail}</Text>
-                                <Text size={400}>{item.details[detail]}</Text>
-                            </ProductsDetailWrapper>
-                        ))}
-                    </ProductDetailsAndFeatures>
-                    <ProductDetailsAndFeatures gapSize={8}>
-                        <ProductsDetailsAndFeaturesHeader>
-                            {t('product.featuresHeader')}
-                        </ProductsDetailsAndFeaturesHeader>
-                        {item.features.map((feature) => (
-                            <ProductsDetailsAndFeaturesListItem key={`product-feature-${feature}`}>
-                                {feature}
-                            </ProductsDetailsAndFeaturesListItem>
-                        ))}
-                    </ProductDetailsAndFeatures>
-                </ProductPresentationSection>
-            </ProductWrapper>
+                        </ProductDetailsAndFeatures>
+                        <ProductDetailsAndFeatures gapSize={8}>
+                            <ProductsDetailsAndFeaturesHeader>
+                                {t('product.featuresHeader')}
+                            </ProductsDetailsAndFeaturesHeader>
+                            {item.features.map((feature) => (
+                                <ProductsDetailsAndFeaturesListItem key={`product-feature-${feature}`}>
+                                    {feature}
+                                </ProductsDetailsAndFeaturesListItem>
+                            ))}
+                        </ProductDetailsAndFeatures>
+                    </ProductPresentationSection>
+                </ProductWrapper>
             }
         </>
     )
