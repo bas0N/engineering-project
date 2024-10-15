@@ -1,29 +1,5 @@
+import styled from 'styled-components';
 import { Button, Input, RatingDisplay, Text } from '@fluentui/react-components';
-import { styled } from "styled-components";
-
-export const ProductWrapper = styled.section`
-    width: calc(100% - 20px);
-    padding: 10px;
-    padding-top: 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: center;
-`;
-
-export const ProductPresentationSection = styled.div<{height: number}>`
-    width: calc(100% - 20px);
-    height: fit-content;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    @media screen and (min-width: 1024px) {
-        flex-direction: row;
-        height: calc(${(props) => props.height}vh - 20px);
-    }
-`;
 
 export const ProductPresentationOrderingSection = styled.div`
     flex: 3;
@@ -87,9 +63,4 @@ export const ProductAmountInput = styled(Input).attrs({type: 'number', min: '0'}
 export const ProductAddToTheBaskedButton = styled(Button)`
     grid-row: 2;
     grid-columns: 2;
-`;
-
-export const ProductDescriptionSection = styled(Text).attrs({size: 400, align: 'start'})`
-    flex: 1;
-    padding: 10px;
 `;
