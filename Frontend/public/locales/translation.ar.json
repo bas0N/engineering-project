@@ -18,6 +18,15 @@
     "description": "It turns out the page you're looking for does not exist. Please check if your URL is correct"
   },
   "searchBox": {
-    "placeholder": "Enter the search..."
+    "placeholder": "Enter the search...",
+    "noItems": "No items found",
+    "loading": "Loading..."
+  },
+  "product": {
+    "addToBasket": "Add to basket",
+    "detailsHeader": "Details",
+    "featuresHeader": "Features",
+    "loadingFailed": "Could not load this item. Try again",
+    "noRatings": "No ratings available"
   }
 }

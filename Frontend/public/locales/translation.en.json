@@ -21,5 +21,12 @@
       "placeholder": "Enter the search...",
       "noItems": "No items found",
       "loading": "Loading..."
+    },
+    "product": {
+      "addToBasket": "Add to basket",
+      "detailsHeader": "Details",
+      "featuresHeader": "Features",
+      "loadingFailed": "Could not load this item. Try again",
+      "noRatings": "No ratings available"
     }
 }
