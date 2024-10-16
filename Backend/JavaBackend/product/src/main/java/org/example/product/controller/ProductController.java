@@ -13,7 +13,8 @@ import java.util.List;
 @RequestMapping("/api/v1/product")
 public class ProductController {
     private final ProductService productService;
-    @RequestMapping(path = "/search",method = RequestMethod.GET)
+
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
     public Page<Product> getProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,

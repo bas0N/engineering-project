@@ -1,7 +1,5 @@
 package org.example.auth.dto;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import org.example.auth.entity.Code;
 

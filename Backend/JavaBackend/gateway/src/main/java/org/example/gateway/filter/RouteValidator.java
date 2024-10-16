@@ -27,7 +27,7 @@ public class RouteValidator {
             new Endpoint("/api/v1/logged-in",HttpMethod.GET,Role.GUEST)
     )
     );
-    private Set<Endpoint> adminEndpoints = new HashSet<>();
+    private final Set<Endpoint> adminEndpoints = new HashSet<>();
 
     public void addEndpoints(List<Endpoint> endpointList){
         for (Endpoint endpoint: endpointList){

@@ -1,63 +1,83 @@
-version: '3.8'
-
+#version: '3.8'
+#
+#services:
+#  postgres:
+#    image: postgres:15
+#    environment:
+#      POSTGRES_DB: auth_db
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres_password
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
+#
+#  eureka:
+#    build:
+#      context: ./eureka
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8761:8761"
+#    environment:
+#      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+#      - EUREKA_CLIENT_FETCH_REGISTRY=false
+#
+#  gateway:
+#    build:
+#      context: ./gateway
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+#    depends_on:
+#      - eureka
+#
+#  auth:
+#    build:
+#      context: ./auth
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8081:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: postgres_password
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+#    depends_on:
+#      - postgres
+#      - eureka
+#
+#  register-endpoint-information:
+#    build:
+#      context: ./RegisterEndpointInformation
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8082:8080"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+#    depends_on:
+#      - eureka
+#
+#volumes:
+#  postgres_data:
+version: '2'
 services:
-  postgres:
-    image: postgres:15
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
     environment:
-      POSTGRES_DB: auth_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
 
-  eureka:
-    build:
-      context: ./eureka
-      dockerfile: Dockerfile
-    ports:
-      - "8761:8761"
-    environment:
-      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
-      - EUREKA_CLIENT_FETCH_REGISTRY=false
-
-  gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+  kafka:
+    image: confluentinc/cp-kafka:latest
     depends_on:
-      - eureka
-
-  auth:
-    build:
-      context: ./auth
-      dockerfile: Dockerfile
+      - zookeeper
     ports:
-      - "8081:8080"
+      - "9092:9092"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres_password
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-    depends_on:
-      - postgres
-      - eureka
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  register-endpoint-information:
-    build:
-      context: ./RegisterEndpointInformation
-      dockerfile: Dockerfile
-    ports:
-      - "8082:8080"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-    depends_on:
-      - eureka
-
-volumes:
-  postgres_data:

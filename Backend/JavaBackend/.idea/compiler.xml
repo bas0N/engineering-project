@@ -12,6 +12,7 @@
         <module name="RegisterEndpointInformation" />
         <module name="auth" />
         <module name="like" />
+        <module name="common-dto" />
         <module name="eureka" />
         <module name="jwt-common" />
         <module name="user" />
@@ -23,6 +24,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="RegisterEndpointInformation" options="-parameters" />
       <module name="auth" options="-parameters" />
+      <module name="common-dto" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="exception" options="-parameters" />
       <module name="gateway" options="-parameters" />

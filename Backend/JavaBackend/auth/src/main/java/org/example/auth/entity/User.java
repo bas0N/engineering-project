@@ -29,6 +29,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
+    @Getter
+    private String firstName;
+
+    @Getter
+    private String lastName;
+
     private String password;
 
     @Getter

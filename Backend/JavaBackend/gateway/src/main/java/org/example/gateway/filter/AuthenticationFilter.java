@@ -42,6 +42,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
+            log.info("Processing request for path: {}", exchange.getRequest().getURI());
             log.info("--START GatewayFilter");
             if (validator.isSecure.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getCookies().containsKey(HttpHeaders.AUTHORIZATION) && !exchange.getRequest().getCookies().containsKey("refresh")) {
@@ -51,7 +52,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             .append("\"timestamp\": \"")
                             .append(new Timestamp(System.currentTimeMillis()))
                             .append("\",\n")
-                            .append("\"message\": \"Wskazany token jest pusty lub nie ważny\",\n")
+                            .append("\"message\": \"This token is empty or invalid\",\n")
                             .append("\"code\": \"A3\"\n")
                             .append("}");
 

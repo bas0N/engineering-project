@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,7 +23,16 @@ public class UserVersion {
 
     private String email;
     private String password;
+    private String firstName;
+    private String lastName;
+
+    @OneToMany(mappedBy = "userVersion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AddressVersion> AddressVersions;
+
+    @Getter
+    @Enumerated(EnumType.STRING)
     private Role role;
+
     private boolean isLock;
     private boolean isEnabled;
 

@@ -32,17 +32,20 @@ public class AuthController {
 
     @RequestMapping(path = "/login",method = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
-        return userService.login(response,loginRequest);
+        userService.login(response,loginRequest);
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 
     @RequestMapping(path = "/auto-login",method = RequestMethod.GET)
     public ResponseEntity<?> autoLogin(HttpServletResponse response, HttpServletRequest request){
-        return userService.loginByToken(request,response);
+        userService.loginByToken(request,response);
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 
     @RequestMapping(path = "/logged-in",method = RequestMethod.GET)
     public ResponseEntity<?> loggedIn(HttpServletResponse response,HttpServletRequest request){
-        return userService.loggedIn(request,response);
+        userService.loggedIn(request,response);
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 
     @RequestMapping(path = "/logout",method = RequestMethod.GET)

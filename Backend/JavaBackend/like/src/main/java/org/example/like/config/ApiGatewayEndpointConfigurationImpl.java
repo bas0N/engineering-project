@@ -8,8 +8,10 @@ import org.coffeecode.entity.Response;
 import org.coffeecode.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointConfiguration {
     @Value("${api-gateway.url}")
     private String GATEWAY_URL;
@@ -22,7 +24,10 @@ public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointCo
 
     @Override
     public void initMap() {
-        endpointList.add(new Endpoint("/api/v1/like", HttpMethod.GET, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/like", HttpMethod.POST, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/like/my", HttpMethod.GET, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/like/number", HttpMethod.GET, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/like/remove", HttpMethod.DELETE, Role.USER));
     }
 
     @Override

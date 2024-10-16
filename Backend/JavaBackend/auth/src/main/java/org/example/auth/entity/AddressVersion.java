@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Setter
 @Getter
 @Table(name = "address_versions")
@@ -17,28 +15,38 @@ public class AddressVersion {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "user_version_id", nullable = false)
+    private UserVersion userVersion;
 
+    @Column(nullable = false)
     private String street;
+
+    @Column(nullable = false)
     private String city;
+
+    @Column(nullable = false)
     private String state;
+
+    @Column(nullable = false)
     private String postalCode;
+
+    @Column(nullable = false)
     private String country;
 
-    @Column(name = "version_timestamp")
-    private LocalDateTime versionTimestamp;
+    @Column(name = "version_timestamp", nullable = false)
+    private String versionTimestamp;
 
-    public AddressVersion(Address address) {
-        this.user = address.getUser();
+    public AddressVersion() {
+    }
+
+    // Konstruktor do tworzenia nowej wersji adresu
+    public AddressVersion(Address address, UserVersion userVersion) {
+        this.userVersion = userVersion;
         this.street = address.getStreet();
         this.city = address.getCity();
         this.state = address.getState();
         this.postalCode = address.getPostalCode();
         this.country = address.getCountry();
-        this.versionTimestamp = LocalDateTime.now();
-    }
-
-    public AddressVersion() {
+        this.versionTimestamp = String.valueOf(System.currentTimeMillis());
     }
 }
