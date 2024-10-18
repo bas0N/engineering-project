@@ -6,11 +6,13 @@ import { ItemType, LastItems } from "./lastItems/LastItems";
 import { Spinner } from "@fluentui/react-components";
 import axios from 'axios';
 import Fuse from 'fuse.js';
+import { useNavigate } from "react-router-dom";
 
 export const Search = () => {
 
     const [search, setSearch] = useState('');
     const {t} = useTranslation();
+    const navigate = useNavigate();
 
     const [lastItemsOpened] = useState(true);
     const [items, setItems] = useState<ItemType[]>([]);
@@ -46,6 +48,10 @@ export const Search = () => {
         setIsLoading(false);
     };
 
+    const handleSearchButton = () => {
+        navigate(`/products/search/${search}`);
+    }
+
     return (
         <>
             <SearchContainer>
@@ -54,7 +60,7 @@ export const Search = () => {
                     onChange={(_, data) => handleSearchBox(data.value)} 
                     placeholder={t('searchBox.placeholder')}
                 />
-                <ItemsSearchButton>
+                <ItemsSearchButton onClick={handleSearchButton}>
                     <SearchRegular />
                 </ItemsSearchButton>
             </SearchContainer>

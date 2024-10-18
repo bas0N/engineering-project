@@ -28,5 +28,16 @@
     "featuresHeader": "Features",
     "loadingFailed": "Could not load this item. Try again",
     "noRatings": "No ratings available"
+  },
+  "tiles": {
+    "sidebar": {
+      "header": "Search filters",
+      "categories": "Categories",
+      "price": "Price range",
+      "minPrice": "Min price...",
+      "maxPrice": "Max price...",
+      "categoriesDropdownPlaceholder": "Select categories..."
+    },
+    "sidebarOpeningButton": "Open filters"
   }
 }
