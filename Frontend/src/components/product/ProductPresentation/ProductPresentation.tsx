@@ -46,6 +46,7 @@ export const ProductPresentation = ({
             <ProductBuyingSection>
                 <ProductPrice>{price}</ProductPrice>
                 <ProductAmountInput 
+                    aria-label={t('product.selectProductAmount')}
                     value={productNumber.toString()} 
                     onChange={(_e, data) => setProductNumber(Number(data.value))} 
                 />

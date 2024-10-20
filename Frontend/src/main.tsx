@@ -11,6 +11,7 @@ import { SignUpPanel } from './pages/signup/index.tsx'
 import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
 import { Product } from './pages/product/Product.tsx'
+import { Tiles } from './pages/tiles/Tiles.tsx'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: '/products/:productId',
     element: <Product />
+  },
+  {
+    path: '/products/search/:query',
+    element: <Tiles />
   },
   {
     path: '*',

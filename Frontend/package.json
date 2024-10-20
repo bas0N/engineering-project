@@ -13,7 +13,7 @@
     "translate": "node ./devHelp/translation.js"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.55.0",
+    "@fluentui/react-components": "^9.55.1",
     "@fluentui/react-icons": "^2.0.258",
     "@types/styled-components": "^5.1.34",
     "axios": "^1.7.7",
