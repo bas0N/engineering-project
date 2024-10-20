@@ -38,6 +38,7 @@
       "maxPrice": "Max price...",
       "categoriesDropdownPlaceholder": "Select categories..."
     },
-    "sidebarOpeningButton": "Open filters"
+    "sidebarOpeningButton": "Open filters",
+    "selectProductAmount": "Select amount of product"
   }
 }
