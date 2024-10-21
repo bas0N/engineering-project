@@ -5,8 +5,6 @@ import './index.css'
 import { FluentProvider, webDarkTheme } from '@fluentui/react-components'
 import './i18n/i18n.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-//import { SignInPanel } from './pages/signin/index.tsx'
-//import { SignUpPanel } from './pages/signup/index.tsx'
 import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
 import { Product } from './pages/product/Product.tsx'
@@ -15,6 +13,7 @@ import { Tiles } from './pages/tiles/Tiles.tsx'
 import {AuthProvider} from 'authComponents/AuthProvider';
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
+const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
 
 const router = createBrowserRouter([
   {
@@ -27,10 +26,10 @@ const router = createBrowserRouter([
       <SignInPanel />
     </Suspense>
   },
-  /*{
+  {
     path: '/signup',
     element: <SignUpPanel />
-  },*/
+  },
   {
     path: '/products/:productId',
     element: <Product />
