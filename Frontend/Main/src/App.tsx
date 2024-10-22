@@ -1,6 +1,7 @@
+import { Spinner } from '@fluentui/react-components'
 import './App.css'
 //import { useAuth } from './contexts/authContext';
-import { Search } from './components/search/Search';
+//import { Search } from './components/search/Search';
 
 function App() {
 
@@ -11,7 +12,7 @@ function App() {
 */
   return (
     <>
-      <Search />
+      <Spinner size='large' label='Loading...' labelPosition='after' />
     </>
   )
 }

@@ -40,5 +40,6 @@
     },
     "sidebarOpeningButton": "Open filters",
     "selectProductAmount": "Select amount of product"
-  }
+  },
+  "loading": "Loading..."
 }

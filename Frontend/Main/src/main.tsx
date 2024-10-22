@@ -11,6 +11,7 @@ import { Product } from './pages/product/Product.tsx'
 import { Tiles } from './pages/tiles/Tiles.tsx'
 
 import {AuthProvider} from 'authComponents/AuthProvider';
+import { Preloader } from './components/preloader/Preloader.tsx'
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
@@ -22,9 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/signin',
-    element: <Suspense fallback={<div>Loading...</div>}>
-      <SignInPanel />
-    </Suspense>
+    element: <SignInPanel />
   },
   {
     path: '/signup',
@@ -47,7 +46,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <FluentProvider theme={webDarkTheme}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Preloader />}>
         <AuthProvider>
           <Wrapper>
             <RouterProvider router={router} />
