@@ -41,5 +41,22 @@
       "sidebarOpeningButton": "Open filters",
       "selectProductAmount": "Select amount of product"
     },
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "userSettings": {
+      "header": "User settings",
+      "firstName": "First name...",
+      "lastName": "Last name...",
+      "email": "Email...",
+      "personalDataHeader": "Personal data",
+      "userAddressesHeader": "Your addresses",
+      "addNewAddress": "Add new address",
+      "newAddress": {
+          "streetInput": "Street name...",
+          "cityInput": "City...",
+          "stateInput": "State...",
+          "countryInput": "Country...",
+          "postalCodeInput": "Postal code...",
+          "submitAddingNewAddress": "Add address"
+      }
+    }
 }

@@ -1,7 +1,7 @@
 import { Button, CardHeader, Link } from '@fluentui/react-components'
 import { AuthCard, AuthCardFooter, AuthCardHeader, AuthCardPreview, AuthInput } from '../../App.styled'
 import { useState } from 'react'
-import { useTranslation } from '../../../node_modules/react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/authContext';
 import { Navigate } from 'react-router-dom';
 

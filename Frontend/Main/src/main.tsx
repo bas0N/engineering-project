@@ -10,11 +10,13 @@ import { Wrapper } from './main.styled.tsx'
 import { Product } from './pages/product/Product.tsx'
 import { Tiles } from './pages/tiles/Tiles.tsx'
 
-import {AuthProvider} from 'authComponents/AuthProvider';
-import { Preloader } from './components/preloader/Preloader.tsx'
+import { AuthProvider } from 'authComponents/AuthProvider';
+import { Preloader } from './components/preloader/Preloader.tsx';
+import { Search } from './components/search/Search.tsx'
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
+const UserSettings = React.lazy(() => import('userSettings/UserSettings'));
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,13 @@ const router = createBrowserRouter([
   {
     path: '/products/search/:query',
     element: <Tiles />
+  },
+  {
+    path: '/settings/',
+    element: <>
+      <Search />
+      <UserSettings />
+    </>
   },
   {
     path: '*',
