@@ -3,7 +3,6 @@ import {
     Text
 } from "@fluentui/react-components";
 import { useTranslation } from '../../../node_modules/react-i18next';
-import { Search } from "../../components/search/Search";
 import { 
     ProductWrapper, 
     ProductPresentationSection,
@@ -81,7 +80,6 @@ export const Product = () => {
 */
     return (
         <>
-            <Search />
             {
                 item === null ? <Text>
                     {t('product.loadingFailed')}

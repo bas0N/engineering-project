@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { Sidebar } from "../../components/tiles/sidebar/Sidebar";
-import { Search } from "../../components/search/Search";
 import { TilesWrapper, TilesContainer, TilesFiltersOpeningWrapper } from "./Tiles.styled";
 import { Tile } from "../../components/tiles/tile/Tile";
 import { useState } from "react";
@@ -19,7 +18,6 @@ export const Tiles = () => {
     const closeSidebar = () => setIsSidebarOpened(false);
 
     return (<>
-        <Search />
         <TilesWrapper>
             <Sidebar isOpened={isSidebarOpened} closeSidebar={closeSidebar} />
             <TilesFiltersOpeningWrapper>
