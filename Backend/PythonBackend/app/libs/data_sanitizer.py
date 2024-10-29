@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from enums import ProductColumnsEmbedded, ProductColumnsToEmbed
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import QuantileTransformer
+import os
 
 class NullValueHandler:
     @staticmethod
@@ -35,12 +37,41 @@ class TextSanitizer:
             return " ".join(clean_words)
         return value  # If it's not a string, leave it as is
 class PriceNormalizer:
-    def __init__(self):
+    def __init__(self, file_path="quantile_transformer.joblib"):
         self.quantile_transformer = None
+        self.file_path = file_path
+        self._load_transformer()
+
+        # Verify the existence and loading of the transformer
+        if not self.verify_transformer():
+            raise FileNotFoundError(
+                f"Transformer file '{self.file_path}' not found or transformer is not loaded."
+            )
+
+    def _save_transformer(self):
+        """Save the fitted transformer to a file."""
+        if self.quantile_transformer:
+            joblib.dump(self.quantile_transformer, self.file_path)
+
+    def _load_transformer(self):
+        """Load the transformer from the file if it exists."""
+        if os.path.exists(self.file_path):
+            self.quantile_transformer = joblib.load(self.file_path)
+
+    def verify_transformer(self):
+        """
+        Verify the existence of the transformer file and the presence of the transformer.
+
+        Returns:
+        - bool: True if both file exists and transformer is loaded, False otherwise.
+        """
+        file_exists = os.path.exists(self.file_path)
+        transformer_loaded = self.quantile_transformer is not None
+        return file_exists and transformer_loaded
 
     def fit(self, price_data):
         """
-        Fit the QuantileTransformer on provided price data.
+        Fit the QuantileTransformer on provided price data and save the transformer.
 
         Parameters:
         - price_data: List or numpy array of prices to fit the transformer on.
@@ -48,6 +79,7 @@ class PriceNormalizer:
         price_data = np.array(price_data).reshape(-1, 1)
         self.quantile_transformer = QuantileTransformer(output_distribution="uniform", random_state=0)
         self.quantile_transformer.fit(price_data)
+        self._save_transformer()  # Save the transformer after fitting
 
     def transform(self, price):
         """
@@ -57,7 +89,7 @@ class PriceNormalizer:
         - price: Single price value to normalize.
 
         Returns:
-        - Normalized price or None if the transformer is not fitted.
+        - Normalized price or raises an error if the transformer is not fitted.
         """
         if self.quantile_transformer:
             transformed_price = self.quantile_transformer.transform([[price]])
@@ -67,7 +99,7 @@ class PriceNormalizer:
 
     def update_and_refit(self, new_price_data):
         """
-        Update the transformer with new price data by re-fitting.
+        Update the transformer with new price data by re-fitting and save the updated transformer.
 
         Parameters:
         - new_price_data: List or numpy array of new prices to add for fitting.
