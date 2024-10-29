@@ -1,7 +1,11 @@
 import translate from 'google-translate-api';
 import fs from 'fs';
 
-const translationFilesPaths = ['../../Main/public/locales/','../../auth-module/public/locales/'];
+const translationFilesPaths = [
+    '../../Main/public/locales/',
+    '../../auth-module/public/locales/',
+    '../../user-settings/public/locales/',
+];
 
 const watchPaths = translationFilesPaths.map((path) => `${path}translation.en.json`);
 

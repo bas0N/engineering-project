@@ -42,7 +42,7 @@ export const Tiles = () => {
                     price={'148.2'}
                 />
 
-<Tile 
+                <Tile 
                     id='mockId' 
                     title='mock title' 
                     images={[{
