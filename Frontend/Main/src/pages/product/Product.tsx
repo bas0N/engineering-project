@@ -1,4 +1,4 @@
-import { ItemType } from "../../components/search/lastItems/LastItems";
+import { ItemType } from "../../components/navbar/search/lastItems/LastItems";
 import {
     Text
 } from "@fluentui/react-components";
