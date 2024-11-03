@@ -24,4 +24,7 @@ export default defineConfig({
     minify: false,
     cssCodeSplit: false,
   },
+  preview: {
+    port: 4173
+  }
 })

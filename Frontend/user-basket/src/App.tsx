@@ -2,6 +2,7 @@ import { BasketContainer, BasketHeader, BasketWrapper } from './App.styled'
 import { BasketSummary } from './components/BasketSummary/BasketSummary.tsx';
 import { BasketItems } from './components/BasketItems/BasketItems.tsx';
 import { useTranslation } from 'react-i18next';
+import './i18n/i18n.tsx';
 
 function Basket() {
 

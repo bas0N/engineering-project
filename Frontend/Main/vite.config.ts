@@ -11,7 +11,8 @@ export default defineConfig({
       name: 'engineering-project',
       remotes: {
         authComponents: 'http://localhost:4173/assets/remoteAuthEntry.js',
-        userSettings: 'http://localhost:4174/assets/remoteUserSettingsEntry.js'
+        userSettings: 'http://localhost:4174/assets/remoteUserSettingsEntry.js',
+        userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js'
       },
       shared: ['react', 'react-dom', '@fluentui/react-components']
     })

@@ -17,6 +17,7 @@ import { Preloader } from './components/preloader/Preloader.tsx';
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
 const UserSettings = React.lazy(() => import('userSettings/UserSettings'));
+const UserBasket = React.lazy(() => import('userBasket/UserBasket'));
 
 const routes: RouteObject[] = [
   {
@@ -42,6 +43,10 @@ const routes: RouteObject[] = [
   {
     path: '/settings/',
     element: <UserSettings />
+  },
+  {
+    path: '/basket/',
+    element: <UserBasket />
   },
   {
     path: '*',

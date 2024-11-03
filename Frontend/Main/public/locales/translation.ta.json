@@ -58,5 +58,15 @@
       "postalCodeInput": "Postal code...",
       "submitAddingNewAddress": "Add address"
     }
+  },
+  "basket": {
+    "basketHeader": "Basket",
+    "summary": {
+      "title": "Summary",
+      "order": "Order",
+      "delivery": "Delivery",
+      "total": "Total",
+      "buy": "Buy now"
+    }
   }
 }
