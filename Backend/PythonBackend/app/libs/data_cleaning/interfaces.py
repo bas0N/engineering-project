@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-class Sanitizable(ABC):
+class Cleanable(ABC):
     @abstractmethod
-    def sanitize(self, value):
-        """Sanitize the input value based on specific criteria."""
+    def clean(self, value):
+        """Cleans the input value based on specific criteria."""
         pass

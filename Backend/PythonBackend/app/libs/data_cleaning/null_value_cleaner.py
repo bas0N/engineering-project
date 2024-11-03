@@ -1,7 +1,7 @@
-from .interfaces import Sanitizable
+from .interfaces import Cleanable
 
-class NullValueSanitizer(Sanitizable):
-    def sanitize(self,value):
+class NullValueCleaner(Cleanable):
+    def clean(self,value):
         """Return None if the value is null, otherwise return the value."""
         return value if pd.notnull(value) else None
 
