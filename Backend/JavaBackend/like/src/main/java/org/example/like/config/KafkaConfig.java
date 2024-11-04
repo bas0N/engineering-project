@@ -21,7 +21,7 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConfig {
-    @Bean
+    @Bean(name = "likeKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, ProductEvent> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, ProductEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -34,7 +34,7 @@ public class KafkaConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "like-service-group");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "org.example.common-dto");
 
         return new DefaultKafkaConsumerFactory<>(

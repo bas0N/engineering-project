@@ -24,7 +24,7 @@ public class ResetOperationServiceImpl implements ResetOperationService {
 
 
     @Transactional
-    public ResetOperations initResetOperation(User user){
+    public ResetOperations initResetOperation(User user) {
         log.info("--START initResetOperation");
         ResetOperations resetOperations = new ResetOperations();
 
@@ -37,15 +37,15 @@ public class ResetOperationServiceImpl implements ResetOperationService {
         return resetOperationsRepository.saveAndFlush(resetOperations);
     }
 
-    public void endOperation(String uid){
+    public void endOperation(String uid) {
         resetOperationsRepository.findByUid(uid).ifPresent(resetOperationsRepository::delete);
     }
 
     @Scheduled(cron = "0 0/1 * * * *")
-    protected void deleteExpireOperation(){
+    protected void deleteExpireOperation() {
         List<ResetOperations> resetOperations = resetOperationsRepository.findExpiredOperations();
-        log.info("Find {} expired operations to delete",resetOperations.size());
-        if (resetOperations != null && !resetOperations.isEmpty()){
+        log.info("Find {} expired operations to delete", resetOperations.size());
+        if (resetOperations != null && !resetOperations.isEmpty()) {
             resetOperationsRepository.deleteAll(resetOperations);
         }
     }

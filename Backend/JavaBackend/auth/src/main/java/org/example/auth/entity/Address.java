@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Setter
 @Getter
 @Table(name = "addresses")
@@ -13,6 +15,9 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq")
     @SequenceGenerator(name = "address_id_seq", sequenceName = "address_id_seq", allocationSize = 1)
     private long id;
+
+    @Getter
+    private String uuid;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -34,6 +39,7 @@ public class Address {
     private String country;
 
     public Address() {
+        generateUuid();
     }
 
     public Address(User user, String street, String city, String state, String postalCode, String country) {
@@ -43,5 +49,20 @@ public class Address {
         this.state = state;
         this.postalCode = postalCode;
         this.country = country;
+        generateUuid();
+    }
+
+    private void generateUuid() {
+        if (uuid == null || uuid.isEmpty()) {
+            setUuid(UUID.randomUUID().toString());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return uuid != null && uuid.equals(address.uuid);
     }
 }

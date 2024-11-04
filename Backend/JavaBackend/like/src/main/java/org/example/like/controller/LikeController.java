@@ -42,9 +42,9 @@ public class LikeController {
     }
 
     @RequestMapping(path = "/remove/{likeId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeLike(@PathVariable String likeId) {
+    public ResponseEntity<?> removeLike(@PathVariable String likeId, HttpServletRequest request) {
         try {
-            likeService.removeLike(likeId);
+            likeService.removeLike(likeId, request);
             return ResponseEntity.ok("Like removed successfully.");
         } catch (UnauthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -54,6 +54,5 @@ public class LikeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while removing a like: " + e.getMessage());
         }
     }
-
 
 }

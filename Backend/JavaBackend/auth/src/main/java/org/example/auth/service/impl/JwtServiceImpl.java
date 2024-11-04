@@ -71,8 +71,11 @@ public class JwtServiceImpl implements JwtService {
 
     // Pobieranie uuid z tokena
     public String getUuidFromToken(String token) {
-
         return getClaimFromToken(token, "uuid");
+    }
+
+    public String getUuidFromRequest(HttpServletRequest request) {
+        return getUuidFromToken(getTokenFromRequest(request));
     }
 
     private String getClaimFromToken(String token, String claimKey) {

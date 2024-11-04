@@ -5,5 +5,6 @@ import org.example.auth.entity.User;
 
 public interface ResetOperationService {
     ResetOperations initResetOperation(User user);
+
     void endOperation(String uid);
 }

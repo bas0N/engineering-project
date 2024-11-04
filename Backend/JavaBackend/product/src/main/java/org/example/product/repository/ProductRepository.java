@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
@@ -30,4 +31,10 @@ public interface ProductRepository extends MongoRepository<Product, String> {
             String store,
             Pageable pageable
     );
+
+    @Query("{ 'parent_asin': ?0 }")
+    Optional<Product> findByParentAsin(String parentAsin);
+
+    @Query("{ 'parent_asin': ?0 }")
+    void deleteByParentAsin(String parentAsin);
 }

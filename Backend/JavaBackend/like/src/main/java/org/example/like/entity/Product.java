@@ -31,10 +31,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Image> images;
 
-    private void generateUuid(){
-        if (uuid == null || uuid.isEmpty()){
-            setUuid(UUID.randomUUID().toString());
-        }
+    public Product(String productId, String title, String price, Integer ratingNumber, Double averageRating, List<Image> images) {
+        this.title = title;
+        this.price = price;
+        this.ratingNumber = ratingNumber;
+        this.averageRating = averageRating;
+        this.images = images;
+        this.uuid = productId;
     }
 
 

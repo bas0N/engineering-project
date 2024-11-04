@@ -8,6 +8,7 @@ import org.example.product.entity.Product;
 import org.example.product.repository.ProductRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,12 @@ public class ProductEventListener {
         this.productRepository = productRepository;
     }
 
-    @KafkaListener(topics = "like-events", groupId = "product-service-group")
-    public void handleLikeEvent(LikeEvent likeEvent) throws Exception {
+    @KafkaListener(
+            topics = "like-events",
+            groupId = "product-service-group",
+            containerFactory = "productKafkaListenerContainerFactory"
+    )
+    public void handleLikeEvent(LikeEvent likeEvent, Acknowledgment ack) throws Exception {
         try {
             String productId = likeEvent.getProductId();
             Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
@@ -32,6 +37,9 @@ public class ProductEventListener {
             List<ImageEvent> imageEventList = product.getImages().stream().map(image -> new ImageEvent(image.getThumb(), image.getLarge(), image.getLarge(), image.getHiRes())).toList();
             ProductEvent productEvent = new ProductEvent(product.getId(), product.getTitle(), product.getPrice(), product.getRatingNumber(), product.getAverageRating(), imageEventList);
             kafkaTemplate.send("product-details", productEvent);
+            ack.acknowledge();
+        } catch (ResourceNotFoundException e) {
+            ack.acknowledge();
         } catch (Exception e) {
             throw new Exception("Error while handling like event", e);
         }

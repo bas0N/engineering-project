@@ -13,6 +13,8 @@
         <option value="$PROJECT_DIR$/Exception/pom.xml" />
         <option value="$PROJECT_DIR$/jwt-common/pom.xml" />
         <option value="$PROJECT_DIR$/common-dto/pom.xml" />
+        <option value="$PROJECT_DIR$/history/pom.xml" />
+        <option value="$PROJECT_DIR$/basket/pom.xml" />
       </list>
     </option>
   </component>

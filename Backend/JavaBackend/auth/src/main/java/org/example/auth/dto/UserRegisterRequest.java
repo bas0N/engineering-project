@@ -1,11 +1,9 @@
 package org.example.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.example.auth.entity.Role;
 import org.hibernate.validator.constraints.Length;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UserRegisterRequest {
-    @Length(min = 5,max = 50, message = "Login powinien mieć od 5 do 50 znaków")
+    @Length(min = 5, max = 50, message = "Login powinien mieć od 5 do 50 znaków")
     private String login;
 
     @Email

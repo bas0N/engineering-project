@@ -16,15 +16,15 @@ public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointCo
     private String GATEWAY_URL;
 
     @PostConstruct
-    public void startOperation(){
+    public void startOperation() {
         initMap();
         register();
     }
 
     @Override
     public void initMap() {
-        endpointList.add(new Endpoint("/api/v1/auth/user/details", HttpMethod.GET, Role.GUEST));
-        endpointList.add(new Endpoint("/api/v1/auth/user/details", HttpMethod.PATCH, Role.GUEST));
+        endpointList.add(new Endpoint("/api/v1/auth/user/**", HttpMethod.GET, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/auth/user/**", HttpMethod.PATCH, Role.USER));
     }
 
     @Override

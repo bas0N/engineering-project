@@ -5,47 +5,171 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ba04afc-10ab-4f47-af91-863e1f54e0bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ApiRequestException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/CustomGlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ErrorDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/ResourceNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/src/main/java/org/example/exception/exceptions/UnauthorizedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/LikeApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/config/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/controller/LikeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/dto/LikeDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Like.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/repository/LikeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/LikeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/impl/LikeServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/JavaBackend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/AddressesChangeRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/response/AddressResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/Operation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/mapper/AddressMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/AddressVersionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/BasketApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/config/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/controller/BasketController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/dto/BasketItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/dto/ListBasketItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/dto/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/dto/request/AddBasketItemRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/entity/Basket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/entity/BasketItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/repository/BasketItemRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/repository/BasketRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/service/BasketService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/service/CookieService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/service/impl/BasketServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/java/org/example/basket/service/impl/CookieServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/basket/src/test/java/org/example/basket/BasketApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/common-dto/src/main/java/org/example/commondto/ProductHistoryEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/main/java/org/example/history/HistoryApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/main/java/org/example/history/config/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/main/java/org/example/history/config/KafkaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/main/java/org/example/history/listener/ProductHistoryEventListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/history/src/test/java/org/example/history/HistoryApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/dto/ImageDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/dto/ProductDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/OrderApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/controller/DeliverController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/controller/OrderController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/Address.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/BasketItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/CustomerDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/DeliverDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/Items.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/ListBasketItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/OrderDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/UserRegisterDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/Buyer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/Notify.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/PayMethod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/dto/notify/Property.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/entity/Deliver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/entity/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/entity/OrderItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/enums/Status.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/mediator/OrderMediator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/payU/PayUAuth.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/payU/PayUBuyer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/payU/PayUOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/payU/PayUProduct.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/repository/DeliverRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/repository/ItemRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/repository/OrderRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/BasketService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/DeliverService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/ItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/OrderService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/PayUService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/impl/BasketService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/impl/DeliverServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/impl/ItemServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/impl/OrderServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/service/impl/PayUServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/translators/BasketItemDTOToOrderItems.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/translators/DeliverToDeliverDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/translators/OrderDTOToOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/translators/OrderItemsToPayuProduct.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/translators/OrderToOrderDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/java/org/example/order/validator/SignatureValidator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/order/src/test/java/org/example/order/OrderApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/dto/Request/AddProductRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/dto/Request/ImageRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/enums/DetailKey.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/password/src/main/java/org/example/PasswordSimilarity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Backend/password/src/main/java/org/example/test.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/ApiGatewayEndpointConfigurationImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/CustomerUserDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/CustomerUserDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/UserConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/configuration/UserConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/AddressRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/AddressRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/response/AuthResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/ChangePasswordData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/ChangePasswordData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/LoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/response/LoginResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/ResetPasswordData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/ResetPasswordData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/UserDetailsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/request/UserPersonalDataRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/UserDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/response/UserDetailsResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/UserLoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/response/UserLoginResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/UserRegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/dto/UserRegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/Code.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/Code.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/ResetOperations.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/ResetOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/UserVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/entity/UserVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/mapper/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/AddressRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/AddressRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/ResetOperationsRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/ResetOperationsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/JwtService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/ResetOperationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/ResetOperationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserDetailsService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/CookieServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/CookieServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/EmailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/EmailServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/JwtServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/JwtServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/ResetOperationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/ResetOperationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/UserDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/auth/src/main/java/org/example/auth/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/jwt-common/src/main/java/org/example/jwtcommon/jwt/JwtCommonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/jwt-common/src/main/java/org/example/jwtcommon/jwt/JwtCommonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/config/KafkaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/config/KafkaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/controller/LikeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/controller/LikeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Image.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Image.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/entity/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/listener/ProductInfoListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/listener/ProductInfoListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/repository/LikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/repository/LikeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/response/LikeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/response/LikeResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/LikeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/LikeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/impl/LikeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/main/java/org/example/like/service/impl/LikeServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/exception/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/UserApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/ApiGatewayEndpointConfigurationImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/LoggingFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/controller/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/dto/UserDetailsDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/java/org/example/user/service/UserInfoService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/user/src/test/java/org/example/user/UserApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/like/src/test/java/org/example/like/LikeApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/ProductApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/ProductApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/config/ApiGatewayEndpointConfigurationImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/config/ApiGatewayEndpointConfigurationImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/config/KafkaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/config/KafkaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/entity/Image.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/entity/Image.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/entity/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/listener/ProductEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/listener/ProductEventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/JavaBackend/product/src/main/java/org/example/product/service/ProductService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +217,7 @@
       <workItem from="1726415995272" duration="2124000" />
       <workItem from="1726681328932" duration="34000" />
       <workItem from="1726935400146" duration="614000" />
+      <workItem from="1730538501618" duration="1553000" />
     </task>
     <servers />
   </component>

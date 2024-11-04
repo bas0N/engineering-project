@@ -43,7 +43,7 @@ public class UserConfiguration {
                                     "/api/v1/auth/auto-login",
                                     "/api/v1/auth/logged-in",
                                     "/api/v1/auth/authorize",
-                                    "/api/v1/auth/user/details"
+                                    "/api/v1/auth/user/**"
                             ).permitAll();  // Public endpoints
                 });
 

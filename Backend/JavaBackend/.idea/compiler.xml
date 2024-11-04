@@ -8,15 +8,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="exception" />
+        <module name="basket" />
         <module name="product" />
-        <module name="RegisterEndpointInformation" />
         <module name="auth" />
         <module name="like" />
-        <module name="common-dto" />
         <module name="eureka" />
         <module name="jwt-common" />
+        <module name="history" />
+        <module name="RegisterEndpointInformation" />
+        <module name="common-dto" />
         <module name="user" />
         <module name="gateway" />
+        <module name="order" />
       </profile>
     </annotationProcessing>
   </component>
@@ -24,12 +27,15 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="RegisterEndpointInformation" options="-parameters" />
       <module name="auth" options="-parameters" />
+      <module name="basket" options="-parameters" />
       <module name="common-dto" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="exception" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="history" options="-parameters" />
       <module name="jwt-common" options="-parameters" />
       <module name="like" options="-parameters" />
+      <module name="order" options="-parameters" />
       <module name="product" options="-parameters" />
       <module name="user" options="-parameters" />
     </option>

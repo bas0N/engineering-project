@@ -3,6 +3,7 @@ package org.example.auth.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.auth.mapper.AddressMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,8 +42,13 @@ public class UserVersion {
 
     public UserVersion(User user) {
         this.user = user;
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.password = user.getPassword();
+        this.AddressVersions = user.getAddresses().stream()
+                .map(AddressMapper.INSTANCE::toAddressVersion)
+                .toList();
         this.role = user.getRole();
         this.isLock = user.getIsLock();
         this.isEnabled = user.isEnabled();

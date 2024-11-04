@@ -23,6 +23,7 @@ public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointCo
     @Override
     public void initMap() {
         endpointList.add(new Endpoint("/api/v1/product/search", HttpMethod.GET, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/product/**", HttpMethod.GET, Role.USER));
     }
 
     @Override

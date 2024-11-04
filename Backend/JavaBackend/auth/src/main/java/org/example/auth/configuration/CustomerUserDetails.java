@@ -10,15 +10,16 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomerUserDetails implements UserDetails {
-    private String username;
-    private String password;
-    private Role role;
+    private final String username;
+    private final String password;
+    private final Role role;
 
-    public CustomerUserDetails(User user){
+    public CustomerUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = user.getRole();
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

@@ -14,9 +14,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findUserByEmail(username);
-        return user.map(CustomerUserDetails::new).orElseThrow(()-> new UsernameNotFoundException("User not found with name: "+ username));
+        return user.map(CustomerUserDetails::new).orElseThrow(() -> new UsernameNotFoundException("User not found with name: " + username));
     }
 }

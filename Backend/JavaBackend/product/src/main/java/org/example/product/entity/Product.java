@@ -1,5 +1,6 @@
 package org.example.product.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -8,16 +9,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "products")
+@Document(collection = "meta_Health_and_Personal_Care")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Product {
     @Id
-    private String id;
+    private String id; //to
 
-    private String boughtTogether;
+    private String userId;
 
-    private List<String> categories;
+    private String boughtTogether; //to papa
+
+    private List<String> categories; //to
 
     private List<String> description;
 
@@ -25,21 +29,21 @@ public class Product {
 
     private List<String> features;
 
-    private List<Image> images;
+    private List<Image> images; // to
 
-    private String mainCategory;
+    private String mainCategory; //to
 
     private String parentAsin;
 
-    private String price;
+    private String price; //to
 
-    private Integer ratingNumber;
+    private Integer ratingNumber; //to
 
-    private String store;
+    private String store; //to
 
-    private String title;
+    private String title; //to
 
     private List<Video> videos;
 
-    private Double averageRating;
+    private Double averageRating; //to
 }

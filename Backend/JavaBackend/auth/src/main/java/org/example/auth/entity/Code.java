@@ -5,7 +5,8 @@ public enum Code {
     PERMIT("Permission granted");
 
     public final String label;
-    private Code(String label){
+
+    private Code(String label) {
         this.label = label;
     }
 }

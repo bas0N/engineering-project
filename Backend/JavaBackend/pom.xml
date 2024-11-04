@@ -13,6 +13,8 @@
         <module>auth</module>
         <module>like</module>
         <module>product</module>
+        <module>history</module>
+        <module>order</module>
     </modules>
 
     <dependencyManagement>

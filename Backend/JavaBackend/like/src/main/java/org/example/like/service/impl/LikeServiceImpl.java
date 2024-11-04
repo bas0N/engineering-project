@@ -1,12 +1,16 @@
 package org.example.like.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.LikeEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.InvalidTokenException;
 import org.example.exception.exceptions.LikeAlreadyExistsException;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.like.dto.ImageDto;
+import org.example.like.dto.ProductDto;
 import org.example.like.entity.Like;
 import org.example.like.entity.Product;
 import org.example.like.mapper.LikeMapper;
@@ -17,11 +21,15 @@ import org.example.like.service.LikeService;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
     private final JwtCommonService jwtCommonService;
@@ -30,26 +38,15 @@ public class LikeServiceImpl implements LikeService {
 
     private final ProductRepository productRepository;
 
-    public LikeServiceImpl(LikeRepository likeRepository, JwtCommonService jwtCommonService, KafkaTemplate<String, LikeEvent> kafkaTemplate, ProductRepository productRepository) {
-        this.likeRepository = likeRepository;
-        this.jwtCommonService = jwtCommonService;
-        this.kafkaTemplate = kafkaTemplate;
-        this.productRepository = productRepository;
-    }
-
-
     public LikeResponse addLike(String productUuid, HttpServletRequest request) {
         try {
-            // Pobranie tokena i ID użytkownika
+            log.info("adding like for product: {}", productUuid);
             String token = jwtCommonService.getTokenFromRequest(request);
             String userId = jwtCommonService.getCurrentUserId(token);
 
-            // Sprawdzenie, czy Like już istnieje
             if (likeRepository.existsByUserIdAndProductId(userId, productUuid)) {
                 throw new LikeAlreadyExistsException("Like already exists for user and product.");
             }
-
-            // Znalezienie produktu na podstawie UUID
             Optional<Product> optionalProduct = productRepository.findByUuid(productUuid);
 
             if (optionalProduct.isPresent()) {
@@ -58,12 +55,12 @@ public class LikeServiceImpl implements LikeService {
                 likeRepository.save(like);
                 return LikeMapper.INSTANCE.mapLikeToLikeResponse(like);
             } else {
-                // Produkt nie istnieje, wysyłamy event do Kafki
                 LikeEvent likeEvent = new LikeEvent(userId, productUuid);
                 kafkaTemplate.send("like-events", likeEvent);
-                return new LikeResponse(userId, productUuid, "Like event sent for non-existing product.");
+                Like like = likeRepository.findByUserIdAndProductId(userId, productUuid)
+                        .orElseThrow(() -> new ApiRequestException("An error occurred while adding a like", "ADD_LIKE_ERROR"));
+                return new LikeResponse(like.getUuid(), like.getProduct().getUuid(), like.getUserId(), like.getDateAdded());
             }
-
         } catch (InvalidTokenException e) {
             throw new UnauthorizedException("Invalid token: " + e.getMessage(), "INVALID_TOKEN");
         } catch (LikeAlreadyExistsException e) {
@@ -74,25 +71,43 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public List<Product> getMyLikedProducts(HttpServletRequest request) {
+    public List<ProductDto> getMyLikedProducts(HttpServletRequest request) {
         String token = jwtCommonService.getTokenFromRequest(request);
         String userId = jwtCommonService.getCurrentUserId(token);
 
-        return productRepository.findLikedProductsByUserId(userId);
+        List<Product> productList = productRepository.findLikedProductsByUserId(userId);
+        List<ProductDto> productDtoList = productList.stream().map(
+                product -> new ProductDto(product.getUuid(), product.getTitle(), product.getPrice(), product.getRatingNumber(), product.getAverageRating(), product.getImages().stream().map(
+                        image -> new ImageDto(image.getThumb(), image.getLarge(), image.getVariant(), image.getHiRes())
+                ).toList()
+                )
+        ).toList();
+        return productDtoList;
     }
 
     @Override
-    public Object getNumberOfLikes(String productUuid) {
+    public Long getNumberOfLikes(String productUuid) {
         Product product = productRepository.findByUuid(productUuid)
                 .orElseThrow(() -> new ApiRequestException("Product not found", "PRODUCT_NOT_FOUND"));
         return likeRepository.countByProductId(product.getId());
+
     }
 
     @Override
-    public void removeLike(String likeUuid) {
-        if (!likeRepository.existsByUuid(likeUuid)) {
+    public void removeLike(String likeUuid, HttpServletRequest request) {
+        Optional<Like> optionalLike = likeRepository.findByUuid(likeUuid);
+        if (optionalLike.isEmpty()) {
             throw new ApiRequestException("Like does not exist", "LIKE_NOT_FOUND");
         }
-        likeRepository.deleteByUuid(likeUuid);
+        String token = jwtCommonService.getTokenFromRequest(request);
+        String userId = jwtCommonService.getCurrentUserId(token);
+        Like like = optionalLike.get();
+
+        if (!Objects.equals(like.getUserId(), userId)) {
+            throw new UnauthorizedException("User is not authorized to remove like", "UNAUTHORIZED");
+        }
+        if (likeRepository.deleteByUuid(likeUuid) == 0) {
+            throw new ApiRequestException("An error occurred while removing like", "REMOVE_LIKE_ERROR");
+        }
     }
 }

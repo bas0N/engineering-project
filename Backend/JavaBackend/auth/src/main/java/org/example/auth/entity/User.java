@@ -17,7 +17,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "users_id_seq",sequenceName = "users_id_seq",allocationSize = 1)
+    @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
     private long id;
 
     @Getter
@@ -26,6 +26,7 @@ public class User implements UserDetails {
     @Getter
     private String email;
 
+    @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
@@ -63,7 +64,7 @@ public class User implements UserDetails {
         generateUuid();
     }
 
-    private long getId(){
+    private long getId() {
         return id;
     }
 
@@ -101,8 +102,9 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
-    private void generateUuid(){
-        if (uuid == null || uuid.equals("")){
+
+    private void generateUuid() {
+        if (uuid == null || uuid.isEmpty()) {
             setUuid(UUID.randomUUID().toString());
         }
     }
