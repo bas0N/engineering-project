@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "../../../node_modules/react-i18next";
+import { useTranslation } from "../../../../node_modules/react-i18next";
 import { ItemsSearchBox, ItemsSearchButton, NoItemsBanner, SearchContainer } from "./Search.styled";
 import { SearchRegular } from "@fluentui/react-icons";
 import { ItemType, LastItems } from "./lastItems/LastItems";

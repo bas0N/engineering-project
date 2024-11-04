@@ -9,14 +9,15 @@ import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
 import { Product } from './pages/product/Product.tsx'
 import { Tiles } from './pages/tiles/Tiles.tsx'
+import { Navbar } from './components/navbar/Navbar.tsx';
 
 import { AuthProvider } from 'authComponents/AuthProvider';
 import { Preloader } from './components/preloader/Preloader.tsx';
-import { Search } from './components/search/Search.tsx'
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
 const UserSettings = React.lazy(() => import('userSettings/UserSettings'));
+const UserBasket = React.lazy(() => import('userBasket/UserBasket'));
 
 const routes: RouteObject[] = [
   {
@@ -44,6 +45,10 @@ const routes: RouteObject[] = [
     element: <UserSettings />
   },
   {
+    path: '/basket/',
+    element: <UserBasket />
+  },
+  {
     path: '*',
     element: <Page404 />
   }
@@ -52,7 +57,7 @@ const routes: RouteObject[] = [
 const router = createBrowserRouter(routes.map((route) => ({
   ...route,
   element: <>
-    <Search />
+    <Navbar />
     {route.element}
   </>
 })))

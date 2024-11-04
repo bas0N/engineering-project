@@ -5,6 +5,7 @@ const translationFilesPaths = [
     '../../Main/public/locales/',
     '../../auth-module/public/locales/',
     '../../user-settings/public/locales/',
+    '../../user-basket/public/locales/',
 ];
 
 const watchPaths = translationFilesPaths.map((path) => `${path}translation.en.json`);
