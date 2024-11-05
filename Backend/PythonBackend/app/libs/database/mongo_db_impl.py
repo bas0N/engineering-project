@@ -3,7 +3,7 @@ from pymongo import MongoClient, errors
 from pymongo.collection import Collection
 from pymongo.results import UpdateResult
 from threading import Lock
-from .mongo_db_impl_types import ConfigDocument, ProductDocument
+from .mongo_db_impl_types import ConfigDocument, ProductDocument, CollectionEnum
 from .interfaces import NoSqlDatabaseIntegrationInterface
 
 class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
@@ -38,8 +38,8 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
     def __init__(self, db_uri: str, db_name: str):
         if not hasattr(self, 'initialized'):
             self.db = self._client_instance[db_name]
-            self.config_collection: Collection = self.db['configs']
-            self.product_collection: Collection = self.db['products']
+            self.config_collection: Collection = self.db[CollectionEnum.CONFIG]
+            self.product_collection: Collection = self.db[CollectionEnum.HEALTH_CARE]
             self.initialized = True
 
     def get_all_config_docs(self) -> List[ConfigDocument]:

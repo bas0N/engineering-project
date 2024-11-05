@@ -8,6 +8,15 @@ class PriceNormalised(Normalisable):
         self.max_price = max_price
 
     def normalise(self, price: float) -> float:
-        if not (self.min_price <= price <= self.max_price):
-            raise ValueError("Price should be within the range defined by min_price and max_price")
-        return (price - self.min_price) / (self.max_price - self.min_price)
+        try:
+            # Check if price is a valid number
+            if not isinstance(price, (int, float)):
+                return None
+            # Ensure price is within the valid range
+            if not (self.min_price <= price <= self.max_price):
+                return None
+            # Normalize the price
+            return (price - self.min_price) / (self.max_price - self.min_price)
+        except (TypeError, ValueError):
+            return None
+

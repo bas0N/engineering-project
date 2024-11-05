@@ -1,3 +1,4 @@
+import pandas as pd
 from .interfaces import Cleanable
 
 class NullValueCleaner(Cleanable):

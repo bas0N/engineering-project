@@ -24,6 +24,6 @@ class NoSqlDatabaseIntegrationInterface(ABC):
 
     @classmethod
     @abstractmethod
-    def get_instance(cls, db_name: str) -> 'DatabaseIntegrationInterface':
+    def get_instance(cls, db_name: str) -> 'NoSqlDatabaseIntegrationInterface':
         """Get the singleton instance without passing the URI."""
         pass
