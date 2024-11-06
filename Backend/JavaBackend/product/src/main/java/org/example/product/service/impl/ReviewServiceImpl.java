@@ -9,6 +9,7 @@ import org.example.product.entity.Review;
 import org.example.product.repository.ReviewRepository;
 import org.example.product.service.ImageService;
 import org.example.product.service.ReviewService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ImageService imageService;
 
     @Override
-    public ResponseEntity<?> getReviews(String productId) {
+    public Page<ReviewResponse> getReviews(String productId) {
         List<Review> reviewList = reviewRepository.findAllByParent_asin(productId);
         List<ReviewResponse> reviewResponses = reviewList.stream().map(review -> new ReviewResponse(
                 review.getId(),
@@ -35,14 +36,16 @@ public class ReviewServiceImpl implements ReviewService {
                 review.getHelpful_vote(),
                 review.isVerified_purchase()
         )).toList();
-        return ResponseEntity.ok(reviewResponses);
+        //return reviewResponses;
+        return null;
     }
 
     @Override
-    public ResponseEntity<?> getReview(String reviewId) {
+    public ReviewResponse getReview(String reviewId) {
         Review review = reviewRepository.findById(reviewId).orElse(null);
         if (review == null) {
-            return ResponseEntity.notFound().build();
+            //return ResponseEntity.notFound().build();
+            return null;
         }
         ReviewResponse reviewResponse = new ReviewResponse(
                 review.getId(),
@@ -55,11 +58,12 @@ public class ReviewServiceImpl implements ReviewService {
                 review.getHelpful_vote(),
                 review.isVerified_purchase()
         );
-        return ResponseEntity.ok(reviewResponse);
+        //return ReviewResponse;
+        return null;
     }
 
     @Override
-    public ResponseEntity<?> createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
+    public ReviewResponse createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
         String token = jwtCommonService.getTokenFromRequest(request);
         String userId = jwtCommonService.getCurrentUserId(token);
         Review review = new Review(
@@ -77,11 +81,19 @@ public class ReviewServiceImpl implements ReviewService {
                 false
         );
         reviewRepository.save(review);
-        return ResponseEntity.ok().build();
+        //return ResponseEntity.ok().build();
+        return null;
     }
 
     @Override
-    public ResponseEntity<?> updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
+    public ReviewResponse updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
+        String token = jwtCommonService.getTokenFromRequest(request);
+        String userId = jwtCommonService.getCurrentUserId(token);
+        return null;
+    }
 
+    @Override
+    public Boolean deleteReview(String reviewId) {
+        return true;
     }
 }

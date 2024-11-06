@@ -13,11 +13,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DeliverServiceImpl implements DeliverService {
-    private final DeliverRepository deliverRepository;
-    private final DeliverToDeliverDto deliverToDeliverDTO;
+//    private final DeliverRepository deliverRepository;
+//    private final DeliverToDeliverDto deliverToDeliverDTO;
 
     @Override
     public List<DeliverDto> getAllDeliver() {
-        return deliverRepository.findAll().stream().map(deliverToDeliverDTO::deliverDto).collect(Collectors.toList());
+        //return deliverRepository.findAll().stream().map(deliverToDeliverDTO::deliverDto).collect(Collectors.toList());
+        return null;
     }
 }

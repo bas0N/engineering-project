@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.example.commondto.ProductHistoryEvent;
-import org.example.exception.exceptions.ApiRequestException;
+import org.example.exception.exceptions.*;
 import org.example.jwtcommon.jwt.JwtCommonService;
 import org.example.product.dto.Request.AddProductRequest;
 import org.example.product.dto.Response.ProductResponse;
@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -38,8 +39,10 @@ public class ProductServiceImpl implements ProductService {
     private final ImageService imageService;
     private final ProductMapper productMapper;
 
-    public ResponseEntity<?> getProducts(int page, int limit, String sort, String mainCategory, String title, Double minPrice, Double maxPrice, Double minRating, Double maxRating, List<String> categories, String store) {
+    public ResponseEntity<Page<ProductResponse>> getProducts(int page, int limit, String sort, String mainCategory, String title, Double minPrice, Double maxPrice, Double minRating, Double maxRating, List<String> categories, String store) {
         try {
+            validateRequestParameters(page, limit, minPrice, maxPrice, minRating, maxRating);
+
             PageRequest pageRequest = PageRequest.of(page - 1, limit, Sort.by(sort).ascending());
             Page<Product> products;
 
@@ -60,56 +63,45 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 products = productRepository.findAll(pageRequest);
             }
-            Page<ProductResponse> productResponses = products.map(productMapper::toProductResponse);
-            return ResponseEntity.ok(productResponses);
-        } catch (DataAccessException e) {
-            log.error("Database access error while retrieving products", e);
-            throw new ApiRequestException("Error accessing the product database", e.getMessage());
+            return ResponseEntity.ok(products.map(productMapper::toProductResponse));
+        } catch (InvalidParameterException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            log.error("Unexpected error while retrieving products", e);
-            throw new ApiRequestException("An unexpected error occurred while retrieving products", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    public ResponseEntity<?> getProductById(String parentAsin) {
+    public ResponseEntity<ProductResponse> getProductById(String parentAsin , HttpServletRequest request) {
         try {
-            Product product = productRepository.findByParentAsin(parentAsin).orElseThrow(() -> new ResourceNotFoundException("Product not found with parentAsin: " + parentAsin));
+            Product product = productRepository.findByParentAsin(parentAsin)
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with parentAsin: " + parentAsin));
+
+            String userId = jwtCommonService.getUserFromRequest(request);
+
+            sendProductHistoryEventToKafka(product, userId);
+
             ProductResponse productResponse = productMapper.toProductResponse(product);
             return ResponseEntity.ok(productResponse);
+
         } catch (ResourceNotFoundException e) {
             log.error("Product not found with ID: {}", parentAsin, e);
-            throw e;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
         } catch (DataAccessException e) {
             log.error("Database access error while retrieving product with ID: {}", parentAsin, e);
-            throw new ApiRequestException("Error accessing the product database", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         } catch (Exception e) {
             log.error("Unexpected error while retrieving product with ID: {}", parentAsin, e);
-            throw new ApiRequestException("An unexpected error occurred while retrieving product with ID: " + parentAsin, e.getMessage());
-        }
-    }
-
-    @Override
-    public void visitProduct(String id) {
-        try {
-            Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
-            ProductHistoryEvent productHistoryEvent = new ProductHistoryEvent(product.getId(), id);
-            productHistoryKafkaTemplate.send("product-history-events", productHistoryEvent);
-        } catch (ResourceNotFoundException e) {
-            log.error("Product not found with ID: {}", id, e);
-            throw e;
-        } catch (DataAccessException e) {
-            log.error("Database access error while updating product visits with ID: {}", id, e);
-            throw new ApiRequestException("Error accessing the product database", e.getMessage());
-        } catch (Exception e) {
-            log.error("Unexpected error while updating product visits with ID: {}", id, e);
-            throw new ApiRequestException("An unexpected error occurred while updating product visits with ID: " + id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
 
     @Override
     public Product createProduct(AddProductRequest addProductRequest, HttpServletRequest request) {
-        String token = jwtCommonService.getTokenFromRequest(request);
-        String userId = jwtCommonService.getCurrentUserId(token);
+        String userId = jwtCommonService.getUserFromRequest(request);
+
         Map<String, String> detailsAsStringMap = addProductRequest.getDetails().entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -152,8 +144,7 @@ public class ProductServiceImpl implements ProductService {
         if (productCheck.isPresent()) {
             throw new ApiRequestException("Product didnt deleted: " + id);
         }
-        String token = jwtCommonService.getTokenFromRequest(request);
-        String userId = jwtCommonService.getCurrentUserId(token);
+        String userId = jwtCommonService.getUserFromRequest(request);
         Map<String, String> detailsAsStringMap = addProductRequest.getDetails().entrySet()
                 .stream()
                 .collect(Collectors.toMap(
@@ -205,4 +196,26 @@ public class ProductServiceImpl implements ProductService {
     private String generateUuid() {
         return UUID.randomUUID().toString();
     }
+    private void validateRequestParameters(int page, int limit, Double minPrice, Double maxPrice, Double minRating, Double maxRating) {
+        if (page < 1 || limit < 1) {
+            throw new InvalidParameterException("Page and limit parameters must be positive.");
+        }
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new InvalidParameterException("Minimum price cannot be greater than maximum price.");
+        }
+        if (minRating != null && maxRating != null && minRating > maxRating) {
+            throw new InvalidParameterException("Minimum rating cannot be greater than maximum rating.");
+        }
+    }
+
+    private void sendProductHistoryEventToKafka(Product product, String userId) {
+        try {
+            ProductHistoryEvent productHistoryEvent = new ProductHistoryEvent(product.getId(), userId);
+            productHistoryKafkaTemplate.send("product-history-events", productHistoryEvent);
+            log.info("Successfully sent product history event for product ID: {}", product.getId());
+        } catch (Exception e) {
+            log.error("Failed to send product history event for product ID: {}", product.getId(), e);
+        }
+    }
+
 }

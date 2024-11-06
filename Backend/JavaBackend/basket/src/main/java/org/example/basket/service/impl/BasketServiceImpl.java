@@ -39,14 +39,14 @@ public class BasketServiceImpl implements BasketService {
         cookies.stream().filter(value -> value.getName().equals("basket"))
                 .findFirst().ifPresentOrElse(value -> {
                     basketRepository.findByUuid(value.getValue()).ifPresentOrElse(basket -> {
-                        saveProductToBasket(basket, AddBasketItemRequest);
+                        saveProductToBasket(basket, basketItemRequest);
                         Long sum = basketItemRepository.sumBasketItems(basket.getId());
                         if (sum == null) sum = 0L;
                         httpHeaders.add("X-Total-Count", String.valueOf(sum));
                     }, () -> {
                         Basket basket = createBasket();
                         response.addCookie(cookieService.generateCookie("basket", basket.getUuid()));
-                        saveProductToBasket(basket, AddBasketItemRequest);
+                        saveProductToBasket(basket, basketItemRequest);
                         Long sum = basketItemRepository.sumBasketItems(basket.getId());
                         if (sum == null) sum = 0L;
                         httpHeaders.add("X-Total-Count", String.valueOf(sum));
@@ -54,7 +54,7 @@ public class BasketServiceImpl implements BasketService {
                 }, () -> {
                     Basket basket = createBasket();
                     response.addCookie(cookieService.generateCookie("basket", basket.getUuid()));
-                    saveProductToBasket(basket, AddBasketItemRequest);
+                    saveProductToBasket(basket, basketItemRequest);
                     Long sum = basketItemRepository.sumBasketItems(basket.getId());
                     if (sum == null) sum = 0L;
                     httpHeaders.add("X-Total-Count", String.valueOf(sum));
@@ -101,18 +101,15 @@ public class BasketServiceImpl implements BasketService {
                     if (sum == null) sum = 0L;
                     httpHeaders.add("X-Total-Count", String.valueOf(sum));
                     basketItemRepository.findBasketItemsByBasket(basket).forEach(item->{
-                        try {
-                            Product product = getProduct(item.getProduct());
-                            listBasketItemDTO.getBasketProducts().add(new BasketItemDto(product.getUuid(),
-                                    product.getName(),
-                                    item.getQuantity(),
-                                    product.getImageUrls()[0],
-                                    product.getPrice(),
-                                    product.getPrice() * item.getQuantity()));
-                            listBasketItemDTO.setSummaryPrice(listBasketItemDTO.getSummaryPrice()+ (item.getQuantity()*product.getPrice()));
-                        } catch (URISyntaxException e) {
-                            throw new RuntimeException(e);
-                        }
+                        //Product product = getProduct(item.getProduct());
+                        Product product = new Product();
+                        listBasketItemDTO.getBasketProducts().add(new BasketItemDto(product.getUuid(),
+                                product.getName(),
+                                item.getQuantity(),
+                                product.getImageUrls()[0],
+                                product.getPrice(),
+                                product.getPrice() * item.getQuantity()));
+                        listBasketItemDTO.setSummaryPrice(listBasketItemDTO.getSummaryPrice()+ (item.getQuantity()*product.getPrice()));
                     });
                 },()->{
                     //throw new NoBasketInfoException("No basket info in request");
@@ -139,22 +136,19 @@ public class BasketServiceImpl implements BasketService {
 
     private void saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         BasketItems basketItems = new BasketItems();
-        try{
-            Product product = getProduct(basketItemRequest.getProduct());
-            if(product!=null){
-                basketItemRepository.findByBasketAndProduct(basket, product.getUuid()).ifPresentOrElse(basketItems1 -> {
-                    basketItems1.setQuantity(basketItems1.getQuantity() + basketItemRequest.getQuantity());
-                    basketItemRepository.save(basketItems1);
-                }, () -> {
-                    basketItems.setBasket(basket);
-                    basketItems.setUuid(UUID.randomUUID().toString());
-                    basketItems.setQuantity(basketItemRequest.getQuantity());
-                    basketItems.setProduct(product.getUuid());
-                    basketItemRepository.save(basketItems);
-                });
-            }
-        } catch(URISyntaxException e) {
-            throw new RuntimeException(e);
+        //Product product = getProduct(basketItemRequest.getProduct());
+        Product product = new Product();
+        if(product!=null){
+            basketItemRepository.findByBasketAndProduct(basket, product.getUuid()).ifPresentOrElse(basketItems1 -> {
+                basketItems1.setQuantity(basketItems1.getQuantity() + basketItemRequest.getQuantity());
+                basketItemRepository.save(basketItems1);
+            }, () -> {
+                basketItems.setBasket(basket);
+                basketItems.setUuid(UUID.randomUUID().toString());
+                basketItems.setQuantity(basketItemRequest.getQuantity());
+                basketItems.setProduct(product.getUuid());
+                basketItemRepository.save(basketItems);
+            });
         }
     }
 }

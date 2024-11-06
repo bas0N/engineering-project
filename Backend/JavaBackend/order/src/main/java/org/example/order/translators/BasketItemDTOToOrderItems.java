@@ -8,18 +8,18 @@ import org.mapstruct.Mappings;
 
 @Mapper
 public abstract class BasketItemDTOToOrderItems {
-
-
-    public OrderItems toOrderItems(BasketItemDto basketItemDTO){
-        return translate(basketItemDTO);
-    }
-
-
-    @Mappings({
-            @Mapping(target = "id",ignore = true),
-            @Mapping(target = "product",source = "uuid"),
-            @Mapping(target = "priceUnit",source = "price"),
-            @Mapping(target = "priceSummary",source = "summaryPrice")
-    })
-    protected abstract OrderItems translate(BasketItemDto basketItemDTO);
+//
+//
+//    public OrderItems toOrderItems(BasketItemDto basketItemDTO){
+//        return translate(basketItemDTO);
+//    }
+//
+//
+//    @Mappings({
+//            @Mapping(target = "id",ignore = true),
+//            @Mapping(target = "product",source = "uuid"),
+//            @Mapping(target = "priceUnit",source = "price"),
+//            @Mapping(target = "priceSummary",source = "summaryPrice")
+//    })
+//    protected abstract OrderItems translate(BasketItemDto basketItemDTO);
 }

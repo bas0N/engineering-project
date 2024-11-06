@@ -15,6 +15,7 @@
         <module>product</module>
         <module>history</module>
         <module>order</module>
+        <module>message</module>
     </modules>
 
     <dependencyManagement>

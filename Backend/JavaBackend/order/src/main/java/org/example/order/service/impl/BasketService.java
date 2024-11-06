@@ -12,8 +12,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class BasketService {
-    @Value("${basket.service}")
-    private String BASKET_URL;
+//    @Value("${basket.service}")
+//    private String BASKET_URL;
     public ListBasketItemDto getBasket(Cookie value) {
         //tutaj kafka wale do koszyka
         return null;

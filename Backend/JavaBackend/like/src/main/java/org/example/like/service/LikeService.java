@@ -13,7 +13,7 @@ public interface LikeService {
 
     List<ProductDto> getMyLikedProducts(HttpServletRequest request);
 
-    Object getNumberOfLikes(String productId);
+    Long getNumberOfLikes(String productId);
 
     void removeLike(String likeId, HttpServletRequest request);
 }

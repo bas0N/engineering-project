@@ -2,14 +2,18 @@ package org.example.product.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.product.dto.Request.CreateReviewRequest;
+import org.example.product.dto.Response.ReviewResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 public interface ReviewService {
-    ResponseEntity<?> getReviews(String productId);
+    Page<ReviewResponse> getReviews(String productId);
 
-    ResponseEntity<?> getReview(String productId);
+    ReviewResponse getReview(String productId);
 
-    ResponseEntity<?> createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
+    ReviewResponse createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
 
-    ResponseEntity<?> updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
+    ReviewResponse updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
+
+    Boolean deleteReview(String reviewId);
 }

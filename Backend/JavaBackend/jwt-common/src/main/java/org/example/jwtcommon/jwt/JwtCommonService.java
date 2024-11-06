@@ -41,6 +41,14 @@ public class JwtCommonService {
         return token;
     }
 
+    public String getUserFromRequest(HttpServletRequest request){
+        String token = getTokenFromRequest(request);
+        if (token == null) {
+            throw new InvalidTokenException("Token not found");
+        }
+        return getCurrentUserId(token);
+    }
+
     private String getClaimFromToken(String token, String claimKey) {
         return (String) Jwts.parserBuilder()
                 .setSigningKey(getSignKey())

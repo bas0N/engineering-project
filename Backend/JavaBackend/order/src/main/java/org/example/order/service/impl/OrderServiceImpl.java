@@ -30,10 +30,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final DeliverRepository deliverRepository;
-    private final BasketService basketService;
-    private final ItemService itemService;
-    private final PayUService payuService;
-    private final BasketItemDTOToOrderItems basketItemDTOToItems;
+//    private final BasketService basketService;
+//    private final ItemService itemService;
+//    private final PayUService payuService;
+//    private final BasketItemDTOToOrderItems basketItemDTOToItems;
 
     private Order save(Order order) {
         Deliver deliver = deliverRepository.findByUuid(order.getDeliver().getUuid()).orElseThrow();
@@ -53,35 +53,36 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String createOrder(Order order, HttpServletRequest request, HttpServletResponse response) {
-        List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(value->
-                        value.getName().equals("Authorization") || value.getName().equals("refresh"))
-                .toList();
-
-//        UserRegisterDto userRegisterDTO = authService.getUserDetails(cookies);
-//        if (userRegisterDTO != null) {
-//            order.setClient(userRegisterDTO.getLogin());
-//        }
-        Order finalOrder = save(order);
-        AtomicReference<String> result = new AtomicReference<>();
-        Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("basket")).findFirst().ifPresentOrElse(value -> {
-            ListBasketItemDto basket = basketService.getBasket(value);
-            if (basket.getBasketProducts().isEmpty()) throw new RuntimeException();
-            List<OrderItems> items = new ArrayList<>();
-            basket.getBasketProducts().forEach(item -> {
-                OrderItems orderItems = basketItemDTOToItems.toOrderItems(item);
-                orderItems.setOrder(finalOrder);
-                orderItems.setUuid(UUID.randomUUID().toString());
-                items.add(itemService.save(orderItems));
-                basketService.removeBasket(value,item.getUuid());
-            });
-            result.set(payuService.createOrder(finalOrder, items));
-            value.setMaxAge(0);
-            response.addCookie(value);
-            //emailService.sendActivation(order.getEmail(),order.getUuid());
-        }, () -> {
-            throw new RuntimeException();
-        });
-        return result.get();
+//        List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(value->
+//                        value.getName().equals("Authorization") || value.getName().equals("refresh"))
+//                .toList();
+//
+////        UserRegisterDto userRegisterDTO = authService.getUserDetails(cookies);
+////        if (userRegisterDTO != null) {
+////            order.setClient(userRegisterDTO.getLogin());
+////        }
+//        Order finalOrder = save(order);
+//        AtomicReference<String> result = new AtomicReference<>();
+//        Arrays.stream(request.getCookies()).filter(cookie -> cookie.getName().equals("basket")).findFirst().ifPresentOrElse(value -> {
+//            ListBasketItemDto basket = basketService.getBasket(value);
+//            if (basket.getBasketProducts().isEmpty()) throw new RuntimeException();
+//            List<OrderItems> items = new ArrayList<>();
+//            basket.getBasketProducts().forEach(item -> {
+//                OrderItems orderItems = basketItemDTOToItems.toOrderItems(item);
+//                orderItems.setOrder(finalOrder);
+//                orderItems.setUuid(UUID.randomUUID().toString());
+//                items.add(itemService.save(orderItems));
+//                basketService.removeBasket(value,item.getUuid());
+//            });
+//            result.set(payuService.createOrder(finalOrder, items));
+//            value.setMaxAge(0);
+//            response.addCookie(value);
+//            //emailService.sendActivation(order.getEmail(),order.getUuid());
+//        }, () -> {
+//            throw new RuntimeException();
+//        });
+//        return result.get();
+        return null;
     }
 
     @Override

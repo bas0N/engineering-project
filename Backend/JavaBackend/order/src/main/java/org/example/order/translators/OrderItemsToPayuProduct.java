@@ -8,13 +8,13 @@ import org.mapstruct.Mappings;
 
 @Mapper
 public abstract class OrderItemsToPayuProduct {
-    public PayUProduct toPayUProduct(OrderItems orderItems){
-        return translate(orderItems);
-    }
-
-
-    @Mappings({
-            @Mapping(source = "priceUnit",target = "unitPrice")
-    })
-    protected abstract PayUProduct translate(OrderItems orderItems);
+//    public PayUProduct toPayUProduct(OrderItems orderItems){
+//        return translate(orderItems);
+//    }
+//
+//
+//    @Mappings({
+//            @Mapping(source = "priceUnit",target = "unitPrice")
+//    })
+//    protected abstract PayUProduct translate(OrderItems orderItems);
 }

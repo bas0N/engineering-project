@@ -7,11 +7,11 @@ import org.mapstruct.Mappings;
 
 @Mapper
 public abstract class DeliverToDeliverDto {
-    public DeliverDto deliverDto(Deliver deliver){
-        return translate(deliver);
-    }
-
-
-    @Mappings({})
-    protected abstract DeliverDto translate(Deliver deliver);
+//    public DeliverDto deliverDto(Deliver deliver){
+//        return translate(deliver);
+//    }
+//
+//
+//    @Mappings({})
+//    protected abstract DeliverDto translate(Deliver deliver);
 }

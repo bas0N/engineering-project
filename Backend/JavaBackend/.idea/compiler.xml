@@ -15,6 +15,7 @@
         <module name="eureka" />
         <module name="jwt-common" />
         <module name="history" />
+        <module name="message" />
         <module name="RegisterEndpointInformation" />
         <module name="common-dto" />
         <module name="user" />
@@ -35,6 +36,7 @@
       <module name="history" options="-parameters" />
       <module name="jwt-common" options="-parameters" />
       <module name="like" options="-parameters" />
+      <module name="message" options="-parameters" />
       <module name="order" options="-parameters" />
       <module name="product" options="-parameters" />
       <module name="user" options="-parameters" />

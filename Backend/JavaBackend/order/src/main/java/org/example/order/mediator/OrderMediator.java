@@ -26,16 +26,17 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 @RequiredArgsConstructor
 public class OrderMediator {
-    private final OrderDTOToOrder orderDTOToOrder;
+//    private final OrderDTOToOrder orderDTOToOrder;
     private final OrderService orderService;
     private final SignatureValidator signatureValidator;
-    private final OrderToOrderDTO orderToOrderDTO;
+//    private final OrderToOrderDTO orderToOrderDTO;
 
     public ResponseEntity<?> createOrder(OrderDto orderDTO, HttpServletRequest request, HttpServletResponse response) {
-        Order order = orderDTOToOrder.toOrder(orderDTO);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE,"application/json");
-        return ResponseEntity.status(200).headers(httpHeaders).body(orderService.createOrder(order,request,response));
+//        Order order = orderDTOToOrder.toOrder(orderDTO);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(HttpHeaders.CONTENT_TYPE,"application/json");
+//        return ResponseEntity.status(200).headers(httpHeaders).body(orderService.createOrder(order,request,response));
+        return null;
     }
 
 
@@ -54,41 +55,42 @@ public class OrderMediator {
     }
 
     public ResponseEntity<?> getOrder(String uuid, HttpServletRequest request) {
-        if (uuid == null || uuid.isEmpty()){
-            try{
-                List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(value->
-                                value.getName().equals("Authorization") || value.getName().equals("refresh"))
-                        .toList();
-                //UserRegisterDTO user = authService.getUserDetails(cookies);
-                UserRegisterDto user = new UserRegisterDto();
-                if (user!=null){
-                    List<OrderDto> orderDTOList = new ArrayList<>();
-                    orderService.getOrdersByClient(user.getLogin()).forEach(value->{
-                        orderDTOList.add(orderToOrderDto.toOrderDTO(value));
-                    });
-                    return ResponseEntity.ok(orderDTOList);
-                }
-                //throw new OrderDontExistException();
-            }catch (NullPointerException e){
-                //throw new UserDontLoginException();
-            }
-        }
-        Order order = orderService.getOrderByUuid(uuid);
-        List<OrderItems> itemsList = itemService.getByOrder(order);
-        if (itemsList.isEmpty()) throw new OrderDontExistException();
-        List<Items> itemsDTO = new ArrayList<>();
-        AtomicReference<Double> summary = new AtomicReference<>(0d);
-        itemsList.forEach(value->{
-            Items items = orderItemsToItems.toItems(value);
-            items.setImageUrl(productService.getProduct(value.getProduct()).getImageUrls()[0]);
-            itemsDTO.add(items);
-            summary.set(summary.get()+value.getPriceSummary());
-
-        });
-        OrderDTO orderDTO = orderToOrderDTO.toOrderDTO(order);
-        summary.set(summary.get() + orderDTO.getDeliver().getPrice());
-        orderDTO.setSummaryPrice(summary.get());
-        orderDTO.setItems(itemsDTO);
-        return ResponseEntity.ok(orderDTO);
+//        if (uuid == null || uuid.isEmpty()){
+//            try{
+//                List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(value->
+//                                value.getName().equals("Authorization") || value.getName().equals("refresh"))
+//                        .toList();
+//                //UserRegisterDTO user = authService.getUserDetails(cookies);
+//                UserRegisterDto user = new UserRegisterDto();
+//                if (user!=null){
+//                    List<OrderDto> orderDTOList = new ArrayList<>();
+//                    orderService.getOrdersByClient(user.getLogin()).forEach(value->{
+//                        orderDTOList.add(orderToOrderDto.toOrderDTO(value));
+//                    });
+//                    return ResponseEntity.ok(orderDTOList);
+//                }
+//                //throw new OrderDontExistException();
+//            }catch (NullPointerException e){
+//                //throw new UserDontLoginException();
+//            }
+//        }
+//        Order order = orderService.getOrderByUuid(uuid);
+//        List<OrderItems> itemsList = itemService.getByOrder(order);
+//        if (itemsList.isEmpty()) throw new OrderDontExistException();
+//        List<Items> itemsDTO = new ArrayList<>();
+//        AtomicReference<Double> summary = new AtomicReference<>(0d);
+//        itemsList.forEach(value->{
+//            Items items = orderItemsToItems.toItems(value);
+//            items.setImageUrl(productService.getProduct(value.getProduct()).getImageUrls()[0]);
+//            itemsDTO.add(items);
+//            summary.set(summary.get()+value.getPriceSummary());
+//
+//        });
+//        OrderDTO orderDTO = orderToOrderDTO.toOrderDTO(order);
+//        summary.set(summary.get() + orderDTO.getDeliver().getPrice());
+//        orderDTO.setSummaryPrice(summary.get());
+//        orderDTO.setItems(itemsDTO);
+//        return ResponseEntity.ok(orderDTO);
+        return null;
     }
 }
