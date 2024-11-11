@@ -63,7 +63,7 @@ class ChromaDBIntegration:
 
             # Add all entries to the collection at once
             self.collection.add(ids=ids,documents=documents, metadatas=metadatas, embeddings=embeddings)
-
+        print("Data saved to ChromaDB.",self.collection.get())
         print(f"Number of documents added: {len(documents)}")
 
     def fetch_similar_products(self, embedding: List[float], n: int = 5) -> pd.DataFrame:

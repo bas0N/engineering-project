@@ -1,4 +1,5 @@
 from typing import List, Dict, Any, Optional
+import certifi
 from pymongo import MongoClient, errors
 from pymongo.collection import Collection
 from pymongo.results import UpdateResult
@@ -20,7 +21,7 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
                         if db_uri is None:
                             raise ValueError("db_uri must be provided during the first initialization.")
                         try:
-                            cls._client_instance = MongoClient(db_uri)
+                            cls._client_instance = MongoClient(db_uri,tlsCAFile=certifi.where())
                             cls._client_instance.admin.command('ping')  # Force connection check
                         except errors.ConnectionFailure as e:
                             raise ConnectionError(f"Failed to connect to MongoDB: {e}")
@@ -38,8 +39,9 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
     def __init__(self, db_uri: str, db_name: str):
         if not hasattr(self, 'initialized'):
             self.db = self._client_instance[db_name]
-            self.config_collection: Collection = self.db[CollectionEnum.CONFIG]
-            self.product_collection: Collection = self.db[CollectionEnum.HEALTH_CARE]
+            self.config_collection: Collection = self.db[CollectionEnum.CONFIG.value]
+            # set using environment variable
+            self.product_collection: Collection = self.db[CollectionEnum.TEST.value]
             self.initialized = True
 
     def get_all_config_docs(self) -> List[ConfigDocument]:
@@ -58,3 +60,7 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
     def collection_exists(self, collection_name: str) -> bool:
         """Check the existence of a given collection."""
         return collection_name in self.db.list_collection_names()
+
+    def get_data_batch(self, collection_name: str, batch_number: int, batch_size: int) -> List[ProductDocument]:
+        """Retrieve a batch of data from the given collection."""
+        return list(self.db[collection_name].find({}).skip(batch_number).limit(batch_size))

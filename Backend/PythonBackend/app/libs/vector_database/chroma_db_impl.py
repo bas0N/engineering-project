@@ -3,7 +3,7 @@ import pandas as pd
 import chromadb
 from threading import Lock
 from .interfaces import VectorDBIntegration
-
+import os
 class ChromaDBIntegration(VectorDBIntegration):
     """Implementation of VectorDBIntegration for ChromaDB."""
 
@@ -19,7 +19,7 @@ class ChromaDBIntegration(VectorDBIntegration):
 
     def __init__(self, collection_name: str, mapper: Any):
         if not hasattr(self, 'initialized'):
-            self.client = chromadb.Client()
+            self.client = chromadb.PersistentClient(path=os.path.expanduser("~/chromadb-data"))
             self.collection = self.client.get_or_create_collection(collection_name)
             self.mapper = mapper
             self.initialized = True
@@ -66,7 +66,6 @@ class ChromaDBIntegration(VectorDBIntegration):
 
         # Add all entries to the collection at once
         self.collection.add(ids=ids, documents=documents, metadatas=metadatas, embeddings=embeddings)
-
         print(f"Number of documents added: {len(documents)}")
 
     def fetch_similar_products(self, embedding: List[float], n: int = 5) -> pd.DataFrame:

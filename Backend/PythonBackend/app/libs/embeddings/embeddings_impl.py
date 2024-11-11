@@ -1,7 +1,6 @@
 import numpy as np
 from typing import Dict, Any, Callable
-from embedding import Embedding  # Importing the interface
-
+from .interfaces import Embedding
 class EmbeddingImpl(Embedding):
     """Implementation of the Embedding interface for generating weighted concatenated embeddings."""
 

@@ -27,3 +27,9 @@ class NoSqlDatabaseIntegrationInterface(ABC):
     def get_instance(cls, db_name: str) -> 'NoSqlDatabaseIntegrationInterface':
         """Get the singleton instance without passing the URI."""
         pass
+
+    @classmethod
+    @abstractmethod
+    def get_data_batch(selft,collection_name: str, batch_number:int, batch_size:int) -> List[Dict[str, Any]]:
+        """Retrieve a batch of data from the given collection."""
+        pass
