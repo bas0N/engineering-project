@@ -1,27 +1,26 @@
 from .interfaces import Cleanable
+from typing import Optional,List,Any
 
 class DictionaryCleaner:
-    def __init__(self, field_cleaners: dict[str, Cleanable]):
+    def __init__(self, field_cleaners: dict[str, List[Cleanable]]):
         self.field_cleaners = field_cleaners
 
-    from typing import Optional
-
-    def clean_dict(self, data: dict[str, any]) -> Optional[dict[str, any]]:
+    def clean_dict(self, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         cleaned_data = {}
+
         for field, value in data.items():
-            print("field_searched", field)
             if field in self.field_cleaners:
-                cleaner = self.field_cleaners[field]
-                cleaned_value = cleaner.clean(value)
-                # If any field after cleaning is None, return None immediately
-                # print cleaned value and the param name
+                # Apply each cleaner in the list sequentially
+                for cleaner in self.field_cleaners[field]:
+                    print("value to clean", value)
+                    value = cleaner.clean(value)
+                    print("cleaned value", value)
+                    if value is None:
+                        return None  # Return None if any cleaner produces None
 
-                print("cleaned_value for field", field, "is", cleaned_value)
-
-                if cleaned_value is None:
-                    return None
-                cleaned_data[field] = cleaned_value
-            else:
-                cleaned_data[field] = value  # Leave fields without sanitizers as they are
+            cleaned_data[field] = value
 
         return cleaned_data
+
+
+

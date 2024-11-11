@@ -56,7 +56,7 @@ class ChromaDBIntegration(VectorDBIntegration):
         documents = []
         metadatas = []
         embeddings = []
-
+        print("Data list", data_list)
         for entry in data_list:
             mapped_data = self.mapper.map_row_to_chromadb(entry)
             ids.append(mapped_data["ids"])

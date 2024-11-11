@@ -8,6 +8,7 @@ from .libs.data_cleaning.dict_cleaner import DictionaryCleaner
 from .libs.data_cleaning.null_value_cleaner import NullValueCleaner
 from .libs.data_cleaning.short_text_sanitizer import ShortTextCleaner
 from .libs.data_cleaning.text_value_sanitizer import TextContentCleaner
+from .libs.data_cleaning.array_text_value_cleaner import ArrayTextContentCleaner
 
 from .libs.data_normalisation.price_normalizer import PriceNormalised
 from .libs.data_normalisation.dict_normaliser import DictionaryNormalizer
@@ -38,29 +39,27 @@ def create_app():
     null_cleaner = NullValueCleaner()
     short_text_cleaner = ShortTextCleaner(min_words=4)
     text_content_cleaner = TextContentCleaner()
+    array_text_content_cleaner = ArrayTextContentCleaner()
     field_cleaners = {
         #ID
-        ProductColumnsToEmbed.ID.value: null_cleaner,
+        ProductColumnsToEmbed.ID.value: [null_cleaner],
 
         #TITLE
-        ProductColumnsToEmbed.TITLE.value: null_cleaner,
-        ProductColumnsToEmbed.TITLE.value: text_content_cleaner,
+        ProductColumnsToEmbed.TITLE.value: [null_cleaner,text_content_cleaner],
 
         #DESCRIPTION
         #ProductColumnsToEmbed.DESCRIPTION.value: null_cleaner,
-        ProductColumnsToEmbed.DESCRIPTION.value: text_content_cleaner,
-        ProductColumnsToEmbed.DESCRIPTION.value: short_text_cleaner,
+        ProductColumnsToEmbed.DESCRIPTION.value: [null_cleaner,array_text_content_cleaner,short_text_cleaner],
 
         #MAIN_CATEGORY
-        ProductColumnsToEmbed.MAIN_CATEGORY.value: null_cleaner,
-        ProductColumnsToEmbed.MAIN_CATEGORY.value: text_content_cleaner,
+        ProductColumnsToEmbed.MAIN_CATEGORY.value: [null_cleaner,text_content_cleaner],
     }
     dictionary_cleaner = DictionaryCleaner(field_cleaners=field_cleaners)
 
     ## normalisers
     price_normaliser = PriceNormalised(0,10000)
     field_normalisers = {
-        ProductColumnsToEmbed.PRICE: price_normaliser,
+        ProductColumnsToEmbed.PRICE: [price_normaliser],
     }
     dictionary_normalizer = DictionaryNormalizer(field_normalisers=field_normalisers)
 
