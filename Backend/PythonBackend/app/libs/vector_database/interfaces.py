@@ -24,7 +24,7 @@ class VectorDBIntegration(ABC):
         pass
 
     @abstractmethod
-    def fetch_similar_products(self, embedding: List[float], n: int = 5) -> pd.DataFrame:
+    def fetch_similar_products(self, embedding: List[float], n: int = 5):
         """Fetches top `n` similar products given an embedding.
 
         Args:
@@ -32,6 +32,6 @@ class VectorDBIntegration(ABC):
             n (int): The number of similar products to retrieve.
 
         Returns:
-            pd.DataFrame: DataFrame containing the similar products with metadata and distances.
+            List containing the similar products with metadata and distances.
         """
         pass

@@ -11,12 +11,17 @@ class PriceNormalised(Normalisable):
         try:
             # Check if price is a valid number
             if not isinstance(price, (int, float)):
-                return None
-            # Ensure price is within the valid range
-            if not (self.min_price <= price <= self.max_price):
-                return None
+                return 0  # Return 0 if the input is invalid
+
+            # Return 0 if price is below the minimum
+            if price < self.min_price:
+                return 0
+            # Return 1 if price is above the maximum
+            elif price > self.max_price:
+                return 1
+
             # Normalize the price
             return (price - self.min_price) / (self.max_price - self.min_price)
         except (TypeError, ValueError):
-            return None
+            return 0  # Return 0 if any exception occurs
 

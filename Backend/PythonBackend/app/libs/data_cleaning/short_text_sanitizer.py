@@ -7,8 +7,6 @@ class ShortTextCleaner(Cleanable):
 
     def clean(self, value: Union[str, List[str]]):
         """Remove text if it has fewer than min_words words, otherwise return the text or process an array of text."""
-        print("ShortTextCleaner value", value)
-
         def clean_text(text: str) -> Union[str, None]:
             return text if len(text.split()) >= self.min_words else None
 

@@ -33,3 +33,9 @@ class NoSqlDatabaseIntegrationInterface(ABC):
     def get_data_batch(selft,collection_name: str, batch_number:int, batch_size:int) -> List[Dict[str, Any]]:
         """Retrieve a batch of data from the given collection."""
         pass
+
+    @classmethod
+    @abstractmethod
+    def get_product_by_id(self, product_id: str) -> Dict[str, Any]:
+        """Retrieve product document by ID."""
+        pass

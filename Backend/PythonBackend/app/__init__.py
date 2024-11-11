@@ -48,8 +48,7 @@ def create_app():
         ProductColumnsToEmbed.TITLE.value: [null_cleaner,text_content_cleaner],
 
         #DESCRIPTION
-        #ProductColumnsToEmbed.DESCRIPTION.value: null_cleaner,
-        ProductColumnsToEmbed.DESCRIPTION.value: [null_cleaner,array_text_content_cleaner,short_text_cleaner],
+        ProductColumnsToEmbed.DESCRIPTION.value: [array_text_content_cleaner,short_text_cleaner],
 
         #MAIN_CATEGORY
         ProductColumnsToEmbed.MAIN_CATEGORY.value: [null_cleaner,text_content_cleaner],

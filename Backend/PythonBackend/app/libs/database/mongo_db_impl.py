@@ -63,4 +63,9 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
 
     def get_data_batch(self, collection_name: str, batch_number: int, batch_size: int) -> List[ProductDocument]:
         """Retrieve a batch of data from the given collection."""
-        return list(self.db[collection_name].find({}).skip(batch_number).limit(batch_size))
+        print("Fetching data batch, collection_name: ", collection_name, "skip: ", (batch_number*batch_size), "batch_size: ", batch_size)
+        return list(self.db[collection_name].find({}).skip(batch_number*batch_size).limit(batch_size))
+
+    def get_product_by_id(self, product_id: str) -> ProductDocument:
+        """Retrieve product document by ID."""
+        return self.product_collection.find_one({"parent_asin": product_id})

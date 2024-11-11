@@ -12,9 +12,7 @@ class DictionaryCleaner:
             if field in self.field_cleaners:
                 # Apply each cleaner in the list sequentially
                 for cleaner in self.field_cleaners[field]:
-                    print("value to clean", value)
                     value = cleaner.clean(value)
-                    print("cleaned value", value)
                     if value is None:
                         return None  # Return None if any cleaner produces None
 

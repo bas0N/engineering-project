@@ -56,7 +56,7 @@ class ChromaDBIntegration(VectorDBIntegration):
         documents = []
         metadatas = []
         embeddings = []
-        print("Data list", data_list)
+
         for entry in data_list:
             mapped_data = self.mapper.map_row_to_chromadb(entry)
             ids.append(mapped_data["ids"])
@@ -68,7 +68,7 @@ class ChromaDBIntegration(VectorDBIntegration):
         self.collection.add(ids=ids, documents=documents, metadatas=metadatas, embeddings=embeddings)
         print(f"Number of documents added: {len(documents)}")
 
-    def fetch_similar_products(self, embedding: List[float], n: int = 5) -> pd.DataFrame:
+    def fetch_similar_products(self, embedding: List[float], n: int = 5):
         """Fetches top `n` similar products given an embedding.
 
         Args:
@@ -81,6 +81,11 @@ class ChromaDBIntegration(VectorDBIntegration):
         results = self.collection.query(
             query_embeddings=[embedding],
             n_results=n,
-            include=["documents", "metadatas", "distances"]
+            include=["documents", "metadatas", "distances","embeddings"]
         )
-        return pd.DataFrame(results['metadatas'][0])
+        metadatas = results['metadatas'][0]
+        distances = results['distances'][0]
+        for metadata, distance in zip(metadatas, distances):
+            metadata['distance'] = distance
+
+        return metadatas
