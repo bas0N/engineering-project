@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 public interface ReviewService {
-    Page<ReviewResponse> getReviews(String productId);
+    Page<ReviewResponse> getReviews(String productId, int page, int size);
 
     ReviewResponse getReview(String productId);
 

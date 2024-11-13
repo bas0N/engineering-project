@@ -2,7 +2,9 @@ package org.example.product.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.product.dto.Request.ImageRequest;
+import org.example.product.dto.Request.ImageReviewRequest;
 import org.example.product.entity.Image;
+import org.example.product.entity.ImageReview;
 import org.example.product.service.ImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final CloudinaryServiceImpl cloudinaryService;
+
     @Override
     public List<Image> uploadImages(List<ImageRequest> imagesFiles) {
         return imagesFiles.stream().map(imageRequest -> {
@@ -26,7 +29,7 @@ public class ImageServiceImpl implements ImageService {
                 return new Image(
                         uploadImage(imageRequest.getThumb()),
                         uploadImage(imageRequest.getLarge()),
-                        imageRequest.getVariant(),
+                        imageRequest.getVariant() == null ? null : imageRequest.getVariant(),
                         uploadImage(imageRequest.getHiRes())
                 );
             } catch (IOException e) {
@@ -40,7 +43,19 @@ public class ImageServiceImpl implements ImageService {
         cloudinaryService.deleteImage(extractPublicIdFromUrl(imageUrl));
     }
 
+    @Override
+    public List<ImageReview> uploadReviewImages(List<ImageReviewRequest> imagesFiles) {
+        return imagesFiles.stream().map(imageRequest -> {
+            try {
+                return new ImageReview(uploadImage(imageRequest.getSmall_image_file()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+    }
+
     private String uploadImage(MultipartFile imageFile) throws IOException {
+        if (imageFile == null) return null;
         File convertedFile = convertMultiPartToFile(imageFile);
         return cloudinaryService.uploadImage(convertedFile);
     }
@@ -53,6 +68,7 @@ public class ImageServiceImpl implements ImageService {
         }
         return tempFile;
     }
+
     private String extractPublicIdFromUrl(String url) {
         String[] urlParts = url.split("/");
         String filename = urlParts[urlParts.length - 1];

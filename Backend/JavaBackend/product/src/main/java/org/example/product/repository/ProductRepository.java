@@ -37,4 +37,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     @Query("{ 'parent_asin': ?0 }")
     void deleteByParentAsin(String parentAsin);
+
+    @Query("{ 'parent_asin': ?0 }")
+    boolean existsByParentAsin(String id);
 }

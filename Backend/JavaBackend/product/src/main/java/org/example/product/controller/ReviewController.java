@@ -18,10 +18,9 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @RequestMapping(path = "/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<Page<ReviewResponse>> getReviews(@PathVariable String productId) {
-
-        //return reviewService.getReviews(productId);
-        return null;
+    public ResponseEntity<Page<ReviewResponse>> getReviews(@PathVariable String productId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {   // domyślnie 10 elementów na stronę
+        Page<ReviewResponse> reviews = reviewService.getReviews(productId, page, size);
+        return ResponseEntity.ok(reviews);
     }
 
     @RequestMapping(path = "/{reviewId}", method = RequestMethod.GET)

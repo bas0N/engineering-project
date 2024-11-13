@@ -20,12 +20,10 @@ public class Message {
     @Column(name = "uuid", updatable = false, nullable = false, unique = true)
     private String uuid;
 
-    // Zmieniamy z @Column na @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
     private User senderId;
 
-    // Zmieniamy z @Column na @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiverId;

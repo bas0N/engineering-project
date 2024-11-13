@@ -15,4 +15,5 @@ public class CreateReviewRequest {
     private List<ImageReviewRequest> images;
     private String text;
     private String title;
+    private int rating;
 }

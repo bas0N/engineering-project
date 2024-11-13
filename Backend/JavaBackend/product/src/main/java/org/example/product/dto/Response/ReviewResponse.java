@@ -13,7 +13,7 @@ public class ReviewResponse {
     private String text;
     private String userFirstName;
     private String userLastName;
-    private String email;
+    private String userId;
     private double timestamp;
     private int helpful_vote;
     private boolean verified_purchase;

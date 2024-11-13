@@ -9,6 +9,7 @@ import org.example.order.dto.OrderDto;
 import org.example.order.dto.UserRegisterDto;
 import org.example.order.dto.notify.Notify;
 import org.example.order.entity.Order;
+import org.example.order.mapper.OrderMapper;
 import org.example.order.service.OrderService;
 import org.example.order.translators.OrderDTOToOrder;
 import org.example.order.translators.OrderToOrderDTO;
@@ -32,11 +33,10 @@ public class OrderMediator {
 //    private final OrderToOrderDTO orderToOrderDTO;
 
     public ResponseEntity<?> createOrder(OrderDto orderDTO, HttpServletRequest request, HttpServletResponse response) {
-//        Order order = orderDTOToOrder.toOrder(orderDTO);
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(HttpHeaders.CONTENT_TYPE,"application/json");
-//        return ResponseEntity.status(200).headers(httpHeaders).body(orderService.createOrder(order,request,response));
-        return null;
+        Order order = OrderMapper.INSTANCE.orderDtoToOrder(orderDTO);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE,"application/json");
+        return ResponseEntity.status(200).headers(httpHeaders).body(orderService.createOrder(order,request,response));
     }
 
 

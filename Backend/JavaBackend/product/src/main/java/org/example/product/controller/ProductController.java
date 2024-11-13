@@ -8,8 +8,11 @@ import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Product;
 import org.example.product.service.ProductService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,9 +44,14 @@ public class ProductController {
         return productService.getProductById(productId, request);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody AddProductRequest addProductRequest, HttpServletRequest request) {
-        return ResponseEntity.ok(productService.createProduct(addProductRequest, request));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Product> createProduct(@RequestPart("product") @Valid AddProductRequest addProductRequest,
+                                                 @RequestPart("thumb") List<MultipartFile> thumb,
+                                                 @RequestPart("large") List<MultipartFile> large,
+                                                 @RequestPart("hiRes") List<MultipartFile> hiRes,
+                                                 @RequestParam("variant") List<String> variant,  HttpServletRequest request) {
+        Product product = productService.createProduct(addProductRequest, thumb , large, hiRes, variant , request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)

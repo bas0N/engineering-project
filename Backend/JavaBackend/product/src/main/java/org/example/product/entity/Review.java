@@ -25,4 +25,5 @@ public class Review {
     private String user_id;
     private double timestamp;
     private boolean verified_purchase;
+    private User user;
 }

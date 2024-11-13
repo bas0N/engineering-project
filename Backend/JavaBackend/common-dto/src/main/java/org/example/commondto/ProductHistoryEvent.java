@@ -10,8 +10,8 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductHistoryEvent {
     private String productId;
     private String userId;
+    private Date timeStamp;
 }

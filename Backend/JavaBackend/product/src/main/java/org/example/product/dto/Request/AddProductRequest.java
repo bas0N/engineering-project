@@ -24,7 +24,7 @@ public class AddProductRequest {
 
     private List<String> features;
 
-    private List<ImageRequest> images;
+//    private List<ImageRequest> images;
 
     private String mainCategory;
 

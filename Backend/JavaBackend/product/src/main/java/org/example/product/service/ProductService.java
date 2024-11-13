@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.AbstractDocument;
 import java.util.List;
@@ -20,8 +21,12 @@ import java.util.List;
 public interface ProductService {
     ResponseEntity<Page<ProductResponse>> getProducts(int page, int limit, String sort, String mainCategory, String title, Double minPrice, Double maxPrice, Double minRating, Double maxRating, List<String> categories, String store);
     ResponseEntity<ProductResponse> getProductById(String id, HttpServletRequest request);
-
-    Product createProduct(AddProductRequest addProductRequest, HttpServletRequest request);
+    Product createProduct(AddProductRequest addProductRequest,
+                          List<MultipartFile> thumb,
+                          List<MultipartFile> large,
+                          List<MultipartFile> hiRes,
+                          List<String> variant
+            ,HttpServletRequest request);
 
     Product updateProduct(String id, AddProductRequest addProductRequest, HttpServletRequest request);
 

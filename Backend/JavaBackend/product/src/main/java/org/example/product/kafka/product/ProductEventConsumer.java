@@ -1,4 +1,4 @@
-package org.example.product.listener;
+package org.example.product.kafka.product;
 
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.example.commondto.ImageEvent;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductEventListener {
+public class ProductEventConsumer {
 
     private final KafkaTemplate<String, ProductEvent> kafkaTemplate;
     private final ProductRepository productRepository;
 
-    public ProductEventListener(KafkaTemplate<String, ProductEvent> kafkaTemplate, ProductRepository productRepository) {
+    public ProductEventConsumer(KafkaTemplate<String, ProductEvent> kafkaTemplate, ProductRepository productRepository) {
         this.kafkaTemplate = kafkaTemplate;
         this.productRepository = productRepository;
     }

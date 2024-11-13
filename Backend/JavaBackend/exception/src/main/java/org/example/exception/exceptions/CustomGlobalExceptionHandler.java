@@ -80,7 +80,11 @@ public class CustomGlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
+    @ExceptionHandler(NoBasketInfoException.class)
+    public ResponseEntity<ErrorDetails> handleNoBasketInfoException(NoBasketInfoException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 
 
 }

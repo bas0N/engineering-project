@@ -21,4 +21,5 @@ public class ProductResponse {
     private String store; //to
     private String title; //to
     private Double averageRating; //to
+    private UserResponse owner;
 }

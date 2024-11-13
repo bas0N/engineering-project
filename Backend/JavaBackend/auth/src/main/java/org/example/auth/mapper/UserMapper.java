@@ -24,4 +24,5 @@ public interface UserMapper {
     @Mapping(source = "addresses", target = "addressVersions")
     @Mapping(expression = "java(java.time.LocalDateTime.now())", target = "versionTimestamp")
     UserVersion toUserVersion(User user);
+
 }

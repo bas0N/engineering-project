@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Date;
+
 @Mapper
 public interface HistoryMapper {
     HistoryMapper INSTANCE = Mappers.getMapper(HistoryMapper.class);
@@ -13,5 +15,5 @@ public interface HistoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "productHistoryEvent.productId", target = "productId")
     @Mapping(source = "productHistoryEvent.userId", target = "userId")
-    History mapProductHistoryEventToHistory(ProductHistoryEvent productHistoryEvent);
+    History toHistory(ProductHistoryEvent productHistoryEvent);
 }

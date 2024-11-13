@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Map;
@@ -15,35 +16,53 @@ import java.util.Map;
 @AllArgsConstructor
 public class Product {
     @Id
-    private String id; //to
+    private String id;
 
+    @Field("user_id")
     private String userId;
 
-    private String boughtTogether; //to papa
+    @Field("bought_together")
+    private String boughtTogether;
 
-    private List<String> categories; //to
+    @Field("categories")
+    private List<String> categories;
 
+    @Field("description")
     private List<String> description;
 
+    @Field("details")
     private Map<String, String> details;
 
+    @Field("features")
     private List<String> features;
 
-    private List<Image> images; // to
+    @Field("images")
+    private List<Image> images;
 
-    private String mainCategory; //to
+    @Field("main_category")
+    private String mainCategory;
 
+    @Field("parent_asin")
     private String parentAsin;
 
-    private String price; //to
+    @Field("price")
+    private String price;
 
-    private Integer ratingNumber; //to
+    @Field("rating_number")
+    private Integer ratingNumber;
 
-    private String store; //to
+    @Field("store")
+    private String store;
 
-    private String title; //to
+    @Field("title")
+    private String title;
 
+    @Field("videos")
     private List<Video> videos;
 
-    private Double averageRating; //to
+    @Field("average_rating")
+    private Double averageRating;
+
+    @Field("user")
+    private User user;
 }

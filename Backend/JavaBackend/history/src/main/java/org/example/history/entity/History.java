@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table(name = "likes")
+import java.util.Date;
+
+@Table(name = "history")
 @Entity
 @Setter
 @Getter
@@ -19,4 +21,7 @@ public class History {
 
     @Column(name = "user_id", nullable = false)
     private String userId;
+
+    @Column(name = "timeStamp", nullable = false)
+    private Date timeStamp;
 }
