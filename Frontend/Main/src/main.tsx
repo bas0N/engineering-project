@@ -7,9 +7,8 @@ import './i18n/i18n.tsx';
 import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom'
 import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
-import { Product } from './pages/product/Product.tsx'
-import { Tiles } from './pages/tiles/Tiles.tsx'
 import { Navbar } from './components/navbar/Navbar.tsx';
+import './i18n/i18n.tsx'
 
 import { AuthProvider } from 'authComponents/AuthProvider';
 import { Preloader } from './components/preloader/Preloader.tsx';
@@ -18,6 +17,8 @@ const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
 const UserSettings = React.lazy(() => import('userSettings/UserSettings'));
 const UserBasket = React.lazy(() => import('userBasket/UserBasket'));
+const Tiles = React.lazy(() => import('productsBrowsing/Tiles'));
+const Product = React.lazy(() => import('productsBrowsing/Product'));
 
 const routes: RouteObject[] = [
   {

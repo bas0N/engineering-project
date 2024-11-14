@@ -12,7 +12,8 @@ export default defineConfig({
       remotes: {
         authComponents: 'http://localhost:4173/assets/remoteAuthEntry.js',
         userSettings: 'http://localhost:4174/assets/remoteUserSettingsEntry.js',
-        userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js'
+        userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js',
+        productsBrowsing: 'http://localhost:4176/assets/remoteProductsBrowsingEntry.js'
       },
       shared: ['react', 'react-dom', '@fluentui/react-components']
     })
