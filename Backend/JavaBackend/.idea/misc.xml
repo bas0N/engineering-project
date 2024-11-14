@@ -6,6 +6,15 @@
       <list>
         <option value="$PROJECT_DIR$/eureka/pom.xml" />
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/RegisterEndpointInformation/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/pom.xml" />
+        <option value="$PROJECT_DIR$/product/pom.xml" />
+        <option value="$PROJECT_DIR$/Exception/pom.xml" />
+        <option value="$PROJECT_DIR$/jwt-common/pom.xml" />
+        <option value="$PROJECT_DIR$/common-dto/pom.xml" />
+        <option value="$PROJECT_DIR$/history/pom.xml" />
+        <option value="$PROJECT_DIR$/basket/pom.xml" />
       </list>
     </option>
   </component>
