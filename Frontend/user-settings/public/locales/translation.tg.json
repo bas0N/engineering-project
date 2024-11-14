@@ -1,0 +1,19 @@
+{
+  "userSettings": {
+    "header": "User settings",
+    "firstName": "First name...",
+    "lastName": "Last name...",
+    "email": "Email...",
+    "personalDataHeader": "Personal data",
+    "userAddressesHeader": "Your addresses",
+    "addNewAddress": "Add new address",
+    "newAddress": {
+      "street": "Street name...",
+      "cityInput": "City...",
+      "state": "State...",
+      "country": "Country...",
+      "postalCode": "Postal code...",
+      "submitAddingNewAddress": "Add address"
+    }
+  }
+}
