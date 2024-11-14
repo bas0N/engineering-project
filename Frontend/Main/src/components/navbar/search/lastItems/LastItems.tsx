@@ -9,7 +9,13 @@ import {
 import { RatingDisplay, Text } from '@fluentui/react-components';
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ProductImage } from '../../product/ImagesCarousel/ImagesCarousel';
+
+export type ProductImage = {
+    thumb: string,
+    large: string,
+    variant: string,
+    hiRes: string | null,
+};
 
 export type ItemType = {
     id: string;
