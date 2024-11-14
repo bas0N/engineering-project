@@ -7,6 +7,7 @@ import org.example.auth.repository.UserRepository;
 import org.example.commondto.UserDetailInfoEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +27,7 @@ public class UserEventConsumer {
             groupId = "user-service-group",
             containerFactory = "userKafkaListenerContainerFactory"
     )
-    public void consumeUserRequest(String userId, Acknowledgment ack) {
+    public void consumeUserRequest(@Payload String userId, Acknowledgment ack) {
         try {
             // Fetch the user details from the repository
             User user = userRepository.findByUuid(userId)

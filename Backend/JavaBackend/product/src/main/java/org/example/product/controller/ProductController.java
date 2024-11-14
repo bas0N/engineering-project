@@ -55,7 +55,9 @@ public class ProductController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @Valid @RequestBody AddProductRequest addProductRequest, HttpServletRequest request) {
+    public ResponseEntity<Product> updateProduct(@PathVariable String id,
+                                                 @Valid @RequestBody AddProductRequest addProductRequest,
+                                                 HttpServletRequest request) {
         return ResponseEntity.ok(productService.updateProduct(id, addProductRequest, request));
     }
 

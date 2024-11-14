@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BasketEventProducer {
-    private static final String BASKET_TOPIC = "basket_product_response_topic";
+    private static final String BASKET_TOPIC = "basket-product-response-topic";
 
     private final KafkaTemplate<String, BasketProductEvent> basketKafkaTemplate;
 

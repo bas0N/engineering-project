@@ -10,6 +10,7 @@ import org.example.product.entity.Product;
 import org.example.product.repository.ProductRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,16 +25,18 @@ public class UserEventConsumer {
 
     @KafkaListener(
             topics = "user-response-topic",
-            groupId = "user-service-group",
+            groupId = "product-service-user-group",
             containerFactory = "userKafkaListenerContainerFactory"
     )
-    public void consumeUserResponse(UserDetailInfoEvent userDetailInfoEvent, Acknowledgment ack) {
-        CompletableFuture<UserDetailInfoEvent> future = userFutures.remove(userDetailInfoEvent.getUserId());
-        if (future != null) {
-            future.complete(userDetailInfoEvent);
-            ack.acknowledge();
-        } else {
-            log.warn("Received user response for userId {} but no matching request was found. Possible timeout.", userDetailInfoEvent.getUserId());
+    public void consumeUserResponse(@Payload UserDetailInfoEvent userDetailInfoEvent, Acknowledgment ack) {
+        try {
+            CompletableFuture<UserDetailInfoEvent> future = userFutures.remove(userDetailInfoEvent.getUserId());
+            if (future != null) {
+                future.complete(userDetailInfoEvent);
+            } else {
+                log.warn("Received user response for userId {} but no matching request was found. Possible timeout.", userDetailInfoEvent.getUserId());
+            }
+        } finally {
             ack.acknowledge();
         }
     }

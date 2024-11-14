@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.basket.dto.request.AddBasketItemRequest;
+import org.example.basket.dto.request.DeleteItemRequest;
 import org.example.basket.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class BasketController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteProductFromBasket(@RequestParam String uuid, HttpServletRequest request) {
-        return basketService.deleteProductFromBasket(uuid, request);
+    public ResponseEntity<?> deleteProductFromBasket(@RequestBody DeleteItemRequest deleteItemRequest, HttpServletRequest request) {
+        return basketService.deleteProductFromBasket(deleteItemRequest, request);
     }
 
     @RequestMapping(method = RequestMethod.GET)

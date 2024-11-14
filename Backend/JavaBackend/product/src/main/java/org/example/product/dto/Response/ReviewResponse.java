@@ -2,11 +2,15 @@ package org.example.product.dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReviewResponse {
     private String id;
     private String title;
@@ -14,7 +18,7 @@ public class ReviewResponse {
     private String userFirstName;
     private String userLastName;
     private String userId;
-    private double timestamp;
-    private int helpful_vote;
-    private boolean verified_purchase;
+    private Date timestamp;
+    private int helpfulVote;
+    private boolean verifiedPurchase;
 }

@@ -14,6 +14,7 @@ import org.example.order.entity.OrderItems;
 import org.example.order.enums.Status;
 import org.example.order.kafka.OrderKafkaConsumer;
 import org.example.order.kafka.OrderKafkaProducer;
+import org.example.order.mapper.ItemMapper;
 import org.example.order.repository.DeliverRepository;
 import org.example.order.repository.OrderRepository;
 import org.example.order.service.ItemService;
@@ -39,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderKafkaProducer orderKafkaProducer;
     private final OrderKafkaConsumer orderKafkaConsumer;
     private final BasketService basketService;
-//    private final ItemService itemService;
-//    private final PayUService payuService;
+    private final ItemService itemService;
+    private final PayUService payuService;
 //    private final BasketItemDTOToOrderItems basketItemDTOToItems;
 
     private Order save(Order order) {
@@ -61,13 +62,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String createOrder(Order order, HttpServletRequest request, HttpServletResponse response) {
-        List<Cookie> cookies = Arrays.stream(request.getCookies()).filter(value->
-                        value.getName().equals("Authorization") || value.getName().equals("refresh"))
-                .toList();
         String userId = jwtCommonService.getTokenFromRequest(request);
         orderKafkaProducer.requestProductDetails(userId);
         CompletableFuture<UserDetailInfoEvent> userFuture = orderKafkaConsumer.getUserDetails(userId);
         UserDetailInfoEvent userInfo = userFuture.join();
+
         if (userInfo != null) {
             order.setClient(userInfo.getUserId());
         }
@@ -79,7 +78,8 @@ public class OrderServiceImpl implements OrderService {
             if (basket.getBasketProducts().isEmpty()) throw new RuntimeException();
             List<OrderItems> items = new ArrayList<>();
             basket.getBasketProducts().forEach(item -> {
-                OrderItems orderItems = basketItemDTOToItems.toOrderItems(item);
+                //OrderItems orderItems = basketItemDTOToItems.toOrderItems(item);
+                OrderItems orderItems = ItemMapper.INSTANCE.BasketItemDtoToOrderItems(item);
                 orderItems.setOrder(finalOrder);
                 orderItems.setUuid(UUID.randomUUID().toString());
                 items.add(itemService.save(orderItems));
@@ -93,7 +93,6 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException();
         });
         return result.get();
-        return null;
     }
 
     @Override

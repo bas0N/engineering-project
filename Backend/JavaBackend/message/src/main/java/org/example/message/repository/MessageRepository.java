@@ -11,6 +11,12 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    @Query("SELECT m FROM Message m WHERE m.senderId = :senderId OR m.senderId= :receiverId")
-    List<Message> findMessagesBySender_IdAndReceiver_Id(String senderId, String receiverId);
+    @Query("SELECT m FROM Message m WHERE " +
+            "(m.sender.uuid = :userId AND m.receiver.uuid = :contactId) OR " +
+            "(m.sender.uuid = :contactId AND m.receiver.uuid = :userId) " +
+            "ORDER BY m.dateAdded ASC")
+    List<Message> findMessagesBetweenUsers(String currentUserId, String contactId);
+
+    @Query("SELECT m FROM Message m WHERE m.uuid = :messageId")
+    Optional<Message> findByUuid(String messageId);
 }

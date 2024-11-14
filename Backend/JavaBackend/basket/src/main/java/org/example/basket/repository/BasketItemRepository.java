@@ -12,8 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface BasketItemRepository extends JpaRepository<BasketItems, Long> {
-    @Query("SELECT SUM(quantity) from BasketItems where basket = ?1")
-    Long sumBasketItems(long basket);
+    @Query("SELECT SUM(quantity) FROM BasketItems WHERE basket.id = ?1")
+    Long sumBasketItems(long basketId);
 
     @Query("SELECT bi FROM BasketItems bi WHERE bi.product = :product AND bi.basket = :basket")
     Optional<BasketItems> findBasketItemsByProductAndBasket(@Param("product") String product, @Param("basket") Basket basket);
@@ -23,4 +23,7 @@ public interface BasketItemRepository extends JpaRepository<BasketItems, Long> {
 
     @Query("SELECT bi FROM BasketItems bi WHERE bi.basket = :basket")
     List<BasketItems> findBasketItemsByBasket(Basket basket);
+
+    @Query("SELECT bi FROM BasketItems bi WHERE bi.uuid = :uuid AND bi.basket = :basket")
+    Optional<BasketItems> findByUuidAndBasket(String uuid, Basket basket);
 }

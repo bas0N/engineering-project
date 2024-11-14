@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -15,15 +16,37 @@ import java.util.List;
 public class Review {
     @Id
     private String id;
+
+    @Field("asin")
     private String asin;
-    private int helpful_vote;
+
+    @Field("helpful_vote")
+    private int helpfulVote;
+
+    @Field("images")
     private List<ImageReview> images;
-    private String parent_asin;
+
+    @Field("parent_asin")
+    private String parentAsin;
+
+    @Field("rating")
     private int rating;
+
+    @Field("text")
     private String text;
+
+    @Field("title")
     private String title;
-    private String user_id;
+
+    @Field("user_id")
+    private String userId;
+
+    @Field("timestamp")
     private double timestamp;
-    private boolean verified_purchase;
+
+    @Field("verified_purchase")
+    private boolean verifiedPurchase;
+
+    @Field("user")
     private User user;
 }
