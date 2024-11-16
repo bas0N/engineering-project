@@ -1,14 +1,15 @@
 import { Image, Link } from '@fluentui/react-components';
 import styled from 'styled-components';
 
-export const TileContainer = styled(Link)`
-    height: calc(40vh - 20px);
+export const TileContainer = styled(Link)<{height?: number}>`
+    height: calc(${(props) => props.height ?? 40}vh - 20px);
     padding: 10px;
     border-radius: 10px;
     background: #333333a0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     gap: 8px;
     text-decoration: none !important;
     color: inherit !important;
