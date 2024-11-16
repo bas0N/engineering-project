@@ -27,7 +27,8 @@
     "detailsHeader": "Details",
     "featuresHeader": "Features",
     "loadingFailed": "Could not load this item. Try again",
-    "noRatings": "No ratings available"
+    "noRatings": "No ratings available",
+    "recommendations": "Others browsed through"
   },
   "tiles": {
     "sidebar": {

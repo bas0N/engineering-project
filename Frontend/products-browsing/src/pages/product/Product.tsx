@@ -15,6 +15,7 @@ import { ItemType } from "../../components/product/ProductPresentation/ProductPr
 //import { useParams } from "react-router-dom";
 //import axios from "axios";
 import '../../i18n/i18n.tsx';
+import { Recommendations } from "../../components/product/Recommendations/Recommendations.tsx";
 
 const Product = () => {
 
@@ -105,6 +106,8 @@ const Product = () => {
                             details={item.details} 
                         />
                     </ProductPresentationSection>
+
+                    <Recommendations />
                 </ProductWrapper>
             }
         </>
