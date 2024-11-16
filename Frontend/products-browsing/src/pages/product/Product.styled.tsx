@@ -22,6 +22,7 @@ export const ProductPresentationSection = styled.div<{height: number}>`
     @media screen and (min-width: 1024px) {
         flex-direction: row;
         height: calc(${(props) => props.height}vh - 20px);
+        min-height: fit-content;
     }
 `;
 
