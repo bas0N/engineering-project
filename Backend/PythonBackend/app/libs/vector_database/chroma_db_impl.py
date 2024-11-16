@@ -4,6 +4,8 @@ import chromadb
 from threading import Lock
 from .interfaces import VectorDBIntegration
 import os
+from chromadb.config import Settings
+
 class ChromaDBIntegration(VectorDBIntegration):
     """Implementation of VectorDBIntegration for ChromaDB."""
 
@@ -19,7 +21,7 @@ class ChromaDBIntegration(VectorDBIntegration):
 
     def __init__(self, collection_name: str, mapper: Any):
         if not hasattr(self, 'initialized'):
-            self.client = chromadb.PersistentClient(path=os.path.expanduser("~/chromadb-data"))
+            self.client = chromadb.HttpClient(host="localhost", port = 8000, settings=Settings(allow_reset=True, anonymized_telemetry=False))
             self.collection = self.client.get_or_create_collection(collection_name)
             self.mapper = mapper
             self.initialized = True
