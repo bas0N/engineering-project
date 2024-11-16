@@ -1,4 +1,4 @@
-package org.example.auth.dto;
+package org.example.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,8 +13,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UserRegisterRequest {
-    @Length(min = 5, max = 50, message = "Login powinien mieć od 5 do 50 znaków")
-    private String login;
 
     @Email
     @NotBlank(message = "Email is mandatory")

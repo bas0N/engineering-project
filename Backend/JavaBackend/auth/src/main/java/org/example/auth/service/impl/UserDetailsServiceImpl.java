@@ -8,15 +8,11 @@ import org.example.auth.dto.request.AddressesChangeRequest;
 import org.example.auth.dto.response.UserDetailsResponse;
 import org.example.auth.dto.request.UserPersonalDataRequest;
 import org.example.auth.entity.Address;
-import org.example.auth.entity.AddressVersion;
 import org.example.auth.entity.User;
-import org.example.auth.entity.UserVersion;
 import org.example.auth.mapper.AddressMapper;
 import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
-import org.example.auth.repository.AddressVersionRepository;
 import org.example.auth.repository.UserRepository;
-import org.example.auth.repository.UserVersionRepository;
 import org.example.auth.service.JwtService;
 import org.example.auth.service.UserDetailsService;
 import org.example.exception.exceptions.ApiRequestException;
@@ -33,21 +29,17 @@ import java.util.List;
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-    private final UserVersionRepository userVersionRepository;
     private final AddressRepository addressRepository;
-    private final AddressVersionRepository addressVersionRepository;
     private final JwtService jwtService;
 
     @Override
     public ResponseEntity<?> fillUserPersonalData(UserPersonalDataRequest userPersonalDataRequest, HttpServletRequest request) {
         try {
             User currentUser = getCurrentUser(request);
-            currentUser.setFirstName(userPersonalDataRequest.getFirstName());
-            currentUser.setLastName(userPersonalDataRequest.getLastName());
-
+            currentUser.setFirstName(userPersonalDataRequest.getFirstName()==null ? currentUser.getFirstName() : userPersonalDataRequest.getFirstName());
+            currentUser.setLastName(userPersonalDataRequest.getLastName()==null ? currentUser.getLastName() : userPersonalDataRequest.getLastName());
+            currentUser.setPhoneNumber(userPersonalDataRequest.getPhoneNumber()==null ? currentUser.getPhoneNumber() : userPersonalDataRequest.getPhoneNumber());
             userRepository.save(currentUser);
-            UserVersion userVersion = new UserVersion(currentUser);
-            userVersionRepository.save(userVersion);
 
             return ResponseEntity.ok("User personal data updated successfully");
         } catch (ResourceNotFoundException e) {
@@ -72,7 +64,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     default -> throw new UnsupportedOperationException("Operation not supported: " + addressRequest.getOperation());
                 }
             }
-            createUserVersionWithAddresses(currentUser);
             return ResponseEntity.ok("Addresses updated successfully");
         } catch (ResourceNotFoundException e) {
             log.error("Error in updating user addresses: Resource not found", e);
@@ -103,20 +94,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Address addressToDelete = addressRepository.findByUuid(addressRequest.getUuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "uuid", addressRequest.getUuid()));
         addressRepository.delete(addressToDelete);
-    }
-
-    private void createUserVersionWithAddresses(User user) {
-        User updatedUser = userRepository.findByUuid(user.getUuid())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", user.getUuid()));
-
-        UserVersion newUserVersion = UserMapper.INSTANCE.toUserVersion(updatedUser);
-        List<AddressVersion> addressVersions = new ArrayList<AddressVersion>();
-        updatedUser.getAddresses().forEach(address -> {
-            AddressVersion addressVersion = new AddressVersion(address, newUserVersion);
-            addressVersions.add(addressVersion);
-        });
-        newUserVersion.setAddressVersions(addressVersions);
-        userVersionRepository.save(newUserVersion);
     }
 
     private User getCurrentUser(HttpServletRequest request) {

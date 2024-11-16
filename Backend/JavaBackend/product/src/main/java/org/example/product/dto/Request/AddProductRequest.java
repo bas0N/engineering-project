@@ -24,8 +24,6 @@ public class AddProductRequest {
 
     private List<String> features;
 
-//    private List<ImageRequest> images;
-
     private String mainCategory;
 
     @NotNull(message = "Price is required")

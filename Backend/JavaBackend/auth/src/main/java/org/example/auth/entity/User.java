@@ -31,6 +31,9 @@ public class User implements UserDetails {
     private List<Address> addresses;
 
     @Getter
+    private String phoneNumber;
+
+    @Getter
     private String firstName;
 
     @Getter

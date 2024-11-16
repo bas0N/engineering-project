@@ -45,12 +45,8 @@ public class ProductController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Product> createProduct(@RequestPart("product") @Valid AddProductRequest addProductRequest,
-                                                 @RequestPart("thumb") List<MultipartFile> thumb,
-                                                 @RequestPart("large") List<MultipartFile> large,
-                                                 @RequestPart("hiRes") List<MultipartFile> hiRes,
-                                                 @RequestParam("variant") List<String> variant,  HttpServletRequest request) {
-        Product product = productService.createProduct(addProductRequest, thumb , large, hiRes, variant , request);
+    public ResponseEntity<Product> createProduct(@RequestPart("product") @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
+        Product product = productService.createProduct(addProductRequest, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
@@ -62,8 +58,8 @@ public class ProductController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<String> deleteProduct(@PathVariable String id, HttpServletRequest request) {
+        productService.deleteProduct(id, request);
         return ResponseEntity.ok("Product deleted successfully");
     }
 }

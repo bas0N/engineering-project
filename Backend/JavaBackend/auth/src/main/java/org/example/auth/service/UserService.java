@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.auth.dto.request.ChangePasswordData;
 import org.example.auth.dto.request.LoginRequest;
-import org.example.auth.dto.UserRegisterRequest;
+import org.example.auth.dto.request.UserRegisterRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {

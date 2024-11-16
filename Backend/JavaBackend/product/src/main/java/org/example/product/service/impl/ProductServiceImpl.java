@@ -105,12 +105,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(AddProductRequest addProductRequest,
-                                 List<MultipartFile> thumb,
-                                 List<MultipartFile> large,
-                                 List<MultipartFile> hiRes,
-                                 List<String> variant,
-                                 HttpServletRequest request) {
+    public Product createProduct(@Valid AddProductRequest addProductRequest, HttpServletRequest request) {
         try {
             String userId = jwtCommonService.getUserFromRequest(request);
 
@@ -131,17 +126,6 @@ public class ProductServiceImpl implements ProductService {
                             Map.Entry::getValue
                     ));
 
-            List<ImageRequest> imageRequests = new ArrayList<>();
-            for (int i = 0; i < thumb.size(); i++) {
-                ImageRequest imageRequest = new ImageRequest(
-                        thumb.get(i),
-                        large.get(i),
-                        variant.get(i),
-                        hiRes.get(i)
-                );
-                imageRequests.add(imageRequest);
-            };
-
             Product product = new Product(
                     null,
                     userId,
@@ -150,7 +134,8 @@ public class ProductServiceImpl implements ProductService {
                     addProductRequest.getDescription(),
                     detailsAsStringMap,
                     addProductRequest.getFeatures(),
-                    imageService.uploadImages(imageRequests), // Obsługa uploadu obrazów
+                   // imageService.uploadImages(imageRequests), // Obsługa uploadu obrazów
+                    null,
                     addProductRequest.getMainCategory(),
                     generateUuid(),
                     addProductRequest.getPrice(),
@@ -229,9 +214,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(String id) {
+    public void deleteProduct(String id, HttpServletRequest request) {
         try {
-            boolean exists = productRepository.existsByParentAsin(id);
+            String userId = jwtCommonService.getUserFromRequest(request);
+            User owner = productRepository.findByParentAsin(id).isPresent() ? productRepository.findByParentAsin(id).get().getUser() : null;
+            if(userId == null || owner == null || !userId.equals(owner.getUserId())) {
+                throw new UnauthorizedException("You are not authorized to delete this product", "UNAUTHORIZED");
+            }
+            boolean exists = productRepository.existsByParentAsin(id).isPresent();
             if (!exists) {
                 throw new ResourceNotFoundException("Product not found with ID: " + id);
             }

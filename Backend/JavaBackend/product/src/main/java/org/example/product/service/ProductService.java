@@ -21,14 +21,9 @@ import java.util.List;
 public interface ProductService {
     ResponseEntity<Page<ProductResponse>> getProducts(int page, int limit, String sort, String mainCategory, String title, Double minPrice, Double maxPrice, Double minRating, Double maxRating, List<String> categories, String store);
     ResponseEntity<ProductResponse> getProductById(String id, HttpServletRequest request);
-    Product createProduct(AddProductRequest addProductRequest,
-                          List<MultipartFile> thumb,
-                          List<MultipartFile> large,
-                          List<MultipartFile> hiRes,
-                          List<String> variant
-            ,HttpServletRequest request);
+    Product createProduct(AddProductRequest addProductRequest, HttpServletRequest request);
 
     Product updateProduct(String id, AddProductRequest addProductRequest, HttpServletRequest request);
 
-    void deleteProduct(String id);
+    void deleteProduct(String id, HttpServletRequest request);
 }

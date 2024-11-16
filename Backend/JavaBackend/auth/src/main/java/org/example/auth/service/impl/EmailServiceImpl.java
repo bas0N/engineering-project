@@ -17,8 +17,8 @@ import java.io.IOException;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${front.url}")
-    private String fontendUrl;
+//    @Value("${front.url}")
+//    private String fontendUrl;
 
     @Value("classpath:static/mail-aktywuj.html")
     private Resource activeTemplate;
@@ -29,7 +29,8 @@ public class EmailServiceImpl implements EmailService {
         log.info("--START sendActivation");
         try {
             String html = Files.toString(activeTemplate.getFile(), Charsets.UTF_8);
-            html = html.replace("https://google.com", fontendUrl + "/aktywuj/" + user.getUuid());
+//            html = html.replace("https://google.com", fontendUrl + "/aktywuj/" + user.getUuid());
+
             //emailConfiguration.sendMail(user.getEmail(), html,"Aktywacja konta",true);
         } catch (IOException e) {
             log.info("Cant send mail");
@@ -42,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             log.info("--START sendPasswordRecovery");
             String html = Files.toString(recoveryTemplate.getFile(), Charsets.UTF_8);
-            html = html.replace("https://google.com", fontendUrl + "/odzyskaj-haslo/" + uid);
+//            html = html.replace("https://google.com", fontendUrl + "/odzyskaj-haslo/" + uid);
             //emailConfiguration.sendMail(user.getEmail(), html,"Odzyskanie hasła",true);
         } catch (IOException e) {
             log.info("Cant send mail");

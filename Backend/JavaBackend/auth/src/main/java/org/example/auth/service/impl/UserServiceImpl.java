@@ -6,15 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.auth.dto.*;
 import org.example.auth.dto.request.ChangePasswordData;
 import org.example.auth.dto.request.LoginRequest;
+import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
 import org.example.auth.entity.*;
 import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.ResetOperationsRepository;
 import org.example.auth.repository.UserRepository;
-import org.example.auth.repository.UserVersionRepository;
 import org.example.auth.service.*;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.ResourceNotFoundException;
@@ -35,7 +34,6 @@ import java.util.Map;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserVersionRepository userVersionRepository;
     private final PasswordEncoder passwordEncoder;
     private final ResetOperationService resetOperationService;
     private final ResetOperationsRepository resetOperationsRepository;
@@ -54,10 +52,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.saveAndFlush(user);
     }
 
-    private UserVersion saveUserVerison(UserVersion user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userVersionRepository.saveAndFlush(user);
-    }
 
     private String generateToken(String email, String uuid, int exp) {
         return jwtService.generateToken(email, uuid, exp);
@@ -174,9 +168,7 @@ public class UserServiceImpl implements UserService {
             throw new ApiRequestException("User already exists with this email", "EMAIL_EXISTS");
         });
         User user = UserMapper.INSTANCE.mapUserRegisterDtoToUser(userRegisterRequest);
-        UserVersion userVersion = new UserVersion(user);
         saveUser(user);
-        saveUserVerison(userVersion);
 
     }
 

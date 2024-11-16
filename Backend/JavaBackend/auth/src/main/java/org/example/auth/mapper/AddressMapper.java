@@ -3,7 +3,6 @@ package org.example.auth.mapper;
 import org.example.auth.dto.request.AddressRequest;
 import org.example.auth.dto.response.AddressResponse;
 import org.example.auth.entity.Address;
-import org.example.auth.entity.AddressVersion;
 import org.example.auth.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,6 +20,4 @@ public interface AddressMapper {
     AddressRequest toAddressRequest(Address address);
 
     AddressResponse toAddressResponse(Address address);
-
-    AddressVersion toAddressVersion(Address address);
 }

@@ -1,83 +1,121 @@
-#version: '3.8'
-#
-#services:
-#  postgres:
-#    image: postgres:15
-#    environment:
-#      POSTGRES_DB: auth_db
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres_password
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    ports:
-#      - "5432:5432"
-#
-#  eureka:
-#    build:
-#      context: ./eureka
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8761:8761"
-#    environment:
-#      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
-#      - EUREKA_CLIENT_FETCH_REGISTRY=false
-#
-#  gateway:
-#    build:
-#      context: ./gateway
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-#    depends_on:
-#      - eureka
-#
-#  auth:
-#    build:
-#      context: ./auth
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8081:8080"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
-#      SPRING_DATASOURCE_USERNAME: postgres
-#      SPRING_DATASOURCE_PASSWORD: postgres_password
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-#    depends_on:
-#      - postgres
-#      - eureka
-#
-#  register-endpoint-information:
-#    build:
-#      context: ./RegisterEndpointInformation
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8082:8080"
-#    environment:
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-#    depends_on:
-#      - eureka
-#
-#volumes:
-#  postgres_data:
-version: '2'
-services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+version: '3.9'
 
+services:
+  # Eureka service for service discovery
+  eureka:
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+    image: eureka-service:1.0
+    container_name: eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+
+  # API Gateway with routes configured for service discovery
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: gateway-service:1.0
+    container_name: gateway-service
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - eureka
+    networks:
+      - microservices-network
+
+  # Auth service with Kafka integration and database connection
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    image: auth-service:1.0
+    container_name: auth-service
+    ports:
+      - "9898:9898"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+    depends_on:
+      - eureka
+      - db
+      - kafka
+    networks:
+      - microservices-network
+
+  # Product service
+  product:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    image: product-service:1.0
+    container_name: product-service
+    ports:
+      - "8999:8999"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL=${EUREKA_URL}
+      - MONGO_URI=${MONGO_URI}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+    depends_on:
+      - eureka
+      - kafka
+    networks:
+      - microservices-network
+
+  # PostgreSQL database for auth-service
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-network
+
+  # Zookeeper service for Kafka coordination
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - microservices-network
+
+  # Kafka broker service
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: bitnami/kafka:latest
+    container_name: kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092  # Expose Kafka as "kafka" for internal communication
+      - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - microservices-network
 
+networks:
+  microservices-network:
+    driver: bridge
