@@ -5,3 +5,4 @@ __pycache__/
 scripts/
 chroma_db_data/
 chromadb-data/
+volume/

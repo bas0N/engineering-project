@@ -3,11 +3,48 @@ services:
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     volumes:
-      - index_data:/chroma/.chroma/index
+      - ./volume/chromadb-data-server:/chroma/chroma/
     ports:
       - 8000:8000
     networks:
       - net
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./volume/chromadb-data:/volume/chromadb-data
+    ports:
+      - 5000:5000
+    depends_on:
+      - chroma
+    networks:
+      - net
+    env_file:
+      - .env
+  # zookeeper:
+  #   image: bitnami/zookeeper:latest
+  #   container_name: zookeeper
+  #   environment:
+  #     - ALLOW_ANONYMOUS_LOGIN=yes
+  #   networks:
+  #     - net
+
+  # # Kafka broker service
+  # kafka:
+  #   image: bitnami/kafka:latest
+  #   container_name: kafka
+  #   environment:
+  #     - KAFKA_BROKER_ID=1
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+  #     - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+  #     - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #   depends_on:
+  #     - zookeeper
+  #   networks:
+  #     - net
 
 volumes:
   index_data:

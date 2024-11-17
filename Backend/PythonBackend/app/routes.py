@@ -1,4 +1,5 @@
 from flask import Blueprint, app, jsonify, request, current_app
+from . import listeners
 
 main_routes = Blueprint('main_routes', __name__)
 
@@ -59,19 +60,20 @@ def get_products():
                 "message": "Product not found or no similar products found."
             }), 404
         return jsonify(response_data), 200
-    except ValueError:
+    except ValueError as e:
         # Log and handle case where number_of_products is not an integer
         print("Invalid type for 'number_of_products': expected integer")
         return jsonify({
-            "error": "Invalid request",
-            "message": "'number_of_products' must be an integer."
+            "error": "Invalid request"+str(e),
+            "message": "'number_of_products' must be an integer.",
+
         }), 400
     except Exception as e:
         # Log any other error that occurs
         print("Error retrieving similar products: %s", str(e))
         return jsonify({
-            "error": "Processing error",
-            "message": "An error occurred while processing your request. Please try again later."
+            "message": "An error occurred while processing your request. Please try again later.",
+            "error":str(e)
         }), 500  # HTTP 500 Internal Server Error
 
 def register_routes(app):

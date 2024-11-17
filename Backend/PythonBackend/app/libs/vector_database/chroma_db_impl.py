@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Optional
-import pandas as pd
+#import numpy as np
 import chromadb
 from threading import Lock
 from .interfaces import VectorDBIntegration
@@ -21,7 +21,8 @@ class ChromaDBIntegration(VectorDBIntegration):
 
     def __init__(self, collection_name: str, mapper: Any):
         if not hasattr(self, 'initialized'):
-            self.client = chromadb.HttpClient(host="localhost", port = 8000, settings=Settings(allow_reset=True, anonymized_telemetry=False))
+            #self.client = chromadb.HttpClient(host=os.getenv('CHROMA_HOST','chroma'), port = 8000, settings=Settings(allow_reset=True, anonymized_telemetry=False))
+            self.client = chromadb.PersistentClient(path="volume/chromadb-data")
             self.collection = self.client.get_or_create_collection(collection_name)
             self.mapper = mapper
             self.initialized = True
@@ -80,14 +81,19 @@ class ChromaDBIntegration(VectorDBIntegration):
         Returns:
             pd.DataFrame: DataFrame containing the similar products with metadata and distances.
         """
-        results = self.collection.query(
-            query_embeddings=[embedding],
-            n_results=n,
-            include=["documents", "metadatas", "distances","embeddings"]
-        )
-        metadatas = results['metadatas'][0]
-        distances = results['distances'][0]
-        for metadata, distance in zip(metadatas, distances):
-            metadata['distance'] = distance
+        try:
+            results = self.collection.query(
+                query_embeddings=[embedding],
+                n_results=n,
+                include=["documents", "metadatas", "distances","embeddings"]
+            )
+            print("results: ",  results)
+            metadatas = results['metadatas'][0]
+            distances = results['distances'][0]
+            for metadata, distance in zip(metadatas, distances):
+                metadata['distance'] = distance
 
-        return metadatas
+            return metadatas
+        except Exception as e:
+            print(f"Error fetching similar products: {str(e)}")
+            return None
