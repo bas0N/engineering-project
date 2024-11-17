@@ -16,12 +16,14 @@ public class UserDetailsResponse {
     private final String phoneNumber;
     private final List<AddressResponse> addresses;
     private static final AddressMapper addressMapper = AddressMapper.INSTANCE;
+    private final String imageUrl;
 
     public UserDetailsResponse(User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
+        this.imageUrl = user.getImageUrl();
         this.addresses = user.getAddresses().stream()
                 .map(addressMapper::toAddressResponse)
                 .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import org.example.product.dto.Request.ImageRequest;
 import org.example.product.dto.Request.ImageReviewRequest;
 import org.example.product.entity.Image;
 import org.example.product.entity.ImageReview;
+import org.example.product.service.CloudinaryService;
 import org.example.product.service.ImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private final CloudinaryServiceImpl cloudinaryService;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public List<Image> uploadImages(List<ImageRequest> imagesFiles) {

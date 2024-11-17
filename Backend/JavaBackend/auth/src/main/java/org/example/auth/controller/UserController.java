@@ -8,10 +8,8 @@ import org.example.auth.dto.request.AddressesChangeRequest;
 import org.example.auth.dto.request.UserPersonalDataRequest;
 import org.example.auth.service.UserDetailsService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/auth/user")
@@ -34,4 +32,17 @@ public class UserController {
     public ResponseEntity<?> userDetails(HttpServletRequest request) {
         return ResponseEntity.ok(userDetailsService.getUserDetails(request));
     }
+
+    @RequestMapping(path = "/details/image", method = RequestMethod.POST)
+    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file, HttpServletRequest request) throws Exception {
+        return userDetailsService.uploadImage(request, file);
+    }
+
+    @RequestMapping(path = "/details/image", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteImage(HttpServletRequest request) throws Exception {
+        return userDetailsService.deleteImage(request);
+    }
+
+
+
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.auth.dto.request.AddressRequest;
 import org.example.auth.dto.request.AddressesChangeRequest;
+import org.example.auth.dto.response.ImageResponse;
 import org.example.auth.dto.response.UserDetailsResponse;
 import org.example.auth.dto.request.UserPersonalDataRequest;
 import org.example.auth.entity.Address;
@@ -13,6 +14,7 @@ import org.example.auth.mapper.AddressMapper;
 import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
+import org.example.auth.service.ImageService;
 import org.example.auth.service.JwtService;
 import org.example.auth.service.UserDetailsService;
 import org.example.exception.exceptions.ApiRequestException;
@@ -20,6 +22,7 @@ import org.example.exception.exceptions.ResourceNotFoundException;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final JwtService jwtService;
+    private final ImageService imageService;
 
     @Override
     public ResponseEntity<?> fillUserPersonalData(UserPersonalDataRequest userPersonalDataRequest, HttpServletRequest request) {
@@ -75,6 +79,41 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
+    @Override
+    public ResponseEntity<?> uploadImage(HttpServletRequest request, MultipartFile file) throws Exception {
+        String userId = jwtService.getUuidFromRequest(request);
+        User user = userRepository.findByUuid(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", userId));
+        if(user.getImageUrl()==null || user.getImageUrl().isEmpty()){
+            String imageUrl = imageService.uploadImage(file);
+            user.setImageUrl(imageUrl);
+            userRepository.save(user);
+            return ResponseEntity.ok(new ImageResponse(imageUrl, "Image uploaded successfully"));
+
+        } else {
+            imageService.deleteImage(user.getImageUrl());
+            String imageUrl = imageService.uploadImage(file);
+            user.setImageUrl(imageUrl);
+            userRepository.save(user);
+            return ResponseEntity.ok(new ImageResponse(imageUrl, "Image updated successfully"));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> deleteImage(HttpServletRequest request) throws Exception {
+        String userId = jwtService.getUuidFromRequest(request);
+        User user = userRepository.findByUuid(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", userId));
+        if(user.getImageUrl().isEmpty()){
+            return ResponseEntity.ok("No image to delete");
+        } else {
+            imageService.deleteImage(user.getImageUrl());
+            user.setImageUrl("");
+            userRepository.save(user);
+            return ResponseEntity.ok("Image deleted successfully");
+        }
+    }
+
     private void createAddress(AddressRequest addressRequest, User currentUser) {
         Address address = AddressMapper.INSTANCE.toAddress(addressRequest, currentUser);
         addressRepository.save(address);
@@ -99,7 +138,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private User getCurrentUser(HttpServletRequest request) {
         String userUuid = jwtService.getUuidFromRequest(request);
-
         return userRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", userUuid));
     }
