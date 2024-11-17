@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.joblib
+.env
+scripts/
+chroma_db_data/
+chromadb-data/
+volume/
