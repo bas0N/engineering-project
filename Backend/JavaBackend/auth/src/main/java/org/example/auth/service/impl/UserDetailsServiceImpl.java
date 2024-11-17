@@ -36,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public ResponseEntity<?> fillUserPersonalData(UserPersonalDataRequest userPersonalDataRequest, HttpServletRequest request) {
         try {
             User currentUser = getCurrentUser(request);
+
             currentUser.setFirstName(userPersonalDataRequest.getFirstName()==null ? currentUser.getFirstName() : userPersonalDataRequest.getFirstName());
             currentUser.setLastName(userPersonalDataRequest.getLastName()==null ? currentUser.getLastName() : userPersonalDataRequest.getLastName());
             currentUser.setPhoneNumber(userPersonalDataRequest.getPhoneNumber()==null ? currentUser.getPhoneNumber() : userPersonalDataRequest.getPhoneNumber());

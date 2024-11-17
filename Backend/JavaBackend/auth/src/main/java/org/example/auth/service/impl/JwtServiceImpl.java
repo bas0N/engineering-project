@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.auth.service.JwtService;
 import org.example.exception.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -88,15 +89,10 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String getTokenFromRequest(HttpServletRequest request) {
-        String token = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("Authorization".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    return token;
-                }
-            }
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
         }
-        return token;
+        return null;
     }
 }

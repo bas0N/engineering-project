@@ -13,6 +13,7 @@ public class UserDetailsResponse {
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final String phoneNumber;
     private final List<AddressResponse> addresses;
     private static final AddressMapper addressMapper = AddressMapper.INSTANCE;
 
@@ -20,6 +21,7 @@ public class UserDetailsResponse {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
         this.addresses = user.getAddresses().stream()
                 .map(addressMapper::toAddressResponse)
                 .collect(Collectors.toList());

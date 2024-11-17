@@ -44,7 +44,7 @@ public class ProductController {
         return productService.getProductById(productId, request);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<Product> createProduct(@RequestPart("product") @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
         Product product = productService.createProduct(addProductRequest, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);

@@ -30,29 +30,11 @@ public class JwtCommonService {
     }
 
     public String getTokenFromRequest(HttpServletRequest request) {
-        String token = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("Authorization".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    return token;
-                }
-            }
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
         }
-        return token;
-    }
-
-    public String getRefreshTokenFromRequest(HttpServletRequest request) {
-        String token = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("Refresh".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    return token;
-                }
-            }
-        }
-        return token;
+        return null;
     }
 
     public String getUserFromRequest(HttpServletRequest request){
@@ -75,29 +57,6 @@ public class JwtCommonService {
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String getTokenFromRequestServer(ServerHttpRequest request) {
-        List<String> cookies = request.getHeaders().get(HttpHeaders.COOKIE);
-        if (cookies != null) {
-            for (String cookieHeader : cookies) {
-                for (HttpCookie cookie : HttpCookie.parse(cookieHeader)) {
-                    if ("Authorization".equals(cookie.getName())) {
-                        return cookie.getValue();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException e) {
-            return false;
-        }
     }
 
 }
