@@ -4,7 +4,7 @@ services:
   # Eureka service for service discovery
   eureka:
     build:
-      context: ./JavaBackend/eureka
+      context: ./eureka
       dockerfile: Dockerfile
     image: eureka-service:1.0
     container_name: eureka-service
@@ -16,7 +16,7 @@ services:
   # API Gateway with routes configured for service discovery
   gateway:
     build:
-      context: ./JavaBackend/gateway
+      context: ./gateway
       dockerfile: Dockerfile
     image: gateway-service:1.0
     container_name: gateway-service
@@ -33,7 +33,7 @@ services:
   # Auth service with Kafka integration and database connection
   auth:
     build:
-      context: ./JavaBackend/auth
+      context: ./auth
       dockerfile: Dockerfile
     image: auth-service:1.0
     container_name: auth-service
@@ -46,6 +46,9 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
       - JWT_SECRET=${JWT_SECRET}
       - KAFKA_BROKER=${KAFKA_BROKER}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
     depends_on:
       - eureka
       - db
@@ -56,7 +59,7 @@ services:
   # Product service
   product:
     build:
-      context: ./JavaBackend/product
+      context: ./product
       dockerfile: Dockerfile
     image: product-service:1.0
     container_name: product-service
