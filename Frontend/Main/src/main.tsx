@@ -12,6 +12,7 @@ import './i18n/i18n.tsx'
 
 import { AuthProvider } from 'authComponents/AuthProvider';
 import { Preloader } from './components/preloader/Preloader.tsx';
+import { PageWrapper } from './Wrapper.tsx'
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
@@ -57,11 +58,12 @@ const routes: RouteObject[] = [
 
 const router = createBrowserRouter(routes.map((route) => ({
   ...route,
-  element: <>
+  element: <PageWrapper>
     <Navbar />
     {route.element}
-  </>
+  </PageWrapper>
 })))
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -11,6 +11,7 @@
     "signInButton": "Sign in",
     "signInHeader": "Sign in",
     "signUpHeader": "Sign up",
-    "signUpButton": "Sign up"
+    "signUpButton": "Sign up",
+    "failureMessage": "Something went wrong. Try again"
   }
 }
