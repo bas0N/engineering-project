@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.auth.dto.request.ChangePasswordData;
 import org.example.auth.dto.request.LoginRequest;
 import org.example.auth.dto.request.UserRegisterRequest;
+import org.example.auth.dto.response.AuthResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -16,9 +17,9 @@ public interface UserService {
 
     void loginByToken(HttpServletRequest request, HttpServletResponse response);
 
-    void register(UserRegisterRequest userRegisterRequest);
+    AuthResponse register(UserRegisterRequest userRegisterRequest);
 
-    void login(HttpServletResponse response, LoginRequest loginRequest);
+    AuthResponse login(LoginRequest loginRequest);
 
     void setAsAdmin(UserRegisterRequest user);
 

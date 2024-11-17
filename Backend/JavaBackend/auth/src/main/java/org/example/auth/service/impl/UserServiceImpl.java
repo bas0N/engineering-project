@@ -59,64 +59,40 @@ public class UserServiceImpl implements UserService {
 
 
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("Delete all cookies");
-
-        Cookie authCookie = cookieService.removeCookie(request.getCookies(), "Authorization");
-        if (authCookie == null) {
-            log.warn("Authorization cookie not found");
-            throw new ApiRequestException("Authorization cookie not found", "COOKIE_NOT_FOUND");
-        }
-        response.addCookie(authCookie);
-
-        Cookie refreshCookie = cookieService.removeCookie(request.getCookies(), "refresh");
-        if (refreshCookie == null) {
-            log.warn("Refresh token cookie not found");
-            throw new ApiRequestException("Refresh token cookie not found", "COOKIE_NOT_FOUND");
-        }
-        response.addCookie(refreshCookie);
-
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        return null;
     }
 
     public void validateToken(HttpServletRequest request, HttpServletResponse response) throws ExpiredJwtException, IllegalArgumentException {
-        String token = null;
-        String refresh = null;
+        String accessToken = extractToken(request.getHeader("Authorization"));
+        String refreshToken = extractToken(request.getHeader("Refresh-Token"));
 
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("Authorization".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                } else if ("refresh".equals(cookie.getName())) {
-                    refresh = cookie.getValue();
-                }
-            }
-        } else {
-            log.info("No cookies found in the request");
-            throw new IllegalArgumentException("Cookies cannot be null");
+        if (accessToken == null) {
+            throw new UnauthorizedException("Access token is missing or invalid", "ACCESS_TOKEN_MISSING");
         }
 
         try {
-            if (token != null) {
-                jwtService.validateToken(token);
-            } else {
-                throw new IllegalArgumentException("Authorization token is missing");
-            }
-        } catch (ExpiredJwtException | IllegalArgumentException e) {
-            log.info("Authorization token is invalid or expired, attempting to validate refresh token");
-            if (refresh != null) {
-                jwtService.validateToken(refresh);
-                String newAuthToken = jwtService.refreshToken(refresh, exp);
-                String newRefreshToken = jwtService.refreshToken(refresh, refreshExp);
+            jwtService.validateToken(accessToken);
+            //return new AuthResponse(Code.SUCCESS);
+        } catch (ExpiredJwtException e) {
+            log.info("Access token expired. Attempting to validate refresh token.");
+            if (refreshToken != null) {
+                jwtService.validateToken(refreshToken);
 
-                Cookie newAuthCookie = cookieService.generateCookie("Authorization", newAuthToken, exp);
-                Cookie newRefreshCookie = cookieService.generateCookie("refresh", newRefreshToken, refreshExp);
+                // Generate new tokens
+                String newAuthToken = jwtService.refreshToken(refreshToken, exp);
+                String newRefreshToken = jwtService.refreshToken(refreshToken, refreshExp);
 
-                response.addCookie(newAuthCookie);
-                response.addCookie(newRefreshCookie);
+                response.setHeader("Authorization", "Bearer " + newAuthToken);
+                response.setHeader("Refresh-Token", "Bearer " + newRefreshToken);
+
+                log.info("New tokens issued successfully.");
+                //return new AuthResponse(Code.SUCCESS, newAuthToken, newRefreshToken);
             } else {
-                log.info("Refresh token is missing");
-                throw new UnauthorizedException("Refresh token is missing or invalid", "REFRESH_TOKEN_MISSING");
+                throw new UnauthorizedException("Refresh token is missing or invalid.", "REFRESH_TOKEN_MISSING");
             }
+        } catch (IllegalArgumentException e) {
+            log.info("Invalid access token.");
+            throw new ApiRequestException("Invalid token.", e, "INVALID_TOKEN");
         }
     }
 
@@ -162,17 +138,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void register(UserRegisterRequest userRegisterRequest) {
+    public AuthResponse register(UserRegisterRequest userRegisterRequest) {
         userRepository.findUserByEmail(userRegisterRequest.getEmail()).ifPresent(value -> {
             log.info("Users alredy exist with this mail");
             throw new ApiRequestException("User already exists with this email", "EMAIL_EXISTS");
         });
         User user = UserMapper.INSTANCE.mapUserRegisterDtoToUser(userRegisterRequest);
         saveUser(user);
-
+        String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
+        String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
+        return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
     }
 
-    public void login(HttpServletResponse response, LoginRequest loginRequest) {
+    public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findUserByEmailAndLockAndEnabled(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", loginRequest.getEmail()));
         try {
@@ -184,11 +162,14 @@ public class UserServiceImpl implements UserService {
                 String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
                 String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
 
-                Cookie authCookie = cookieService.generateCookie("Authorization", authToken, exp);
-                Cookie refreshCookie = cookieService.generateCookie("refresh", refreshToken, refreshExp);
 
-                response.addCookie(authCookie);
-                response.addCookie(refreshCookie);
+                //Cookie authCookie = cookieService.generateCookie("Authorization", authToken, exp);
+                //Cookie refreshCookie = cookieService.generateCookie("refresh", refreshToken, refreshExp);
+
+                //response.addCookie(authCookie);
+                //response.addCookie(refreshCookie);
+
+                return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
             } else {
                 log.info("--STOP LoginService: Invalid credentials");
                 throw new UnauthorizedException("Invalid credentials", "INVALID_CREDENTIALS");
@@ -241,31 +222,20 @@ public class UserServiceImpl implements UserService {
     }
 
     public void authorize(HttpServletRequest request) {
-        String token = null;
-        String refresh = null;
+        String accessToken = extractToken(request.getHeader("Authorization"));
 
-        // Pobieranie tokenów z ciasteczek
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("Authorization".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                } else if ("refresh".equals(cookie.getName())) {
-                    refresh = cookie.getValue();
-                }
-            }
-        } else {
-            log.info("No cookies found in the request.");
-            throw new IllegalArgumentException("Cookies cannot be null.");
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new UnauthorizedException("Access token is missing or invalid.", "ACCESS_TOKEN_MISSING");
         }
 
-        String subject;
+        jwtService.validateToken(accessToken);
+        log.info("User authorized successfully.");
+    }
 
-        if (token != null && !token.isEmpty()) {
-            subject = jwtService.getSubject(token);  // Pobieranie subject (login lub uuid) z tokena
-        } else if (refresh != null && !refresh.isEmpty()) {
-            subject = jwtService.getSubject(refresh);  // Pobieranie subject z tokena odświeżającego
-        } else {
-            throw new IllegalArgumentException("Both Authorization and refresh tokens are missing.");
+    private String extractToken(String header) {
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
         }
+        return null;
     }
 }

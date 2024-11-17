@@ -30,26 +30,28 @@ public class AuthController {
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody UserRegisterRequest user) {
-        userService.register(user);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        //userService.register(user);
+        //return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        return ResponseEntity.ok(userService.register(user));
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        userService.login(response, loginRequest);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        //userService.login(response, loginRequest);
+        //return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        return ResponseEntity.ok(userService.login(loginRequest));
     }
 
     @RequestMapping(path = "/auto-login", method = RequestMethod.GET)
     public ResponseEntity<?> autoLogin(HttpServletResponse response, HttpServletRequest request) {
         userService.loginByToken(request, response);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
     }
 
     @RequestMapping(path = "/logged-in", method = RequestMethod.GET)
     public ResponseEntity<?> loggedIn(HttpServletResponse response, HttpServletRequest request) {
         userService.loggedIn(request, response);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
@@ -63,7 +65,7 @@ public class AuthController {
             log.info("--START validateToken");
             userService.validateToken(request, response);  // Walidacja tokena w serwisie
             log.info("--STOP validateToken");
-            return ResponseEntity.ok(new AuthResponse(Code.PERMIT));  // Token poprawny
+            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));  // Token poprawny
         } catch (ExpiredJwtException e) {
             log.info("Token has expired");
             throw new UnauthorizedException("Token has expired", "TOKEN_EXPIRED");
@@ -80,7 +82,7 @@ public class AuthController {
             userService.validateToken(request, response);  // Walidacja tokena
             userService.authorize(request);  // Autoryzacja użytkownika
             log.info("--STOP authorize");
-            return ResponseEntity.ok(new AuthResponse(Code.PERMIT));  // Użytkownik autoryzowany
+            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null , null));  // Użytkownik autoryzowany
         } catch (ExpiredJwtException e) {
             log.info("Token is expired.");
             throw new UnauthorizedException("Token is expired.", "TOKEN_EXPIRED");
