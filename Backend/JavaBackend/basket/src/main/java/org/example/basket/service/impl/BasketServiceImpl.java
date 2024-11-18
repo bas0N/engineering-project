@@ -23,6 +23,7 @@ import org.example.commondto.BasketProductEvent;
 import org.example.commondto.LikeEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.NoBasketInfoException;
+import org.example.jwtcommon.jwt.JwtCommonService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -39,33 +40,29 @@ import java.util.concurrent.TimeUnit;
 public class BasketServiceImpl implements BasketService {
     private final BasketRepository basketRepository;
     private final BasketItemRepository basketItemRepository;
-    private final CookieService cookieService;
-    private final KafkaTemplate<String, String> kafkaTemplate;
     private final BasketKafkaConsumer basketKafkaConsumer;
     private final BasketKafkaProducer basketKafkaProducer;
+    private final JwtCommonService jwtCommonService;
 
     @Override
     public ResponseEntity<?> addProductToBasket(AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        List<Cookie> cookies = new ArrayList<>();
-        if (request.getCookies() != null) {
-            cookies.addAll(List.of(request.getCookies()));
-        }
-        cookies.stream().filter(value -> value.getName().equals("basket"))
-                .findFirst().ifPresentOrElse(value -> {
-                    basketRepository.findByUuid(value.getValue()).ifPresentOrElse(basket -> {
-                        ProcessBasket(basketItemRequest, basket, httpHeaders);
-                    }, () -> {
-                        Basket basket = createBasket();
-                        response.addCookie(cookieService.generateCookie("basket", basket.getUuid()));
-                        ProcessBasket(basketItemRequest, basket, httpHeaders);
-                    });
-                }, () -> {
-                    Basket basket = createBasket();
-                    response.addCookie(cookieService.generateCookie("basket", basket.getUuid()));
-                    ProcessBasket(basketItemRequest, basket, httpHeaders);
+
+        Basket basket = getOrCreateBasket(request);
+        ProcessBasket(basketItemRequest, basket, httpHeaders);
+
+        return ResponseEntity.ok().headers(httpHeaders).body(basket.getUuid());
+    }
+
+    private Basket getOrCreateBasket(HttpServletRequest request) {
+        String userId = jwtCommonService.getUserFromRequest(request);
+        return basketRepository.findByOwnerId(userId)
+                .orElseGet(() -> {
+                    Basket newBasket = new Basket();
+                    newBasket.setUuid(UUID.randomUUID().toString());
+                    newBasket.setOwnerId(userId);
+                    return basketRepository.saveAndFlush(newBasket);
                 });
-        return ResponseEntity.ok().headers(httpHeaders).body("Successful add item to basket");
     }
 
     private void ProcessBasket(AddBasketItemRequest basketItemRequest, Basket basket, HttpHeaders httpHeaders) {
@@ -78,7 +75,7 @@ public class BasketServiceImpl implements BasketService {
     private void saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         CompletableFuture<BasketProductEvent> productFuture = basketKafkaConsumer.getProductDetails(basketItemRequest.getProduct());
         basketKafkaProducer.requestProductDetails(basketItemRequest.getProduct());
-        try{
+        try {
             BasketProductEvent product = productFuture.get(30, TimeUnit.SECONDS);
             if (product != null) {
                 basketItemRepository.findByBasketAndProduct(basket, product.getId()).ifPresentOrElse(existingItem -> {
@@ -95,7 +92,7 @@ public class BasketServiceImpl implements BasketService {
             } else {
                 throw new ResourceNotFoundException("Product not found with ID: " + basketItemRequest.getProduct());
             }
-        }catch (TimeoutException e) {
+        } catch (TimeoutException e) {
             throw new ApiRequestException("Timeout while retrieving product details for product ID: " + basketItemRequest.getProduct());
         } catch (Exception e) {
             throw new ApiRequestException("An unexpected error occurred while retrieving product details for product ID: " + basketItemRequest.getProduct());
@@ -106,32 +103,22 @@ public class BasketServiceImpl implements BasketService {
     public ResponseEntity<?> deleteProductFromBasket(DeleteItemRequest deleteItemRequest, HttpServletRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();
 
-        List<Cookie> cookies = request.getCookies() != null ? List.of(request.getCookies()) : new ArrayList<>();
-
-        String basketUuid = cookies.stream()
-                .filter(cookie -> cookie.getName().equals("basket"))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElseThrow(() -> new NoBasketInfoException("No basket info in request"));
-
-        Basket basket = basketRepository.findByUuid(basketUuid)
+        String userId = jwtCommonService.getUserFromRequest(request);
+        Basket basket = basketRepository.findByOwnerId(userId)
                 .orElseThrow(() -> new NoBasketInfoException("Basket doesn't exist"));
 
         deleteItem(deleteItemRequest, basket);
 
         Long sum = basketItemRepository.sumBasketItems(basket.getId());
-        if (sum == null) {
-            sum = 0L;
-        }
+        if (sum == null) sum = 0L;
         httpHeaders.add("X-Total-Count", String.valueOf(sum));
 
-        return ResponseEntity.ok().headers(httpHeaders).body("Successfully deleted item from basket");
+        return ResponseEntity.ok().headers(httpHeaders).body(basket);
     }
 
     private void deleteItem(DeleteItemRequest deleteItemRequest, Basket basket) {
         String basketItemUuid = deleteItemRequest.getBasketItemUuid();
         Long quantityToRemove = deleteItemRequest.getQuantity();
-
         basketItemRepository.findByUuidAndBasket(basketItemUuid, basket)
                 .ifPresentOrElse(basketItem -> {
                     if (quantityToRemove != null && quantityToRemove < basketItem.getQuantity()) {
@@ -143,6 +130,7 @@ public class BasketServiceImpl implements BasketService {
                 }, () -> {
                     throw new ResourceNotFoundException("Basket item not found with UUID: " + basketItemUuid);
                 });
+
         Long sum = basketItemRepository.sumBasketItems(basket.getId());
         if (sum == null || sum == 0) {
             basketRepository.delete(basket);
@@ -151,51 +139,39 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public ResponseEntity<?> getItems(HttpServletRequest request) {
-        List<Cookie> cookies = new ArrayList<>();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        if (request.getCookies() != null) {
-            cookies.addAll(List.of(request.getCookies()));
-        }
+        String userId = jwtCommonService.getUserFromRequest(request);
+        Basket basket = basketRepository.findByOwnerId(userId)
+                .orElseThrow(() -> new NoBasketInfoException("Basket doesn't exist"));
+
         ListBasketItemDto listBasketItemDTO = new ListBasketItemDto();
         listBasketItemDTO.setBasketProducts(new ArrayList<>());
 
-        cookies.stream()
-                .filter(cookie -> "basket".equals(cookie.getName()))
-                .findFirst()
-                .ifPresentOrElse(cookie -> {
-                    Basket basket = basketRepository.findByUuid(cookie.getValue())
-                            .orElseThrow(() -> new NoBasketInfoException("Basket doesn't exist"));
+        Long sum = basketItemRepository.sumBasketItems(basket.getId());
+        if (sum == null) sum = 0L;
 
-                    Long sum = basketItemRepository.sumBasketItems(basket.getId());
-                    if (sum == null) sum = 0L;
-                    httpHeaders.add("X-Total-Count", String.valueOf(sum));
+        basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
+            BasketProductEvent product = getProductDetails(item.getProduct());
 
-                    basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
-                        BasketProductEvent product = getProductDetails(item.getProduct());
+            if (product != null) {
+                listBasketItemDTO.getBasketProducts().add(new BasketItemDto(
+                        product.getId(),
+                        product.getName(),
+                        item.getQuantity(),
+                        product.getImageUrls().getFirst(),
+                        product.getPrice(),
+                        product.getPrice() * item.getQuantity()
+                ));
+                listBasketItemDTO.setSummaryPrice(
+                        listBasketItemDTO.getSummaryPrice() + (item.getQuantity() * product.getPrice())
+                );
+            } else {
+                throw new ResourceNotFoundException("Product not found with ID: " + item.getProduct());
+            }
+        });
 
-                        if (product != null) {
-                            listBasketItemDTO.getBasketProducts().add(new BasketItemDto(
-                                    product.getId(),
-                                    product.getName(),
-                                    item.getQuantity(),
-                                    product.getImageUrls().getFirst(),
-                                    product.getPrice(),
-                                    product.getPrice() * item.getQuantity()
-                            ));
-                            listBasketItemDTO.setSummaryPrice(
-                                    listBasketItemDTO.getSummaryPrice() + (item.getQuantity() * product.getPrice())
-                            );
-                        } else {
-                            throw new ResourceNotFoundException("Product not found with ID: " + item.getProduct());
-                        }
-                    });
-                }, () -> {
-                    throw new NoBasketInfoException("No basket info in request");
-                });
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Total-Count", String.valueOf(sum));
 
-        if (httpHeaders.isEmpty()) {
-            httpHeaders.add("X-Total-Count", String.valueOf(0));
-        }
         return ResponseEntity.ok().headers(httpHeaders).body(listBasketItemDTO);
     }
 
@@ -209,12 +185,5 @@ public class BasketServiceImpl implements BasketService {
         } catch (Exception e) {
             throw new ApiRequestException("An unexpected error occurred while retrieving product details for product ID: " + productId);
         }
-    }
-
-
-    private Basket createBasket() {
-        Basket basket = new Basket();
-        basket.setUuid(UUID.randomUUID().toString());
-        return basketRepository.saveAndFlush(basket);
     }
 }

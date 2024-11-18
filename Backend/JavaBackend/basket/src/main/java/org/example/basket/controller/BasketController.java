@@ -2,6 +2,7 @@ package org.example.basket.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.basket.dto.request.AddBasketItemRequest;
 import org.example.basket.dto.request.DeleteItemRequest;
@@ -17,12 +18,12 @@ public class BasketController {
     private final BasketService basketService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> addProductToBasket(@RequestBody AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> addProductToBasket(@RequestBody @Valid AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
         return basketService.addProductToBasket(basketItemRequest, request, response);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteProductFromBasket(@RequestBody DeleteItemRequest deleteItemRequest, HttpServletRequest request) {
+    public ResponseEntity<?> deleteProductFromBasket(@RequestBody @Valid DeleteItemRequest deleteItemRequest, HttpServletRequest request) {
         return basketService.deleteProductFromBasket(deleteItemRequest, request);
     }
 

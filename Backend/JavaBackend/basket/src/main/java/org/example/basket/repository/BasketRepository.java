@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface BasketRepository extends JpaRepository<Basket, Long> {
     @Query("SELECT b FROM Basket b WHERE b.uuid = :uuid")
     Optional<Basket> findByUuid(String uuid);
+
+    @Query("SELECT b FROM Basket b WHERE b.ownerId = :userId")
+    Optional<Basket> findByOwnerId(String userId);
 }

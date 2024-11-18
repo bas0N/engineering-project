@@ -2,8 +2,10 @@ package org.example.basket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"org.example.basket", "org.example.jwtcommon.jwt"})
 public class BasketApplication {
 
     public static void main(String[] args) {

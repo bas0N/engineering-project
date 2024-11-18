@@ -18,4 +18,5 @@ public class Basket {
     @SequenceGenerator(name = "basket_id_seq",sequenceName = "basket_id_seq",allocationSize = 1)
     private long id;
     private String uuid;
+    private String ownerId;
 }

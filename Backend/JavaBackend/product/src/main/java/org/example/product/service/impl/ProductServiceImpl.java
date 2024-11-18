@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
             if (title != null) {
                 query.addCriteria(Criteria.where("title").regex(".*" + title + ".*", "i"));
             }
-            query.addCriteria(Criteria.where("price").gte(minPrice != null ? minPrice : Double.MIN_VALUE)
+            query.addCriteria(Criteria.where("price").gte(minPrice != null ? minPrice : 0.0)
                     .lte(maxPrice != null ? maxPrice : Double.MAX_VALUE));
             query.addCriteria(Criteria.where("averageRating").gte(minRating != null ? minRating : 0.0)
                     .lte(maxRating != null ? maxRating : 5.0));
