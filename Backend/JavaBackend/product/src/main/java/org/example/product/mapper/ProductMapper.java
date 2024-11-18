@@ -12,6 +12,4 @@ public interface ProductMapper {
     @Mapping(target = "owner", source = "user")
     ProductResponse toProductResponse(Product product);
 
-    Product toProduct(ProductResponse productResponse);
-
 }
