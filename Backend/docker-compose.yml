@@ -104,7 +104,7 @@ services:
 
   basket:
     build:
-      context: ./basket
+      context: ./JavaBackend/auth
       dockerfile: Dockerfile
     image: basket-service:1.0
     container_name: basket-service
