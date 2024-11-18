@@ -109,7 +109,7 @@ services:
     image: basket-service:1.0
     container_name: basket-service
     ports:
-      - "9898:9898"
+      - "9799:9799"
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_BASKET}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
