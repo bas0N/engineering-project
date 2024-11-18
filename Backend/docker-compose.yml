@@ -1,28 +1,28 @@
 version: "3.9"
 
 services:
-  chroma:
-    image: ghcr.io/chroma-core/chroma:latest
-    volumes:
-      - ./PythonBackend/volume/chromadb-data-server:/chroma/chroma/
-    ports:
-      - 8000:8000
-    networks:
-      - microservices-network
-  flask-app:
-    build:
-      context: ./PythonBackend
-      dockerfile: Dockerfile
-    volumes:
-      - ./PythonBackend/volume/chromadb-data:/volume/chromadb-data
-    ports:
-      - 5000:5000
-    depends_on:
-      - chroma
-    networks:
-      - microservices-network
-    env_file:
-      - .env
+  # chroma:
+  #   image: ghcr.io/chroma-core/chroma:latest
+  #   volumes:
+  #     - ./PythonBackend/volume/chromadb-data-server:/chroma/chroma/
+  #   ports:
+  #     - 8000:8000
+  #   networks:
+  #     - microservices-network
+  # flask-app:
+  #   build:
+  #     context: ./PythonBackend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./PythonBackend/volume/chromadb-data:/volume/chromadb-data
+  #   ports:
+  #     - 5000:5000
+  #   depends_on:
+  #     - chroma
+  #   networks:
+  #     - microservices-network
+  #   env_file:
+  #     - .env
   # Eureka service for service discovery
   eureka:
     build:
