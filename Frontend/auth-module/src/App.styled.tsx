@@ -35,3 +35,8 @@ export const AuthCardFooter = styled(CardFooter)`
     display: flex;
     flex-direction: column;
 `;
+
+export const AuthCardFailure = styled(Text).attrs({size: 400, align: 'center'})`
+    color: red;
+    padding: 10px 0px;
+`;

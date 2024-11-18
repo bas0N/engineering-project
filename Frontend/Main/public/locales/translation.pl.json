@@ -11,7 +11,12 @@
     "signInButton": "Sign in",
     "signInHeader": "Sign in",
     "signUpHeader": "Sign up",
-    "signUpButton": "Sign up"
+    "signUpButton": "Sign up",
+    "failureMessage": "Something went wrong. Try again"
+  },
+  "navbar": {
+    "logoutButton": "Logout",
+    "signInButton": "Sign in"
   },
   "page404": {
     "title": "Something went wrong!",
