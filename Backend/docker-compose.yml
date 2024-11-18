@@ -1,6 +1,28 @@
-version: '3.9'
+version: "3.9"
 
 services:
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - ./PythonBackend/volume/chromadb-data-server:/chroma/chroma/
+    ports:
+      - 8000:8000
+    networks:
+      - microservices-network
+  flask-app:
+    build:
+      context: ./PythonBackend
+      dockerfile: Dockerfile
+    volumes:
+      - ./PythonBackend/volume/chromadb-data:/volume/chromadb-data
+    ports:
+      - 5000:5000
+    depends_on:
+      - chroma
+    networks:
+      - microservices-network
+    env_file:
+      - .env
   # Eureka service for service discovery
   eureka:
     build:
@@ -112,7 +134,7 @@ services:
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092  # Expose Kafka as "kafka" for internal communication
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092 # Expose Kafka as "kafka" for internal communication
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
