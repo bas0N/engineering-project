@@ -4,8 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.product.dto.Request.AddProductRequest;
+import org.example.product.dto.Request.UpdateProductRequest;
+import org.example.product.dto.Response.ImageUploadResponse;
 import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Product;
+import org.example.product.repository.ProductRepository;
 import org.example.product.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -45,21 +48,49 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestPart("product") @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
-        Product product = productService.createProduct(addProductRequest, request);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
+        ProductResponse product = productService.createProduct(addProductRequest, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Product> updateProduct(@PathVariable String id,
-                                                 @Valid @RequestBody AddProductRequest addProductRequest,
-                                                 HttpServletRequest request) {
-        return ResponseEntity.ok(productService.updateProduct(id, addProductRequest, request));
+    @RequestMapping(path = "/{productId}", method = RequestMethod.PATCH)
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String productId,
+                                                           @Valid @RequestBody UpdateProductRequest updateProductRequest,
+                                                           HttpServletRequest request) {
+       return ResponseEntity.ok(productService.updateProduct(productId, updateProductRequest, request));
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteProduct(@PathVariable String id, HttpServletRequest request) {
-        productService.deleteProduct(id, request);
+    @RequestMapping(path = "/{productId}/image", method = RequestMethod.POST)
+    public ResponseEntity<?> uploadImage(@PathVariable String productId,
+                                                           @RequestParam("hi_res") MultipartFile hi_res,
+                                                           @RequestParam("large") MultipartFile large,
+                                                           @RequestParam("thumb") MultipartFile thumb,
+                                                           @RequestParam("variant") String variant,
+                                                           HttpServletRequest request) {
+        return productService.addImageToProduct(productId, hi_res, large, thumb, variant, request);
+    }
+
+    @RequestMapping(path = "/{productId}/image", method = RequestMethod.PATCH)
+    public ResponseEntity<?> updateImage(@PathVariable String productId,
+                                                           @RequestParam("hi_res") MultipartFile hi_res,
+                                                           @RequestParam("large") MultipartFile large,
+                                                           @RequestParam("thumb") MultipartFile thumb,
+                                                           @RequestParam("variant") String variant,
+                                                           @RequestParam("order") int order,
+                                                           HttpServletRequest request) {
+        return productService.updateImage(productId, hi_res, large, thumb, variant, order, request);
+    }
+
+    @RequestMapping(path = "/{productId}/image", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteImage(@PathVariable String productId, @RequestParam("order") int order, HttpServletRequest request) {
+        productService.deleteImage(productId, order, request);
+        return ResponseEntity.ok("Image deleted successfully");
+    }
+
+
+    @RequestMapping(path = "/{productId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteProduct(@PathVariable String productId, HttpServletRequest request) {
+        productService.deleteProduct(productId, request);
         return ResponseEntity.ok("Product deleted successfully");
     }
 }

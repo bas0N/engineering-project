@@ -3,6 +3,7 @@ package org.example.product.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.product.dto.Request.ImageRequest;
 import org.example.product.dto.Request.ImageReviewRequest;
+import org.example.product.dto.Response.ImageUploadResponse;
 import org.example.product.entity.Image;
 import org.example.product.entity.ImageReview;
 import org.example.product.service.CloudinaryService;
@@ -53,6 +54,20 @@ public class ImageServiceImpl implements ImageService {
                 throw new RuntimeException(e);
             }
         }).toList();
+    }
+
+    @Override
+    public ImageUploadResponse addImage(String productId, MultipartFile hi_Res, MultipartFile large, MultipartFile thumb, String variant) {
+        try {
+            return new ImageUploadResponse(
+                    uploadImage(hi_Res),
+                    uploadImage(large),
+                    uploadImage(thumb),
+                    variant
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String uploadImage(MultipartFile imageFile) throws IOException {
