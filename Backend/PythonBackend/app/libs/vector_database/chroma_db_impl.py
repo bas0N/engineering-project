@@ -22,7 +22,7 @@ class ChromaDBIntegration(VectorDBIntegration):
     def __init__(self, collection_name: str, mapper: Any):
         if not hasattr(self, 'initialized'):
             #self.client = chromadb.HttpClient(host=os.getenv('CHROMA_HOST','chroma'), port = 8000, settings=Settings(allow_reset=True, anonymized_telemetry=False))
-            self.client = chromadb.PersistentClient(path="volume/chromadb-data")
+            self.client = chromadb.PersistentClient(path="/volume/chromadb-data")
             self.collection = self.client.get_or_create_collection(collection_name)
             self.mapper = mapper
             self.initialized = True
