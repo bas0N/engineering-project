@@ -129,7 +129,7 @@ services:
 
   db-auth:
     image: postgres:15
-    container_name: postgres-db
+    container_name: postgres-db-auth
     environment:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
@@ -141,7 +141,7 @@ services:
 
   db-basket:
     image: postgres:15
-    container_name: postgres-db
+    container_name: postgres-db-basket
     environment:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
