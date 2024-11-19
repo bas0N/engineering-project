@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from flask import Flask
 import os
+from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 
 from .services import data_processor
@@ -31,6 +32,7 @@ def create_app():
     load_dotenv()
 
     app = Flask(__name__)
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     app.config['MONGO_URI'] = os.getenv('MONGO_URI','mongodb://localhost:27017/dev')
 
