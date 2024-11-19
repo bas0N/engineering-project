@@ -21,6 +21,7 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConfig {
+    private static final String KAFKA_BROKER = "kafka:9092";
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BasketProductEvent> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, BasketProductEvent> factory =
@@ -33,7 +34,8 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, BasketProductEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        //props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "basket-service-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
@@ -48,7 +50,8 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        //configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // Changed to StringSerializer
         return new DefaultKafkaProducerFactory<>(configProps);
