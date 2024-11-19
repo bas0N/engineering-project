@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto {
+public class ProductResponse {
     private String uuid;
 
     private String title;
@@ -22,5 +22,5 @@ public class ProductDto {
 
     private Double averageRating;
 
-    private List<ImageDto> images;
+    private List<ImageResponse> images;
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDto {
+public class ImageResponse {
     private String thumb;
     private String large;
     private String variant;
