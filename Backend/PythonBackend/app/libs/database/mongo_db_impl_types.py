@@ -3,7 +3,7 @@ from typing import TypedDict, Optional
 from datetime import datetime
 
 class CollectionEnum(Enum):
-    HEALTH_CARE = "health_care"
+    HEALTH_CARE = "meta_Health_and_Personal_Care"
     CONFIG = "config"
     TEST="test_collection"
 

@@ -41,7 +41,7 @@ class MongoDBIntegration(NoSqlDatabaseIntegrationInterface):
             self.db = self._client_instance[db_name]
             self.config_collection: Collection = self.db[CollectionEnum.CONFIG.value]
             # set using environment variable
-            self.product_collection: Collection = self.db[CollectionEnum.TEST.value]
+            self.product_collection: Collection = self.db[CollectionEnum.HEALTH_CARE.value]
             self.initialized = True
 
     def get_all_config_docs(self) -> List[ConfigDocument]:
