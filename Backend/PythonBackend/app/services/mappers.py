@@ -25,7 +25,10 @@ class DefaultMapperAdapter(MapperAdapter):
             "title": row.get("title"),
             "description": row.get("description"),
             "main_category": row.get("main_category"),
-            "price": row.get("price")
+            "price": row.get("price"),
+            "image": row.get("images")[0].get("large", ""),
+            "average_rating": row.get("average_rating"),
+            "rating_number": row.get("rating_number")
         }
         embedding = row.get("embedding")
 

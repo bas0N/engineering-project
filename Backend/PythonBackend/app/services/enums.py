@@ -6,6 +6,9 @@ class ProductColumnsToEmbed(Enum):
     DESCRIPTION = "description"
     MAIN_CATEGORY = "main_category"
     PRICE = "price"
+    IMAGES = "images"
+    AVERAGE_RATING = "average_rating"
+    RATINGS_NUMBER = "rating_number"
 
 class ProductColumnsEmbedded(Enum):
     ID = "parent_asin"

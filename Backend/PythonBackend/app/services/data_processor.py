@@ -68,8 +68,11 @@ class DataProcessor:
             ProductColumnsToEmbed.TITLE.value,
             ProductColumnsToEmbed.DESCRIPTION.value,
             ProductColumnsToEmbed.MAIN_CATEGORY.value,
-            ProductColumnsToEmbed.PRICE.value
-        ]
+            ProductColumnsToEmbed.PRICE.value,
+            ProductColumnsToEmbed.IMAGES.value,
+            ProductColumnsToEmbed.AVERAGE_RATING.value,
+            ProductColumnsToEmbed.RATINGS_NUMBER.value
+            ]
         data = self.filter_dict_fields(data, field_to_filter)
         if data is None:
             print(f"Skipping entry with ID {data[ProductColumnsToEmbed.ID.value]}: Filtering returned None")
@@ -110,7 +113,10 @@ class DataProcessor:
                 ProductColumnsToEmbed.TITLE.value,
                 ProductColumnsToEmbed.DESCRIPTION.value,
                 ProductColumnsToEmbed.MAIN_CATEGORY.value,
-                ProductColumnsToEmbed.PRICE.value
+                ProductColumnsToEmbed.PRICE.value,
+                ProductColumnsToEmbed.IMAGES.value,
+                ProductColumnsToEmbed.AVERAGE_RATING.value,
+                ProductColumnsToEmbed.RATINGS_NUMBER.value
             ]
             print(f"Processing entry with ID {data[ProductColumnsToEmbed.ID.value]}")
 
@@ -164,7 +170,10 @@ class DataProcessor:
                 ProductColumnsToEmbed.TITLE.value,
                 ProductColumnsToEmbed.DESCRIPTION.value,
                 ProductColumnsToEmbed.MAIN_CATEGORY.value,
-                ProductColumnsToEmbed.PRICE.value
+                ProductColumnsToEmbed.PRICE.value,
+                ProductColumnsToEmbed.IMAGES.value,
+                ProductColumnsToEmbed.AVERAGE_RATING.value,
+                ProductColumnsToEmbed.RATINGS_NUMBER.value
             ]
         print(f"Processing entry with ID {product[ProductColumnsToEmbed.ID.value]}")
 
