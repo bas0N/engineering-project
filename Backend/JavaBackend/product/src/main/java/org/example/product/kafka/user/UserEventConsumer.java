@@ -30,6 +30,7 @@ public class UserEventConsumer {
     )
     public void consumeUserResponse(@Payload UserDetailInfoEvent userDetailInfoEvent, Acknowledgment ack) {
         try {
+            log.info("Consumed user response: {}", userDetailInfoEvent);
             CompletableFuture<UserDetailInfoEvent> future = userFutures.remove(userDetailInfoEvent.getUserId());
             if (future != null) {
                 future.complete(userDetailInfoEvent);

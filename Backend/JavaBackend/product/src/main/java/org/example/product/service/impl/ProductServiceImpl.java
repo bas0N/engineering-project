@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
                 query.addCriteria(Criteria.where("categories").in(categories));
             }
             if (store != null) {
-                query.addCriteria(Criteria.where("store").is(store));
+                query.addCriteria(Criteria.where("store").regex(".*" + store + ".*", "i"));
             }
 
             Pageable pageable = Pageable.ofSize(limit).withPage(page - 1);

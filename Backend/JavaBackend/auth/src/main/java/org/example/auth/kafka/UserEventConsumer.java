@@ -1,6 +1,7 @@
 package org.example.auth.kafka;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.example.auth.entity.User;
 import org.example.auth.repository.UserRepository;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserEventConsumer {
     private final UserRepository userRepository;
     private final UserEventProducer userEventProducer;
@@ -29,6 +31,7 @@ public class UserEventConsumer {
     )
     public void consumeUserRequest(@Payload String userId, Acknowledgment ack) {
         try {
+            log.info("Consumed user request: {}", userId);
             // Fetch the user details from the repository
             User user = userRepository.findByUuid(userId)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));

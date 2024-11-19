@@ -20,6 +20,7 @@ public class ProductResponse {
     private Integer ratingNumber; //to
     private String store; //to
     private String title; //to
+    private String price;
     private Double averageRating; //to
     private UserResponse owner;
 }

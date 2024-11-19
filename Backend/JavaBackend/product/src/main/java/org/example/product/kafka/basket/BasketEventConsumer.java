@@ -1,6 +1,7 @@
 package org.example.product.kafka.basket;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.example.commondto.BasketProductEvent;
 import org.example.product.entity.Image;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BasketEventConsumer {
     private final ProductRepository productRepository;
     private final BasketEventProducer basketEventProducer;
@@ -19,6 +21,7 @@ public class BasketEventConsumer {
     @KafkaListener(topics = "basket-product-request-topic", groupId = "product-service-basket-group", containerFactory = "basketKafkaListenerContainerFactory")
     public void consumeBasketEvent(String productId, Acknowledgment ack) {
         try {
+            log.info("Consumed basket event: {}", productId);
             if(productId == null) {
                 throw new ResourceNotFoundException("Product id is null");
             }
