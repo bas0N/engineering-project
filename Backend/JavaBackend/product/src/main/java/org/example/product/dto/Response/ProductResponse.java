@@ -23,4 +23,6 @@ public class ProductResponse {
     private String price;
     private Double averageRating; //to
     private UserResponse owner;
+    private List<String> features;
+    private List<String> description;
 }
