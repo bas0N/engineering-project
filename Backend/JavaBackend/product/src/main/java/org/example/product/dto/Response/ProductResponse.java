@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.product.entity.Image;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,4 +26,5 @@ public class ProductResponse {
     private UserResponse owner;
     private List<String> features;
     private List<String> description;
+    private Map<String, String> details;
 }
