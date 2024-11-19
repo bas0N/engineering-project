@@ -2,7 +2,6 @@ package org.example.like.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.like.dto.LikeDto;
 
 import java.util.Date;
 import java.util.UUID;

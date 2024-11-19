@@ -34,6 +34,5 @@ public class Image {
         this.variant = variant;
         this.hiRes = hiRes;
         this.product = product;
-
     }
 }

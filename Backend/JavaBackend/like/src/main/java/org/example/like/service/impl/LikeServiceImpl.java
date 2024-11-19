@@ -4,28 +4,30 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.LikeEvent;
+import org.example.commondto.ProductEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.InvalidTokenException;
 import org.example.exception.exceptions.LikeAlreadyExistsException;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.example.jwtcommon.jwt.JwtCommonService;
-import org.example.like.dto.ImageDto;
-import org.example.like.dto.ProductDto;
+import org.example.like.dto.ProductResponse;
+import org.example.like.entity.Image;
 import org.example.like.entity.Like;
 import org.example.like.entity.Product;
+import org.example.like.kafka.ProductInfoConsumer;
+import org.example.like.kafka.ProductInfoProducer;
+import org.example.like.mapper.ImageMapper;
 import org.example.like.mapper.LikeMapper;
+import org.example.like.mapper.ProductMapper;
 import org.example.like.repository.LikeRepository;
 import org.example.like.repository.ProductRepository;
 import org.example.like.response.LikeResponse;
 import org.example.like.service.LikeService;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -33,11 +35,11 @@ import java.util.Optional;
 public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
     private final JwtCommonService jwtCommonService;
-
-    private final KafkaTemplate<String, LikeEvent> kafkaTemplate;
-
+    private final ProductInfoProducer productInfoProducer;
+    private final ProductInfoConsumer productInfoConsumer;
     private final ProductRepository productRepository;
 
+    @Override
     public LikeResponse addLike(String productUuid, HttpServletRequest request) {
         try {
             log.info("adding like for product: {}", productUuid);
@@ -55,8 +57,24 @@ public class LikeServiceImpl implements LikeService {
                 likeRepository.save(like);
                 return LikeMapper.INSTANCE.mapLikeToLikeResponse(like);
             } else {
-                LikeEvent likeEvent = new LikeEvent(userId, productUuid);
-                kafkaTemplate.send("like-events", likeEvent);
+                productInfoProducer.sendProductEvent(new LikeEvent(userId, productUuid));
+                CompletableFuture<ProductEvent> productFuture = productInfoConsumer.getProductDetails(productUuid)
+                        .orTimeout(30, TimeUnit.SECONDS)
+                        .exceptionally(ex -> {
+                            log.error("Failed to retrieve product details for productId: {}", productUuid, ex);
+                            throw new ApiRequestException("Could not retrieve product details");
+                        });
+
+                ProductEvent productEvent = productFuture.join();
+                Product product = ProductMapper.INSTANCE.toProduct(productEvent);
+
+                List<Image> images = new ArrayList<>();
+                productEvent.getImages().forEach(imageEvent -> {
+                    images.add(ImageMapper.INSTANCE.toImage(imageEvent, product));
+                });
+                product.setImages(images);
+                log.info("Saving product: {}", product);
+                productRepository.saveAndFlush(product);
                 Like like = likeRepository.findByUserIdAndProductId(userId, productUuid)
                         .orElseThrow(() -> new ApiRequestException("An error occurred while adding a like", "ADD_LIKE_ERROR"));
                 return new LikeResponse(like.getUuid(), like.getProduct().getUuid(), like.getUserId(), like.getDateAdded());
@@ -71,18 +89,12 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public List<ProductDto> getMyLikedProducts(HttpServletRequest request) {
+    public List<ProductResponse> getMyLikedProducts(HttpServletRequest request) {
         String token = jwtCommonService.getTokenFromRequest(request);
         String userId = jwtCommonService.getCurrentUserId(token);
 
         List<Product> productList = productRepository.findLikedProductsByUserId(userId);
-        List<ProductDto> productDtoList = productList.stream().map(
-                product -> new ProductDto(product.getUuid(), product.getTitle(), product.getPrice(), product.getRatingNumber(), product.getAverageRating(), product.getImages().stream().map(
-                        image -> new ImageDto(image.getThumb(), image.getLarge(), image.getVariant(), image.getHiRes())
-                ).toList()
-                )
-        ).toList();
-        return productDtoList;
+        return ProductMapper.INSTANCE.toProductResponseList(productList);
     }
 
     @Override

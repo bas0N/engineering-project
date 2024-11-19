@@ -1,6 +1,7 @@
 package org.example.basket.kafka;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.basket.repository.BasketItemRepository;
 import org.example.basket.repository.BasketRepository;
 import org.example.commondto.BasketProductEvent;
@@ -15,11 +16,13 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BasketKafkaConsumer {
     private final ConcurrentHashMap<String, CompletableFuture<BasketProductEvent>> productFutures = new ConcurrentHashMap<>();
 
     @KafkaListener(topics = "basket-product-response-topic", groupId = "basket-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeProductResponse(@Payload BasketProductEvent basketProductEvent, Acknowledgment ack) {
+        log.info("Consumed basket product event: {}", basketProductEvent);
         CompletableFuture<BasketProductEvent> future = productFutures.remove(basketProductEvent.getId());
         if (future != null) {
             future.complete(basketProductEvent);
@@ -28,6 +31,7 @@ public class BasketKafkaConsumer {
     }
 
     public CompletableFuture<BasketProductEvent> getProductDetails(String productId) {
+        log.info("Requesting product details for product: {}", productId);
         CompletableFuture<BasketProductEvent> future = new CompletableFuture<>();
         productFutures.put(productId, future);
 
