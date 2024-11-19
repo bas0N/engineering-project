@@ -208,14 +208,14 @@ class DataProcessor:
                 collection_name = config['collection_name']
 
             # Fetch data in batches and process
-                batch_count = 0
+                batch_count = config['last_batch_processed']
                 while True:
                     data_batch = self.db_integration.get_data_batch(collection_name, last_batch_processed, batch_size)
                     if not data_batch:
                         break
 
                     self.add_list_of_dicts(data_batch)
-                    last_batch_processed += len(data_batch)
+                    last_batch_processed += 1
                     batch_count += 1
                     print(f"Processed batch {batch_count} out of {config['total']/config['page_size']} with {len(data_batch)} items.")
 
