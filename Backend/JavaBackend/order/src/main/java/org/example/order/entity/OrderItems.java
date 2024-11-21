@@ -28,4 +28,5 @@ public class OrderItems {
     private double priceUnit;
     @Column(name = "pricesummary")
     private double priceSummary;
+    private String imageUrl;
 }

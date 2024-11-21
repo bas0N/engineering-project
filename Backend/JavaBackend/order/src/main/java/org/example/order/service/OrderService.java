@@ -8,9 +8,11 @@ import org.example.order.entity.Order;
 import java.util.List;
 
 public interface OrderService {
-    String createOrder(Order order, HttpServletRequest request, HttpServletResponse response);
+    String createOrder(Order order, String basketId, HttpServletRequest request, HttpServletResponse response);
 
     void completeOrder(Notify notify);
 
     List<Order> getOrdersByClient(String login);
+
+    Order getOrderByUuid(String uuid);
 }

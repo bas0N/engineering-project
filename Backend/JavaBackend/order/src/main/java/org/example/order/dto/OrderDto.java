@@ -19,6 +19,7 @@ public class OrderDto {
     private CustomerDetails customerDetails;
     private Address address;
     private DeliverDto deliver;
-    private List<Items> items;
+//    private List<Items> items;
     private double summaryPrice;
+    private String basketId;
 }

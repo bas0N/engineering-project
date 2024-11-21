@@ -10,11 +10,14 @@ import org.mapstruct.factory.Mappers;
 public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
+    @Mapping(target = "order", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", source = "uuid")
     @Mapping(target = "priceUnit", source = "price")
     @Mapping(target = "priceSummary", source = "summaryPrice")
-    OrderItems BasketItemDtoToOrderItems(BasketItemDto basketItemDTO);
+    OrderItems toToOrderItems(BasketItemDto basketItemDTO);
+
+
     //Item itemDtoToItem(ItemDto itemDto);
     //ItemDto itemToItemDto(Item item);
 }

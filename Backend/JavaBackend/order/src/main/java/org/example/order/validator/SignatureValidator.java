@@ -15,15 +15,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class SignatureValidator {
-//    @Value("${payu.client-key}")
-//    private String second_key;
+    @Value("${payu.client-key}")
+    private String second_key;
 
     public void validate(String signatureHeader, Notify notify) throws NoSuchAlgorithmException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(notify);
         Map<String,String> signature = parseHeader(signatureHeader);
-//        String concatenated = body+second_key;
-        String concatenated = body;
+        String concatenated = body+second_key;
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] bytes = concatenated.getBytes();
         byte[] digest = md.digest(bytes);
@@ -31,9 +30,10 @@ public class SignatureValidator {
         for (byte b : digest) {
             hexString.append(String.format("%02x", b));
         }
-//        if (!hexString.toString().equals(signature.get("signature"))){
+        if (!hexString.toString().equals(signature.get("signature"))){
 //            throw new BadSignatureException();
-//        }
+            throw new RuntimeException("Bad signature");
+        }
     }
 
 

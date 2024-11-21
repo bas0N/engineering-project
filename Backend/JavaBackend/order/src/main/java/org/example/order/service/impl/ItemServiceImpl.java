@@ -20,7 +20,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<OrderItems> getByOrder(Order order) {
-        return null;
+        return itemRepository.findByOrder(order.getId());
     }
 
 }
