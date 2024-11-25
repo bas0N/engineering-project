@@ -1,4 +1,4 @@
-package org.example.order.dto;
+package org.example.order.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Items {
+public class ItemResponse {
     private String uuid;
     private String name;
     private String imageUrl;

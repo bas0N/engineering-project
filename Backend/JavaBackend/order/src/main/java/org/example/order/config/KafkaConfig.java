@@ -4,10 +4,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.example.commondto.BasketRemoveEvent;
 import org.example.commondto.ListBasketItemEvent;
 import org.example.commondto.UserDetailInfoEvent;
-import org.example.order.dto.ListBasketItemDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -26,16 +24,16 @@ import java.util.Map;
 public class KafkaConfig {
     private static final String KAFKA_BROKER = "kafka:9092";
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserDetailInfoEvent> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, UserDetailInfoEvent> userKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, UserDetailInfoEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(userConsumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, UserDetailInfoEvent> consumerFactory() {
+    public ConsumerFactory<String, UserDetailInfoEvent> userConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-service-user-group");
@@ -50,17 +48,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, String> userProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, String> userKafkaTemplate() {
+        return new KafkaTemplate<>(userProducerFactory());
     }
 
 
@@ -80,7 +78,7 @@ public class KafkaConfig {
     }
 
     @Bean(name = "basketItemsKafkaListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, ListBasketItemEvent> userKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, ListBasketItemEvent> basketItemsKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, ListBasketItemEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(basketItemsConsumerFactory());
@@ -106,7 +104,7 @@ public class KafkaConfig {
 
     //BASKET REMOVE
     @Bean
-    public ProducerFactory<String, BasketRemoveEvent> basketRemoveProducerFactory() {
+    public ProducerFactory<String, String> basketRemoveProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -115,7 +113,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, BasketRemoveEvent> basketRemoveKafkaTemplate() {
+    public KafkaTemplate<String, String> basketRemoveKafkaTemplate() {
         return new KafkaTemplate<>(basketRemoveProducerFactory());
     }
 }

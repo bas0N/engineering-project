@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class BasketItemsProducer {
-    private static final String BASKET_TOPIC = "basketItems-request-topic";
+    private static final String BASKET_TOPIC = "basket-items-request-topic";
 
     private final KafkaTemplate<String, String> basketItemsKafkaTemplate;
 

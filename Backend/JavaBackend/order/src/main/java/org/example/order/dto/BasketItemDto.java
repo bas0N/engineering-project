@@ -15,5 +15,4 @@ public class BasketItemDto {
     private long quantity;
     private String imageUrl;
     private double price;
-    private double summaryPrice;
 }

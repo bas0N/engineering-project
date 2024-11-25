@@ -10,4 +10,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 
+    @Override
+    public Object getProduct(String product) {
+        return null;
+    }
 }

@@ -1,11 +1,8 @@
 package org.example.order.service.impl;
 
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.commondto.BasketRemoveEvent;
 import org.example.commondto.ListBasketItemEvent;
-import org.example.commondto.UserDetailInfoEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.order.dto.ListBasketItemDto;
 import org.example.order.entity.OrderItems;
@@ -42,7 +39,6 @@ public class BasketService {
 
     public void removeBasket(List<OrderItems> items, String basketId) {
         List<String> itemsId = items.stream().map(OrderItems::getUuid).toList();
-        BasketRemoveEvent basketRemoveEvent = new BasketRemoveEvent(itemsId, basketId);
-        basketRemoveProducer.sendBasketRemoveEvent(basketRemoveEvent);
+        basketRemoveProducer.sendBasketRemoveEvent(basketId);
     }
 }

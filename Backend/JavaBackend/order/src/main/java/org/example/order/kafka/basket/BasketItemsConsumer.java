@@ -19,7 +19,7 @@ public class BasketItemsConsumer {
     private final ConcurrentHashMap<String, CompletableFuture<ListBasketItemEvent>> basketItemsFutures = new ConcurrentHashMap<>();
 
     @KafkaListener(
-            topics = "basketItems-response-topic",
+            topics = "basket-items-response-topic",
             groupId = "order-service-basketItems-group",
             containerFactory = "basketItemsKafkaListenerContainerFactory"
     )

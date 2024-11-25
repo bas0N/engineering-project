@@ -14,7 +14,7 @@ public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", source = "uuid")
     @Mapping(target = "priceUnit", source = "price")
-    @Mapping(target = "priceSummary", source = "summaryPrice")
+    @Mapping(target = "priceSummary", expression = "java(basketItemDTO.getPrice() * basketItemDTO.getQuantity())")
     OrderItems toToOrderItems(BasketItemDto basketItemDTO);
 
 

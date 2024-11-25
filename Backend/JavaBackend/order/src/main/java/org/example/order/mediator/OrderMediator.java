@@ -1,105 +1,127 @@
 package org.example.order.mediator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.exception.exceptions.ApiRequestException;
 import org.example.jwtcommon.jwt.JwtCommonService;
-import org.example.order.dto.Items;
-import org.example.order.dto.OrderDto;
-import org.example.order.dto.UserRegisterDto;
+import org.example.order.dto.response.ItemResponse;
 import org.example.order.dto.notify.Notify;
+import org.example.order.dto.request.OrderRequest;
+import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Order;
 import org.example.order.entity.OrderItems;
+import org.example.order.enums.Status;
 import org.example.order.mapper.OrderMapper;
+import org.example.order.repository.ItemRepository;
+import org.example.order.repository.OrderRepository;
 import org.example.order.service.ItemService;
 import org.example.order.service.OrderService;
 import org.example.order.service.ProductService;
-import org.example.order.validator.SignatureValidator;
+import com.stripe.model.Event;
+import com.stripe.model.PaymentIntent;
+import com.stripe.net.Webhook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @RequiredArgsConstructor
 public class OrderMediator {
     private final OrderService orderService;
-    private final SignatureValidator signatureValidator;
     private final JwtCommonService jwtCommonService;
     private final ItemService itemService;
     private final ProductService productService;
+    private final OrderRepository orderRepository;
+    @Value("${stripe.endpoint.secret}")
+    private String endpointSecret;
+    private final ItemRepository itemRepository;
 
-    public ResponseEntity<?> createOrder(OrderDto orderDTO, HttpServletRequest request, HttpServletResponse response) {
-        Order order = OrderMapper.INSTANCE.orderDtoToOrder(orderDTO);
+    public ResponseEntity<?> createOrder(OrderRequest orderRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE,"application/json");
-        return ResponseEntity.status(200).headers(httpHeaders).body(orderService.createOrder(order, orderDTO.getBasketId() ,request,response));
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        OrderResponse orderResponse = orderService.createOrder(orderRequest, request, response);
+        String clientSecret = orderService.createStripePayment(orderResponse);
+        orderResponse.setClientSecret(clientSecret);
+        return ResponseEntity.status(200).headers(httpHeaders).body(orderResponse);
     }
 
 
-    public ResponseEntity<?> handleNotify(Notify notify, HttpServletRequest request) {
-        String header = request.getHeader("OpenPayu-Signature");
+    public ResponseEntity<?> handleNotify(HttpServletRequest request) {
+        String payload = "";
+        String sigHeader = request.getHeader("Stripe-Signature");
+
+        try (Scanner scanner = new Scanner(request.getInputStream(), "UTF-8")) {
+            payload = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        Event event = null;
         try {
-            signatureValidator.validate(header,notify);
-            orderService.completeOrder(notify);
-        } catch (NoSuchAlgorithmException | JsonProcessingException e) {
-            return ResponseEntity.badRequest().body("Bad signature");
+            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+        } catch (Exception e) {
+            // Invalid signature
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-//        }catch (OrderDontExistException e1){
-//            return ResponseEntity.badRequest().body(new Response("Order don't exist"));
-//        };
-        return ResponseEntity.ok("Notification handle success");
+        switch (event.getType()) {
+            case "payment_intent.succeeded":
+                handlePaymentIntentSucceeded(event);
+                break;
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> getOrder(String uuid, HttpServletRequest request) {
-        if (uuid == null || uuid.isEmpty()){
-            try{
-                String userId = jwtCommonService.getUserFromRequest(request);
-                if (userId!=null && !userId.isEmpty()){
-                    List<OrderDto> orderDTOList = new ArrayList<>();
-                    orderService.getOrdersByClient(userId).forEach(value->{
-                        orderDTOList.add(OrderMapper.INSTANCE.toOrderDto(value));
-                    });
-                    return ResponseEntity.ok(orderDTOList);
-                }
-                //throw new OrderDontExistException();
-            }catch (NullPointerException e){
-                //throw new UserDontLoginException();
-                throw new RuntimeException("User is not logged in");
-            }
+    private void handlePaymentIntentSucceeded(Event event) {
+        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
+                .getObject()
+                .orElse(null);
+
+        if (paymentIntent != null) {
+            String orderId = paymentIntent.getDescription().split(":")[1].trim();
+            orderService.updateOrderStatus(orderId, Status.COMPLETED);
         }
-        Order order = orderService.getOrderByUuid(uuid);
-        List<OrderItems> itemsList = itemService.getByOrder(order);
-        if (itemsList.isEmpty()){
-            throw new RuntimeException("Order is empty");
+    }
+
+    public ResponseEntity<?> getOrderById(String uuid, HttpServletRequest request) {
+        Order order = orderRepository.findByUuid(uuid).orElseThrow(() -> new ApiRequestException("Order not found with uuid: " + uuid));
+        List<OrderItems> itemsList = itemRepository.findByOrder(order.getId());
+        if (itemsList.isEmpty()) {
+            throw new RuntimeException("Order is empty for uuid: " + uuid);
         }
-        List<Items> itemsDTO = new ArrayList<>();
+        List<ItemResponse> itemResponseDTO = new ArrayList<>();
         AtomicReference<Double> summary = new AtomicReference<>(0d);
-        List<String> productIds = new ArrayList<>();
-        itemsList.forEach(value->{
-            Items items = OrderMapper.INSTANCE.toItems(value);
-            //items.setImageUrl(productService.getProduct(value.getProduct()).getImageUrls()[0]);
-            productIds.add(value.getProduct());
-            itemsDTO.add(items);
-            summary.set(summary.get()+value.getPriceSummary());
+        itemsList.forEach(value -> {
+            ItemResponse itemResponse = OrderMapper.INSTANCE.toItems(value);
+            itemResponseDTO.add(itemResponse);
+            summary.set(summary.get() + value.getPriceSummary());
 
         });
+        OrderResponse orderResponse = OrderMapper.INSTANCE.toOrderResponse(order);
+        return ResponseEntity.ok(orderResponse);
+    }
 
-
-
-        OrderDTO orderDTO = orderToOrderDTO.toOrderDTO(order);
-        summary.set(summary.get() + orderDTO.getDeliver().getPrice());
-        orderDTO.setSummaryPrice(summary.get());
-        orderDTO.setItems(itemsDTO);
-        return ResponseEntity.ok(orderDTO);
-        return null;
+    public ResponseEntity<?> getOrdersByClient(HttpServletRequest request) {
+        String userId = jwtCommonService.getUserFromRequest(request);
+        if (userId == null || userId.isEmpty()) {
+            throw new ApiRequestException("User not found");
+        }
+        List<Order> orders = orderRepository.findByClient(userId);
+        List<OrderResponse> orderResponseList = orders.stream().map(OrderMapper.INSTANCE::toOrderResponse).toList();
+        return ResponseEntity.ok(orderResponseList);
     }
 }

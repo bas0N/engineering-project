@@ -1,4 +1,4 @@
-package org.example.order.dto;
+package org.example.order.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Address {
+public class AddressResponse {
     private String street;
     private String city;
     private String state;
