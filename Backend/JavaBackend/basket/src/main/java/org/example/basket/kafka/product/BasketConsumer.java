@@ -1,9 +1,7 @@
-package org.example.basket.kafka;
+package org.example.basket.kafka.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.basket.repository.BasketItemRepository;
-import org.example.basket.repository.BasketRepository;
 import org.example.commondto.BasketProductEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -17,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BasketKafkaConsumer {
+public class BasketConsumer {
     private final ConcurrentHashMap<String, CompletableFuture<BasketProductEvent>> productFutures = new ConcurrentHashMap<>();
 
     @KafkaListener(topics = "basket-product-response-topic", groupId = "basket-service-group", containerFactory = "kafkaListenerContainerFactory")

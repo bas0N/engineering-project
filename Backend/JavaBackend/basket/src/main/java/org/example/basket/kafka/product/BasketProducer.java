@@ -1,15 +1,14 @@
-package org.example.basket.kafka;
+package org.example.basket.kafka.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BasketKafkaProducer {
+public class BasketProducer {
     private static final String REQUEST_TOPIC = "basket-product-request-topic";
 
     private final KafkaTemplate<String, String> kafkaTemplate;

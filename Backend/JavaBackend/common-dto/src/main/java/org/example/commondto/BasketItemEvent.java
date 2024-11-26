@@ -1,19 +1,17 @@
-package org.example.order.dto;
+package org.example.commondto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Items {
+public class BasketItemEvent {
     private String uuid;
     private String name;
-    private String imageUrl;
     private long quantity;
+    private String imageUrl;
     private double price;
     private double summaryPrice;
 }

@@ -38,7 +38,7 @@ public class UserEventConsumer {
 
             // Create the UserDetailInfoEvent
             UserDetailInfoEvent userDetailInfoEvent = new UserDetailInfoEvent(
-                    user.getUuid(), user.getEmail(), user.getFirstName(), user.getLastName()
+                    user.getUuid(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getPhoneNumber()
             );
 
             // Send the response to the appropriate Kafka topic

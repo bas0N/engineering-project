@@ -1,9 +1,12 @@
 package org.example.order.service;
 
-import org.example.order.dto.DeliverDto;
+import org.example.order.dto.request.DeliverRequest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface DeliverService {
-    List<DeliverDto> getAllDeliver();
+    ResponseEntity<?> getAllDeliver();
+
+    ResponseEntity<?> createDeliverOrder(DeliverRequest deliverRequest);
 }

@@ -1,25 +1,44 @@
 package org.example.order.service.impl;
 
-import jakarta.servlet.http.Cookie;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.commondto.ListBasketItemEvent;
+import org.example.exception.exceptions.ApiRequestException;
 import org.example.order.dto.ListBasketItemDto;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.example.order.entity.OrderItems;
+import org.example.order.kafka.basket.BasketItemsConsumer;
+import org.example.order.kafka.basket.BasketItemsProducer;
+import org.example.order.kafka.basketRemove.BasketRemoveProducer;
+import org.example.order.mapper.ListBasketItemsMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class BasketService {
-//    @Value("${basket.service}")
-//    private String BASKET_URL;
-    public ListBasketItemDto getBasket(Cookie value) {
-        //tutaj kafka wale do koszyka
-        return null;
+    private final BasketItemsProducer basketItemsEventProducer;
+    private  final BasketItemsConsumer basketItemsEventConsumer;
+    private final BasketRemoveProducer basketRemoveProducer;
+    public ListBasketItemDto getBasket(String basketId) {
+        basketItemsEventProducer.sendBasketItemsEvent(basketId);
+        CompletableFuture<ListBasketItemEvent> basketItemsFuture = basketItemsEventConsumer.getListBasketItemsDetails(basketId)
+                .orTimeout(30, TimeUnit.SECONDS)
+                .exceptionally(ex -> {
+                    log.error("Failed to retrieve basket details for basketId: {}", basketId, ex);
+                    throw new ApiRequestException("Could not retrieve basket details");
+                });
+
+        ListBasketItemEvent basketInfo = basketItemsFuture.join();
+        return ListBasketItemsMapper.INSTANCE.toListBasketItemDto(basketInfo);
+
     }
 
-    public void removeBasket(Cookie value,String uuid) {
-        //tutaj kafka wale do koszyka
+    public void removeBasket(List<OrderItems> items, String basketId) {
+        List<String> itemsId = items.stream().map(OrderItems::getUuid).toList();
+        basketRemoveProducer.sendBasketRemoveEvent(basketId);
     }
 }

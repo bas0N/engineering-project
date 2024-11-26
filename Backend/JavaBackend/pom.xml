@@ -14,7 +14,7 @@
         <module>like</module>
         <module>product</module>
         <module>history</module>
-<!--        <module>order</module>-->
+        <module>order</module>
 <!--        <module>message</module>-->
         <module>basket</module>
         <module>exception</module>
