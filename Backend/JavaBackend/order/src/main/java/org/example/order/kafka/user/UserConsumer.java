@@ -20,7 +20,7 @@ public class UserConsumer {
 
     @KafkaListener(
             topics = "user-response-topic",
-            groupId = "product-service-user-group",
+            groupId = "order-service-user-group",
             containerFactory = "userKafkaListenerContainerFactory"
     )
     public void consumeUserResponse(@Payload UserDetailInfoEvent userDetailInfoEvent, Acknowledgment ack) {

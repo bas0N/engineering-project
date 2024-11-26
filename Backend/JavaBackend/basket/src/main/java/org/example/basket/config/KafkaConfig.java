@@ -85,10 +85,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(),
-                new ErrorHandlingDeserializer<>(new JsonDeserializer<>(String.class)));
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean("BasketItemsKafkaListenerContainerFactory")
@@ -111,10 +108,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(),
-                new ErrorHandlingDeserializer<>(new JsonDeserializer<>(String.class)));
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean

@@ -1,10 +1,13 @@
 package org.example.order.mapper;
 
 import org.example.order.dto.BasketItemDto;
+import org.example.order.dto.response.ItemResponse;
 import org.example.order.entity.OrderItems;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface ItemMapper {
@@ -17,7 +20,8 @@ public interface ItemMapper {
     @Mapping(target = "priceSummary", expression = "java(basketItemDTO.getPrice() * basketItemDTO.getQuantity())")
     OrderItems toToOrderItems(BasketItemDto basketItemDTO);
 
+    ItemResponse toItemResponse(OrderItems orderItems);
 
-    //Item itemDtoToItem(ItemDto itemDto);
-    //ItemDto itemToItemDto(Item item);
+    List<ItemResponse> toItemResponseList(List<OrderItems> orderItems);
+
 }

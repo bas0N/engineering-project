@@ -13,6 +13,7 @@ import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Order;
 import org.example.order.entity.OrderItems;
 import org.example.order.enums.Status;
+import org.example.order.mapper.ItemMapper;
 import org.example.order.mapper.OrderMapper;
 import org.example.order.repository.ItemRepository;
 import org.example.order.repository.OrderRepository;
@@ -40,8 +41,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OrderMediator {
     private final OrderService orderService;
     private final JwtCommonService jwtCommonService;
-    private final ItemService itemService;
-    private final ProductService productService;
     private final OrderRepository orderRepository;
     @Value("${stripe.endpoint.secret}")
     private String endpointSecret;
@@ -103,15 +102,13 @@ public class OrderMediator {
         if (itemsList.isEmpty()) {
             throw new RuntimeException("Order is empty for uuid: " + uuid);
         }
-        List<ItemResponse> itemResponseDTO = new ArrayList<>();
         AtomicReference<Double> summary = new AtomicReference<>(0d);
         itemsList.forEach(value -> {
-            ItemResponse itemResponse = OrderMapper.INSTANCE.toItems(value);
-            itemResponseDTO.add(itemResponse);
+            ItemResponse itemResponse = ItemMapper.INSTANCE.toItemResponse(value);
             summary.set(summary.get() + value.getPriceSummary());
-
         });
         OrderResponse orderResponse = OrderMapper.INSTANCE.toOrderResponse(order);
+        orderResponse.setSummaryPrice(summary.get());
         return ResponseEntity.ok(orderResponse);
     }
 
@@ -120,8 +117,21 @@ public class OrderMediator {
         if (userId == null || userId.isEmpty()) {
             throw new ApiRequestException("User not found");
         }
-        List<Order> orders = orderRepository.findByClient(userId);
-        List<OrderResponse> orderResponseList = orders.stream().map(OrderMapper.INSTANCE::toOrderResponse).toList();
+        List<Order> orders = orderRepository.findByClientWithItems(userId);
+        List<OrderResponse> orderResponseList = orders.stream()
+                .map(order -> {
+                    List<OrderItems> itemsList = itemRepository.findByOrder(order.getId());
+                    AtomicReference<Double> summary = new AtomicReference<>(0d);
+
+                    itemsList.forEach(item -> summary.set(summary.get() + item.getPriceSummary()));
+
+                    OrderResponse orderResponse = OrderMapper.INSTANCE.toOrderResponse(order);
+                    orderResponse.setSummaryPrice(summary.get());
+
+                    return orderResponse;
+                })
+                .toList();
+
         return ResponseEntity.ok(orderResponseList);
     }
 }

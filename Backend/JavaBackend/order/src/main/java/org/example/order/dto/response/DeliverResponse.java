@@ -1,4 +1,4 @@
-package org.example.order.dto.request;
+package org.example.order.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliverRequest {
+public class DeliverResponse {
+    private String uuid;
     private String name;
     private double price;
 }

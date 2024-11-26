@@ -11,6 +11,7 @@ import org.example.jwtcommon.jwt.JwtCommonService;
 import org.example.order.dto.ListBasketItemDto;
 import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
+import org.example.order.dto.response.ItemResponse;
 import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Deliver;
 import org.example.order.entity.Order;
@@ -43,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final ItemRepository itemRepository;
 
-    private Order save(ListBasketItemDto basketItems, UserDetailInfoEvent userDetailInfoEvent, OrderRequest orderRequest) {
+    private Order save(UserDetailInfoEvent userDetailInfoEvent, OrderRequest orderRequest) {
         Deliver deliver = deliverRepository.findByUuid(orderRequest.getDeliverId()).orElseThrow();
         String stringBuilder = "ORDER/" +
                 orderRepository.count() +
@@ -54,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         setOrderUserDetails(userDetailInfoEvent, order);
         setOrderAddressDetails(orderRequest, order);
-
+        order.setBasketId(orderRequest.getBasketId());
         order.setUuid(UUID.randomUUID().toString());
         order.setStatus(Status.PENDING);
         order.setOrders(stringBuilder);
@@ -80,29 +81,32 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse createOrder(OrderRequest order, HttpServletRequest request, HttpServletResponse response) {
-        String userId = jwtCommonService.getTokenFromRequest(request);
-        if(userId == null || userId.isEmpty()) {
+        String userId = jwtCommonService.getUserFromRequest(request);
+        if (userId == null || userId.isEmpty()) {
             throw new RuntimeException();
         }
-        if(order.getBasketId() == null || order.getBasketId().isEmpty()) {
+        if (order.getBasketId() == null || order.getBasketId().isEmpty()) {
             throw new RuntimeException();
         }
         ListBasketItemDto basketItems = basketService.getBasket(order.getBasketId());
         UserDetailInfoEvent userDetailInfoEvent = userService.getUserInfo(userId);
 
-        Order finalOrder = save(basketItems, userDetailInfoEvent, order);
-        AtomicReference<String> result = new AtomicReference<>();
-        if(order.getBasketId() != null && !order.getBasketId().isEmpty()) {
-            //List<OrderItems> items = new ArrayList<>();
-            basketItems.getBasketProducts().forEach(item->{
-                OrderItems orderItems = ItemMapper.INSTANCE.toToOrderItems(item);
-                orderItems.setOrder(finalOrder);
-                orderItems.setUuid(UUID.randomUUID().toString());
-               // items.add(itemService.save(orderItems));
+        Order finalOrder = save(userDetailInfoEvent, order);
+        List<OrderItems> savedItems = new ArrayList<>();
+        if (order.getBasketId() != null && !order.getBasketId().isEmpty()) {
+            basketItems.getBasketProducts().forEach(item -> {
+                OrderItems orderItem = ItemMapper.INSTANCE.toToOrderItems(item);
+                orderItem.setOrder(finalOrder);
+                orderItem.setUuid(UUID.randomUUID().toString());
+                finalOrder.getOrderItems().add(orderItem);
             });
-            return OrderMapper.INSTANCE.toOrderResponse(finalOrder);
-        }
-        else{
+
+            orderRepository.saveAndFlush(finalOrder);
+
+            Order savedOrder = orderRepository.findByUuidWithItems(finalOrder.getUuid())
+                    .orElseThrow(() -> new RuntimeException("Order not found after saving"));
+            return OrderMapper.INSTANCE.toOrderResponse(savedOrder);
+        } else {
             throw new RuntimeException();
         }
     }
@@ -117,8 +121,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String createStripePayment(OrderResponse orderResponse) {
         try {
+            double summaryPrice = orderResponse.getSummaryPrice();
+
+            long amountInCents = summaryPrice > 0.0
+                    ? (long) (summaryPrice * 100)
+                    : 500;
+
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount((long) (orderResponse.getSummaryPrice() * 100))
+                    .setAmount((amountInCents))
                     .setCurrency("pln")
                     .putMetadata("order_id", orderResponse.getUuid())
                     .build();

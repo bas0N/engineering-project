@@ -99,8 +99,11 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public Long getNumberOfLikes(String productUuid) {
-        Product product = productRepository.findByUuid(productUuid)
-                .orElseThrow(() -> new ApiRequestException("Product not found", "PRODUCT_NOT_FOUND"));
+        Optional<Product> productOpt = productRepository.findByUuid(productUuid);
+        if (productOpt.isEmpty()) {
+            return 0L;
+        }
+        Product product = productOpt.get();
         return likeRepository.countByProductId(product.getId());
 
     }

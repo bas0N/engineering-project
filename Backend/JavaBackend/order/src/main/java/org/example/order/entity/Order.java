@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.order.enums.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class Order {
     private String basketId;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<OrderItems> orderItems;
+    List<OrderItems> orderItems = new ArrayList<>();
 
     @Column(name = "firstname")
     private String firstName;

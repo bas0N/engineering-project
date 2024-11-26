@@ -14,6 +14,7 @@ public class ItemResponse {
     private String name;
     private String imageUrl;
     private long quantity;
-    private double price;
-    private double summaryPrice;
+    private double priceUnit;
+    private double priceSummary;
+
 }
