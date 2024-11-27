@@ -59,4 +59,30 @@ public class JwtCommonService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+
+    public String getTokenFromRequestServer(ServerHttpRequest request) {
+        List<String> headers = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
+        if (headers != null && !headers.isEmpty()) {
+            return headers.getFirst().substring(7);
+        }
+        return null;
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SignatureException e) {
+            throw new InvalidTokenException("Invalid JWT signature");
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new InvalidTokenException("JWT token is expired");
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            throw new InvalidTokenException("Malformed JWT token");
+        } catch (IllegalArgumentException e) {
+            throw new InvalidTokenException("JWT token is null or empty");
+        }
+    }
 }

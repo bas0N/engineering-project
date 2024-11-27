@@ -125,4 +125,10 @@ public class LikeServiceImpl implements LikeService {
             throw new ApiRequestException("An error occurred while removing like", "REMOVE_LIKE_ERROR");
         }
     }
+
+    @Override
+    public Boolean isLiked(String productId, HttpServletRequest request) {
+        String userId = jwtCommonService.getUserFromRequest(request);
+        return likeRepository.existsByUserIdAndProductId(userId, productId);
+    }
 }

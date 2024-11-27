@@ -1,13 +1,11 @@
 package org.example.message.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.message.dto.MessageRequest;
-import org.example.message.dto.MessageResponse;
-import org.example.message.dto.UserResponse;
+import org.example.message.dto.request.MessageRequest;
+import org.example.message.dto.response.MessageResponse;
+import org.example.message.dto.response.MessagesResponse;
 import org.example.message.service.MessageService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,25 +22,26 @@ public class MessageController {
     private final SimpMessagingTemplate messagingTemplate;
     @MessageMapping("/sendMessage")
     public void sendMessage(@Payload MessageRequest messageRequest, Principal principal) {
+        if(principal==null){
+            throw new RuntimeException("You are not authorized to send message");
+        }
         MessageResponse response = messageService.createMessage(messageRequest, principal.getName());
-        // Wysłanie wiadomości do odbiorcy
         messagingTemplate.convertAndSendToUser(
-                response.getReceiver().getId(),
+                response.getReceiverId(),
                 "/queue/messages",
                 response
         );
-//        // Opcjonalnie: Wysłanie wiadomości do nadawcy (potwierdzenie)
-//        messagingTemplate.convertAndSendToUser(
-//                response.getSender().getId(),
-//                "/queue/messages",
-//                response
-//        );
+
+        messagingTemplate.convertAndSendToUser(
+                response.getSenderId(),
+                "/queue/messages",
+                response
+        );
     }
 
     @GetMapping("/{contactId}")
-    public ResponseEntity<List<MessageResponse>> getMessages(@PathVariable String contactId, Principal principal) {
-        List<MessageResponse> messages = messageService.getMessages(contactId, principal.getName());
-        return ResponseEntity.ok(messages);
+    public ResponseEntity<?> getMessages(@PathVariable String contactId, Principal principal) {
+        return ResponseEntity.ok(messageService.getMessages(contactId, principal.getName()));
     }
 
     @DeleteMapping("/{messageId}")
@@ -50,5 +49,17 @@ public class MessageController {
         messageService.deleteMessage(messageId, principal.getName());
         return ResponseEntity.ok("Message deleted successfully");
     }
+
+    @GetMapping("/chats")
+    public ResponseEntity<?> getChats(Principal principal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(messageService.getChats(principal.getName(), page, size));
+    }
+
+    @PostMapping("/markAsRead")
+    public ResponseEntity<Void> markMessagesAsRead(@RequestBody List<String> messageIds, Principal principal) {
+        messageService.markMessagesAsRead(messageIds, principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
 
 }
