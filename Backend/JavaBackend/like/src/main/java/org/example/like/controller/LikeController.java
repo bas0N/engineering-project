@@ -38,4 +38,9 @@ public class LikeController {
         return ResponseEntity.ok("Like removed successfully.");
     }
 
+    @RequestMapping(path = "/isLiked/{productId}", method = RequestMethod.GET)
+    public ResponseEntity<Boolean> isLiked(@PathVariable String productId, HttpServletRequest request) {
+        return ResponseEntity.ok(likeService.isLiked(productId, request));
+    }
+
 }

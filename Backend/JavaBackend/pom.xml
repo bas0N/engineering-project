@@ -15,7 +15,7 @@
         <module>product</module>
         <module>history</module>
         <module>order</module>
-<!--        <module>message</module>-->
+        <module>message</module>
         <module>basket</module>
         <module>exception</module>
         <module>RegisterEndpointInformation</module>

@@ -14,5 +14,7 @@ public interface LikeService {
     Long getNumberOfLikes(String productId);
 
     void removeLike(String likeId, HttpServletRequest request);
+
+    Boolean isLiked(String productId, HttpServletRequest request);
 }
 

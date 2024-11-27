@@ -1,4 +1,4 @@
-package org.example.message.dto;
+package org.example.message.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-    private String id;
-    private String name;
+public class UserDetailsResponse {
+    private String userId;
+    private String username;
     private String email;
 }
