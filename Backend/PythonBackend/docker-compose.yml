@@ -8,7 +8,7 @@ services:
       - 8000:8000
     networks:
       - net
-  flask-app:
+  recc-system-1:
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,12 +16,15 @@ services:
       - ./volume/chromadb-data:/volume/chromadb-data
     ports:
       - 5000:5000
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB=dev
+      - PORT=5000
+      - CHROMA_HOST=chroma
     depends_on:
       - chroma
     networks:
       - net
-    env_file:
-      - .env
   # zookeeper:
   #   image: bitnami/zookeeper:latest
   #   container_name: zookeeper

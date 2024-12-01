@@ -6,3 +6,4 @@ scripts/
 chroma_db_data/
 chromadb-data/
 volume/
+user-based-collaborative-filtering
