@@ -27,8 +27,6 @@ services:
       - chroma
     networks:
       - microservices-network
-    env_file:
-      - .env
 
   # Eureka service for service discovery
   eureka:

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.34.0 (HEAD)
+  labels:
+    io.kompose.service: recc-system-1
+  name: recc-system-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: recc-system-1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.34.0 (HEAD)
+      labels:
+        io.kompose.service: recc-system-1
+    spec:
+      containers:
+        - env:
+            - name: CHROMA_HOST
+              value: chroma
+            - name: MONGO_DB
+              value: dev
+            - name: MONGO_URI
+            - name: PORT
+              value: "5000"
+          image: recc-system-1
+          name: recc-system-1
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /volume/chromadb-data
+              name: recc-system-1-cm0
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: recc-system-1-cm0
+          name: recc-system-1-cm0

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.34.0 (HEAD)
+  labels:
+    io.kompose.service: db-basket
+  name: db-basket
+spec:
+  ports:
+    - name: "5430"
+      port: 5430
+      targetPort: 5432
+  selector:
+    io.kompose.service: db-basket
