@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.order.enums.Status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,18 +25,27 @@ public class Order {
     private String orders;
     @Enumerated(EnumType.STRING)
     private Status status;
+    private String basketId;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<OrderItems> orderItems = new ArrayList<>();
+
     @Column(name = "firstname")
     private String firstName;
     @Column(name = "lastname")
     private String lastName;
     private String phone;
     private String email;
+    private String client;
+
     private String city;
     private String street;
-    private String number;
+    private String state;
+    private String country;
     @Column(name = "postcode")
     private String postCode;
-    private String client;
+
+
     @ManyToOne
     @JoinColumn(name = "deliver")
     private Deliver deliver;

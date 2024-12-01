@@ -18,7 +18,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",         // Swagger API documentation
                                 "/swagger-ui/**",          // Swagger UI resources
-                                "/swagger-ui.html"         // Swagger UI page
+                                "/swagger-ui.html",
+                                "/ws/**"
+                                // Swagger UI page
                         ).permitAll()                    // Allow access to Swagger endpoints
                         .anyRequest().permitAll()        // Allow all other requests
                 )

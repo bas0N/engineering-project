@@ -20,13 +20,12 @@ public class Message {
     @Column(name = "uuid", updatable = false, nullable = false, unique = true)
     private String uuid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    private String senderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    private String receiverId;
+
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
 
     @Column(name = "date_added", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,6 +1,5 @@
 package org.example.basket.service.impl;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -8,25 +7,23 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.example.basket.dto.BasketItemDto;
 import org.example.basket.dto.ListBasketItemDto;
-import org.example.basket.dto.Product;
 import org.example.basket.dto.request.AddBasketItemRequest;
 import org.example.basket.dto.request.DeleteItemRequest;
 import org.example.basket.entity.Basket;
 import org.example.basket.entity.BasketItems;
-import org.example.basket.kafka.BasketKafkaConsumer;
-import org.example.basket.kafka.BasketKafkaProducer;
+import org.example.basket.kafka.product.BasketConsumer;
+import org.example.basket.kafka.product.BasketProducer;
 import org.example.basket.repository.BasketItemRepository;
 import org.example.basket.repository.BasketRepository;
 import org.example.basket.service.BasketService;
-import org.example.basket.service.CookieService;
+import org.example.commondto.BasketItemEvent;
 import org.example.commondto.BasketProductEvent;
-import org.example.commondto.LikeEvent;
+import org.example.commondto.ListBasketItemEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.NoBasketInfoException;
 import org.example.jwtcommon.jwt.JwtCommonService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,14 +31,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
 public class BasketServiceImpl implements BasketService {
     private final BasketRepository basketRepository;
     private final BasketItemRepository basketItemRepository;
-    private final BasketKafkaConsumer basketKafkaConsumer;
-    private final BasketKafkaProducer basketKafkaProducer;
+    private final BasketConsumer basketConsumer;
+    private final BasketProducer basketProducer;
     private final JwtCommonService jwtCommonService;
 
     @Override
@@ -73,8 +71,8 @@ public class BasketServiceImpl implements BasketService {
     }
 
     private void saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
-        CompletableFuture<BasketProductEvent> productFuture = basketKafkaConsumer.getProductDetails(basketItemRequest.getProduct());
-        basketKafkaProducer.requestProductDetails(basketItemRequest.getProduct());
+        CompletableFuture<BasketProductEvent> productFuture = basketConsumer.getProductDetails(basketItemRequest.getProduct());
+        basketProducer.requestProductDetails(basketItemRequest.getProduct());
         try {
             BasketProductEvent product = productFuture.get(30, TimeUnit.SECONDS);
             if (product != null) {
@@ -175,9 +173,52 @@ public class BasketServiceImpl implements BasketService {
         return ResponseEntity.ok().headers(httpHeaders).body(listBasketItemDTO);
     }
 
+    @Override
+    public void removeBasketById(String basketId) {
+        Basket basket = basketRepository.findByUuid(basketId)
+                .orElseThrow(() -> new NoBasketInfoException("Basket with ID: " + basketId + " not found"));
+        int itemsDeleted = basketItemRepository.deleteAllByBasket(basket);
+        if(itemsDeleted<=0){
+            throw new NoBasketInfoException("Removing basket items failed for basket with ID: " + basketId);
+        }
+        int basketDelete = basketRepository.deleteByUuid(basketId);
+        if(basketDelete<=0){
+            throw new NoBasketInfoException("Removing basket failed for basket with ID: " + basketId);
+        }
+    }
+
+    @Override
+    public ListBasketItemEvent getBasketItems(String basketId) {
+        Basket basket = basketRepository.findByUuid(basketId)
+                .orElseThrow(() -> new NoBasketInfoException("Basket with ID: " + basketId + " not found"));
+        ListBasketItemEvent listBasketItemEvent = new ListBasketItemEvent();
+        List<BasketItemEvent> basketProducts = new ArrayList<>();
+        listBasketItemEvent.setBasketId(basketId);
+        AtomicReference<Double> summaryPrice = new AtomicReference<>(0.0);
+        basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
+            BasketProductEvent product = getProductDetails(item.getProduct());
+            if (product != null) {
+                basketProducts.add(new BasketItemEvent(
+                        product.getId(),
+                        product.getName(),
+                        item.getQuantity(),
+                        product.getImageUrls().getFirst(),
+                        product.getPrice(),
+                        product.getPrice() * item.getQuantity()
+                ));
+                summaryPrice.updateAndGet(v -> v + product.getPrice() * item.getQuantity());
+            } else {
+                throw new ResourceNotFoundException("Product not found with ID: " + item.getProduct());
+            }
+        });
+        listBasketItemEvent.setBasketProducts(basketProducts);
+        listBasketItemEvent.setSummaryPrice(summaryPrice.get());
+        return listBasketItemEvent;
+    }
+
     private BasketProductEvent getProductDetails(String productId) {
-        CompletableFuture<BasketProductEvent> productFuture = basketKafkaConsumer.getProductDetails(productId);
-        basketKafkaProducer.requestProductDetails(productId);
+        CompletableFuture<BasketProductEvent> productFuture = basketConsumer.getProductDetails(productId);
+        basketProducer.requestProductDetails(productId);
         try {
             return productFuture.get(30, TimeUnit.SECONDS);
         } catch (TimeoutException e) {

@@ -18,9 +18,8 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.saveAndFlush(items);
     }
 
-    @Override
     public List<OrderItems> getByOrder(Order order) {
-        return null;
+        return itemRepository.findByOrder(order.getId());
     }
 
 }

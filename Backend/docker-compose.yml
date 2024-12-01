@@ -51,6 +51,7 @@ services:
     container_name: gateway-service
     ports:
       - "8888:8888"
+      - "5001:5005"
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
       - JWT_SECRET=${JWT_SECRET}
@@ -166,6 +167,60 @@ services:
     networks:
       - microservices-network
 
+  order:
+    build:
+      context: ./JavaBackend/order
+      dockerfile: Dockerfile
+    image: order-service:1.0
+    container_name: order-service
+    ports:
+      - "9779:9779"
+      - "5009:5005"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_ORDER}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+    depends_on:
+      - eureka
+      - db-order
+      - kafka
+    networks:
+      - microservices-network
+
+  message:
+    build:
+      context: ./JavaBackend/message
+      dockerfile: Dockerfile
+    image: message-service:1.0
+    container_name: message-service
+    ports:
+      - "9797:9797"
+      - "5010:5005"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_MESSAGE}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    depends_on:
+      - eureka
+      - db-message
+      - kafka
+    networks:
+      - microservices-network
+
   db-auth:
     image: postgres:15
     container_name: postgres-db-auth
@@ -199,6 +254,30 @@ services:
       POSTGRES_DB: like_db
     ports:
       - "5433:5432"
+    networks:
+      - microservices-network
+
+  db-order:
+    image: postgres:15
+    container_name: postgres-db-order
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: order_db
+    ports:
+      - "5429:5432"
+    networks:
+      - microservices-network
+
+  db-message:
+    image: postgres:15
+    container_name: postgres-db-message
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: message_db
+    ports:
+      - "5434:5432"
     networks:
       - microservices-network
 

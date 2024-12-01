@@ -1,8 +1,10 @@
 package org.example.basket.repository;
 
+import jakarta.transaction.Transactional;
 import org.example.basket.entity.Basket;
 import org.example.basket.entity.BasketItems;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,4 +28,9 @@ public interface BasketItemRepository extends JpaRepository<BasketItems, Long> {
 
     @Query("SELECT bi FROM BasketItems bi WHERE bi.uuid = :uuid AND bi.basket = :basket")
     Optional<BasketItems> findByUuidAndBasket(String uuid, Basket basket);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM BasketItems bi WHERE bi.basket = :basket")
+    int deleteAllByBasket(Basket basket);
 }
