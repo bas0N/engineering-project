@@ -7,11 +7,11 @@ expect.extend(toHaveNoViolations);
 describe('Product Presentation Component test', () => {
     it('Should have no a11y violations', async () => {
         const {container} = render(<ProductPresentation 
-            title='mockTitle' 
-            categories={[]} 
-            ratingNumber={null} 
-            averageRating={null} 
-            price='148.2' />
+            title='mockTitle'
+            categories={[]}
+            ratingNumber={null}
+            averageRating={null}
+            price='148.2' productId={""} token={""} />
         );
         expect(await axe(container)).toHaveNoViolations();
         expect(screen.getByText('product.noRatings'));
@@ -23,7 +23,8 @@ describe('Product Presentation Component test', () => {
             categories={[]} 
             ratingNumber={194} 
             averageRating={4.9} 
-            price='148.2' />
+            price='148.2' 
+            productId={""} token={""} />
         );
 
         expect(screen.getByText('4.9'));

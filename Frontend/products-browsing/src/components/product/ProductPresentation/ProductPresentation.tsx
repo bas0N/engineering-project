@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { Tag, Text } from "@fluentui/react-components";
+import { useEffect, useState, useCallback } from "react";
+import { Button, Tag, Text } from "@fluentui/react-components";
+import { ThumbLikeRegular } from '@fluentui/react-icons';
 import { ProductCategoriesWrapper } from "../DetailsAndFeatures/DetailsAndFeatures.styled";
 import { 
     ProductPresentationOrderingSection, 
@@ -9,9 +10,11 @@ import {
     ProductBuyingSection, 
     ProductPrice, 
     ProductAmountInput, 
-    ProductAddToTheBaskedButton 
+    ProductAddToTheBaskedButton, 
+    ProductLikeingSection
 } from "./ProductPresentation.styled";
 import { ProductImage } from '../ImagesCarousel/ImagesCarousel.tsx';
+import axios from "axios";
 
 export type ItemType = {
     id: string;
@@ -23,7 +26,7 @@ export type ItemType = {
     images: ProductImage[],
     averageRating: number | null,
     mainCategory: string | null,
-    parentAsin: string | null,
+    parentAsin: string,
     price: string,
     ratingNumber: number | null,
     store: string,
@@ -35,19 +38,75 @@ export type ItemType = {
     }[],
 }
 
-interface ProductPresentationProps extends Pick<ItemType, 'title' | 'categories' | 'ratingNumber' | 'averageRating' | 'price'>{}
+interface ProductPresentationProps extends Pick<ItemType, 'title' | 'categories' | 'ratingNumber' | 'averageRating' | 'price'>{
+    productId: string;
+    token: string;
+}
 
 export const ProductPresentation = ({
     title,
     categories,
     ratingNumber,
     averageRating,
-    price
+    price,
+    productId,
+    token,
 } : ProductPresentationProps) => {
 
     const [productNumber, setProductNumber] = useState(0);
+    const [numberOfLikes, setNumberOfLikes] = useState(0);
+    const [isLiked, setIsLiked] = useState(false);
 
     const {t} = useTranslation();
+
+    const getLikesNumberInfo = useCallback(async() => {
+
+        const result = await axios.get(`${import.meta.env.VITE_API_URL}like/number/${productId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setNumberOfLikes(result.data);
+    }, [productId, token]);
+
+    useEffect(() => {
+        const getLikesInfo = async() => {
+            try {
+                await getLikesNumberInfo();
+                const isLikedResult = await axios.get(`${import.meta.env.VITE_API_URL}like/isLiked/${productId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setIsLiked(isLikedResult.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getLikesInfo();
+    }, [productId, token, getLikesNumberInfo]);
+
+    const likeProduct = async() => {
+        try {
+            if(isLiked){
+                await axios.delete(`${import.meta.env.VITE_API_URL}like/remove/${productId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL}like/${productId}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            }
+            setIsLiked((liked) => !liked);
+            await getLikesNumberInfo();
+        } catch (error) { 
+            console.log(error);
+        }
+    }
 
     return (
         <ProductPresentationOrderingSection>
@@ -63,7 +122,17 @@ export const ProductPresentation = ({
             </ProductCategoriesWrapper>
             {
                 ratingNumber === null || averageRating === null ? <Text>{t('product.noRatings')}</Text>
-                : <ProductRatingDisplay value={averageRating} count={ratingNumber} />
+                : <>
+                    <ProductRatingDisplay value={averageRating} count={ratingNumber} />
+                    <ProductLikeingSection>
+                        <Button 
+                            appearance={isLiked ? 'primary' : 'subtle'} 
+                            icon={<ThumbLikeRegular />} 
+                            onClick={likeProduct}
+                        />
+                        <Text>{numberOfLikes}</Text>
+                    </ProductLikeingSection>
+                </>
             }
             <ProductBuyingSection>
                 <ProductPrice>{price}</ProductPrice>

@@ -1,6 +1,13 @@
 import { Button, Input, RatingDisplay, Text } from '@fluentui/react-components';
 import { styled } from "styled-components";
 
+export const ItemLoadingFailed = styled(Text).attrs({size: 800, align: 'center', weight: 'semibold'})`
+    width: calc(100vw - 20px);
+    padding: 20px 10px 10px;
+    text-align: center;
+    display: block;
+`;
+
 export const ProductWrapper = styled.section`
     width: calc(100% - 20px);
     padding: 10px;

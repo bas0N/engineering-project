@@ -5,7 +5,8 @@
         "featuresHeader": "Features",
         "loadingFailed": "Could not load this item. Try again",
         "noRatings": "No ratings available",
-        "recommendations": "Others browsed through"
+        "recommendations": "Others browsed through",
+        "noRecommendations": "No recommendations available"
     },
     "tiles": {
         "sidebar": {
