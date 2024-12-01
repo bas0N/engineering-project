@@ -41,6 +41,7 @@ export type ItemType = {
 interface ProductPresentationProps extends Pick<ItemType, 'title' | 'categories' | 'ratingNumber' | 'averageRating' | 'price'>{
     productId: string;
     token: string;
+    setIsReviewAdded: (newState: boolean) => void;
 }
 
 export const ProductPresentation = ({
@@ -51,6 +52,7 @@ export const ProductPresentation = ({
     price,
     productId,
     token,
+    setIsReviewAdded
 } : ProductPresentationProps) => {
 
     const [productNumber, setProductNumber] = useState(0);
@@ -132,6 +134,9 @@ export const ProductPresentation = ({
                         />
                         <Text>{numberOfLikes}</Text>
                     </ProductLikeingSection>
+                    <Button appearance="subtle" onClick={() => setIsReviewAdded(true)}>
+                        {t('product.addReview')}
+                    </Button>
                 </>
             }
             <ProductBuyingSection>

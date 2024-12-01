@@ -1,4 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { 
     ProductWrapper, 
     ProductPresentationSection,
@@ -8,41 +11,49 @@ import {
 import { ImagesCarousel } from "../../components/product/ImagesCarousel/ImagesCarousel";
 import { DetailsAndFeatures } from "../../components/product/DetailsAndFeatures/DetailsAndFeatures";
 import { ProductPresentation } from "../../components/product/ProductPresentation/ProductPresentation";
-import { useEffect, useState } from "react";
 import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation";
 import '../../i18n/i18n.tsx';
 import { Recommendations } from "../../components/product/Recommendations/Recommendations.tsx";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import { ReviewForm } from '../../components/product/ReviewForm/ReviewForm';
+import { ReviewDisplay } from '../../components/product/ReviewDisplay/ReviewDisplay';
 
 const Product = () => {
 
     const params = useParams();
-    console.log(params);
     const {t} = useTranslation();
 
     const [item, setItem] = useState<ItemType|null>(null);
+    const [isReviewAdded, setIsReviewAdded] = useState(false);
+    const [reviewDisplayReloadTriggerer, setReviewDisplayReloadTriggerer] = useState(false);
     const token = localStorage.getItem('authToken');
 
-    useEffect(() => {
-        const getItemData = async() => {
-            try {
-                const result = await axios.get(`${import.meta.env.VITE_API_URL}product/${params.productId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log(result.data);
-                setItem(result.data);
+    const getItemData = useCallback(async() => {
+        try {
+            const result = await axios.get(`${import.meta.env.VITE_API_URL}product/${params.productId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(result.data);
+            setItem(result.data);
 
-            } catch (error) {
-                console.log(error)
-            }
-        };
+        } catch (error) {
+            console.log(error)
+        }
+    }, [params.productId, token]);
+
+    useEffect(() => {
         getItemData();
-    }, [params, token]);
+    }, [getItemData]);
 
     //if(params.productId === undefined) return <></>
+
+
+
+    const closeReviewForm = async() => {
+        setIsReviewAdded(false);
+        setReviewDisplayReloadTriggerer((state) => !state);
+    }
 
     return (
         <>
@@ -61,6 +72,7 @@ const Product = () => {
                             averageRating={item.averageRating}
                             productId={params.productId as string}
                             token={token as string}
+                            setIsReviewAdded={setIsReviewAdded}
                         />
                     </ProductPresentationSection>
                     <ProductDescriptionSection>
@@ -72,7 +84,18 @@ const Product = () => {
                             details={item.details} 
                         />
                     </ProductPresentationSection>
-
+                    {
+                        isReviewAdded && <ReviewForm 
+                            productId={params.productId as string}
+                            token={token as string}
+                            closeReviewForm={closeReviewForm}
+                        />
+                    }
+                    <ReviewDisplay
+                        productId={params.productId as string}
+                        token={token as string}
+                        reloadTriggerer={reviewDisplayReloadTriggerer}
+                    />
                     <Recommendations productId={params.productId as string} />
                 </ProductWrapper>
             }
