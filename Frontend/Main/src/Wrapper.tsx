@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect } from "react"
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 interface WrapperProps {
     children: JSX.Element[] | ReactNode[];
@@ -8,6 +8,8 @@ interface WrapperProps {
 export const PageWrapper = ({children}:WrapperProps) => {
 
     const navigate = useNavigate();
+    const params = useParams();
+    console.log(params);
 
     const handleStorageRedirect = useCallback(() => {
         const data = localStorage.getItem('redirect');
