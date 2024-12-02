@@ -32,20 +32,16 @@ public class UserEventConsumer {
     public void consumeUserRequest(@Payload String userId, Acknowledgment ack) {
         try {
             log.info("Consumed user request: {}", userId);
-            // Fetch the user details from the repository
             User user = userRepository.findByUuid(userId)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
-            // Create the UserDetailInfoEvent
             UserDetailInfoEvent userDetailInfoEvent = new UserDetailInfoEvent(
                     user.getUuid(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getPhoneNumber()
             );
 
-            // Send the response to the appropriate Kafka topic
             userEventProducer.sendUserEvent(userDetailInfoEvent);
 
         } catch (Exception e) {
-            // Handle exceptions appropriately
             e.printStackTrace();
         } finally {
             // Acknowledge the message

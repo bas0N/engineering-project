@@ -1,6 +1,7 @@
 package org.example.auth.repository;
 
 import org.example.auth.entity.Address;
+import org.example.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,9 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    @Modifying
-    @Query("DELETE FROM Address a WHERE a.uuid IN :uuids")
-    void deleteAddressesByUuids(@Param("uuids") List<String> uuids);
 
     @Query("SELECT a FROM Address a WHERE a.uuid = :uuid")
     Optional<Address> findByUuid(String uuid);
@@ -35,4 +33,9 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
             @Param("country") String country
     );
 
+    @Query("SELECT COUNT(a) > 0 FROM Address a WHERE a.uuid = :uuid")
+    boolean existsByUuid(String uuid);
+
+    @Query("SELECT a FROM Address a WHERE a.user = :user")
+    List<Address> findAllByUser(User user);
 }

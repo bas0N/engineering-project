@@ -18,31 +18,39 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserDetailsService userDetailsService;
 
-    @RequestMapping(path = "/details/personal-data", method = RequestMethod.PATCH)
+    @PatchMapping("/details/personal-data")
     public ResponseEntity<?> userPersonalData(@Valid @RequestBody UserPersonalDataRequest userPersonalDataRequest, HttpServletRequest request) {
-        return ResponseEntity.ok(userDetailsService.fillUserPersonalData(userPersonalDataRequest, request));
+        return userDetailsService.fillUserPersonalData(userPersonalDataRequest, request);
     }
 
-    @RequestMapping(path = "/details/address", method = RequestMethod.PATCH)
+    @PatchMapping("/details/address")
     public ResponseEntity<?> updateAddresses(@Valid @RequestBody AddressesChangeRequest addressesChangeRequest, HttpServletRequest request) {
-        return ResponseEntity.ok(userDetailsService.updateUserAddresses(addressesChangeRequest, request));
+        return userDetailsService.updateUserAddresses(addressesChangeRequest, request);
     }
 
-    @RequestMapping(path = "/details", method = RequestMethod.GET)
+    @GetMapping("/details")
     public ResponseEntity<?> userDetails(HttpServletRequest request) {
-        return ResponseEntity.ok(userDetailsService.getUserDetails(request));
+        return userDetailsService.getUserDetails(request);
     }
 
-    @RequestMapping(path = "/details/image", method = RequestMethod.POST)
+    @GetMapping("/details/{userId}")
+    public ResponseEntity<?> userDetails(@PathVariable String userId) {
+        return userDetailsService.getUserDetailsByUUid(userId);
+    }
+
+    @PostMapping("/details/image")
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file, HttpServletRequest request) throws Exception {
         return userDetailsService.uploadImage(request, file);
     }
 
-    @RequestMapping(path = "/details/image", method = RequestMethod.DELETE)
+    @DeleteMapping("/details/image")
     public ResponseEntity<?> deleteImage(HttpServletRequest request) throws Exception {
         return userDetailsService.deleteImage(request);
     }
 
-
+    @DeleteMapping("/delete-my-account")
+    public ResponseEntity<?> deleteMyAccount(HttpServletRequest request) {
+        return userDetailsService.deleteMyAccount(request);
+    }
 
 }

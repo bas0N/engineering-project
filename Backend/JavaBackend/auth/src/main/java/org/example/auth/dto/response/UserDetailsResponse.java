@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class UserDetailsResponse {
+    private final String Id;
     private final String firstName;
     private final String lastName;
     private final String email;
@@ -19,13 +20,12 @@ public class UserDetailsResponse {
     private final String imageUrl;
 
     public UserDetailsResponse(User user) {
+        this.Id = user.getUuid();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
         this.imageUrl = user.getImageUrl();
-        this.addresses = user.getAddresses().stream()
-                .map(addressMapper::toAddressResponse)
-                .collect(Collectors.toList());
+        this.addresses = addressMapper.toAddressResponseList(user.getAddresses());
     }
 }

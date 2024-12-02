@@ -12,32 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
-    @Query("{ $and: [ " +
-            "{ 'mainCategory': ?0 }, " +
-            "{ 'title': { $regex: ?1, $options: 'i' } }, " +
-            "{ 'price': { $gte: ?2, $lte: ?3 } }, " +
-            "{ 'averageRating': { $gte: ?4, $lte: ?5 } }, " +
-            "{ $or: [ { 'categories': { $in: ?6 } }, { ?6: null } ] }, " +
-            "{ $or: [ { 'store': ?7 }, { ?7: null } ] } " +
-            "]}")
-    Page<Product> searchProducts(
-            String mainCategory,
-            String title,
-            Double minPrice,
-            Double maxPrice,
-            Double minRating,
-            Double maxRating,
-            List<String> categories,
-            String store,
-            Pageable pageable
-    );
-
     @Query("{ 'parent_asin': ?0 }")
     Optional<Product> findByParentAsin(String parentAsin);
 
     @Query(value = "{ 'parent_asin': ?0 }", delete = true)
     void deleteByParentAsin(String parentAsin);
 
-    @Query("{ 'parent_asin': ?0 }")
-    Optional<Product> existsByParentAsin(String id);
+    @Query("{ 'userId': ?0 }")
+    Page<Product> findByUserId(String userId, Pageable pageable);
 }

@@ -14,23 +14,23 @@ import java.util.function.Predicate;
 @Component
 public class RouteValidator {
     public Set<Endpoint> openApiEndpoints = new HashSet<>(List.of(
-            new Endpoint("/auth/logout", HttpMethod.GET,Role.GUEST),
-            new Endpoint("/auth/register",HttpMethod.POST,Role.GUEST),
-            new Endpoint("/auth/login",HttpMethod.POST,Role.GUEST),
-            new Endpoint("/auth/validate",HttpMethod.GET,Role.GUEST),
-            new Endpoint("/auth/activate",HttpMethod.GET,Role.GUEST),
-            new Endpoint("/auth/authorize",HttpMethod.GET, Role.GUEST),
-            new Endpoint("/auth/reset-password",HttpMethod.PATCH,Role.GUEST),
-            new Endpoint("/auth/reset-password",HttpMethod.POST,Role.GUEST),
-            new Endpoint("/api/v1/gateway",HttpMethod.POST,Role.GUEST),
-            new Endpoint("/api/v1/auto-login",HttpMethod.GET,Role.GUEST),
-            new Endpoint("/api/v1/logged-in",HttpMethod.GET,Role.GUEST)
+           // new Endpoint("/auth/logout", HttpMethod.GET, Role.GUEST),
+            new Endpoint("/auth/register", HttpMethod.POST, Role.GUEST),
+            new Endpoint("/auth/login", HttpMethod.POST, Role.GUEST),
+            new Endpoint("/auth/validate", HttpMethod.GET, Role.GUEST),
+           // new Endpoint("/auth/activate", HttpMethod.GET, Role.GUEST),
+            new Endpoint("/auth/authorize", HttpMethod.GET, Role.GUEST)
+           // new Endpoint("/auth/reset-password", HttpMethod.PATCH, Role.GUEST),
+           // new Endpoint("/auth/reset-password", HttpMethod.POST, Role.GUEST),
+            //new Endpoint("/api/v1/gateway", HttpMethod.POST, Role.GUEST),
+         //   new Endpoint("/api/v1/auto-login", HttpMethod.GET, Role.GUEST),
+         //   new Endpoint("/api/v1/logged-in", HttpMethod.GET, Role.GUEST)
     )
     );
     private final Set<Endpoint> adminEndpoints = new HashSet<>();
 
-    public void addEndpoints(List<Endpoint> endpointList){
-        for (Endpoint endpoint: endpointList){
+    public void addEndpoints(List<Endpoint> endpointList) {
+        for (Endpoint endpoint : endpointList) {
             if (endpoint.getRole().name().equals(Role.ADMIN.name())) {
                 adminEndpoints.add(endpoint);
             }

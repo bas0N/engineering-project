@@ -16,4 +16,8 @@ public interface UserDetailsService {
     ResponseEntity<?> uploadImage(HttpServletRequest request, MultipartFile file) throws Exception;
 
     ResponseEntity<?> deleteImage(HttpServletRequest request) throws Exception;
+
+    ResponseEntity<?> deleteMyAccount(HttpServletRequest request);
+
+    ResponseEntity<?> getUserDetailsByUUid(String userId);
 }

@@ -52,9 +52,9 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String getSubject(final String token) {
-        return Jwts
-                .parser()
-                .setSigningKey(SECRET)
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -70,7 +70,6 @@ public class JwtServiceImpl implements JwtService {
         return getClaimFromToken(token, "email");
     }
 
-    // Pobieranie uuid z tokena
     public String getUuidFromToken(String token) {
         return getClaimFromToken(token, "uuid");
     }
@@ -95,4 +94,6 @@ public class JwtServiceImpl implements JwtService {
         }
         return null;
     }
+
+
 }

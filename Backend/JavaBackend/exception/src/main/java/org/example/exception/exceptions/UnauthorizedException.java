@@ -30,4 +30,6 @@ public class UnauthorizedException extends RuntimeException {
         this.additionalDetails = additionalDetails;
     }
 
+
+
 }

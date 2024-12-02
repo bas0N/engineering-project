@@ -23,8 +23,9 @@ public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointCo
 
     @Override
     public void initMap() {
-        endpointList.add(new Endpoint("/api/v1/auth/user/**", HttpMethod.GET, Role.USER));
-        endpointList.add(new Endpoint("/api/v1/auth/user/**", HttpMethod.PATCH, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/auth/admin/**", HttpMethod.DELETE, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/auth/admin/**", HttpMethod.PATCH, Role.USER));
+        endpointList.add(new Endpoint("/api/v1/auth/admin/**", HttpMethod.GET, Role.ADMIN));
     }
 
     @Override

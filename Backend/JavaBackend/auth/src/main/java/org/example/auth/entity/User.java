@@ -18,6 +18,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
+    @Getter
     private long id;
 
     @Getter
@@ -68,10 +69,6 @@ public class User implements UserDetails {
 
     public User() {
         generateUuid();
-    }
-
-    private long getId() {
-        return id;
     }
 
     @Override

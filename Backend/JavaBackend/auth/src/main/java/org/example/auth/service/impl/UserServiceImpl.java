@@ -1,32 +1,31 @@
 package org.example.auth.service.impl;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.Cookie;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.auth.dto.request.ChangePasswordData;
+import org.example.auth.dto.request.ChangePasswordRequest;
 import org.example.auth.dto.request.LoginRequest;
 import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
 import org.example.auth.entity.*;
 import org.example.auth.mapper.UserMapper;
-import org.example.auth.repository.ResetOperationsRepository;
 import org.example.auth.repository.UserRepository;
 import org.example.auth.service.*;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.ResourceNotFoundException;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -35,33 +34,20 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ResetOperationService resetOperationService;
-    private final ResetOperationsRepository resetOperationsRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final EmailService emailService;
-    private final CookieService cookieService;
     @Value("${jwt.exp}")
     private int exp;
     @Value("${jwt.refresh.exp}")
     private int refreshExp;
 
 
-    private User saveUser(User user) {
+    private void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.saveAndFlush(user);
+        userRepository.saveAndFlush(user);
     }
 
-
-    private String generateToken(String email, String uuid, int exp) {
-        return jwtService.generateToken(email, uuid, exp);
-    }
-
-
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        return null;
-    }
-
+    @Override
     public void validateToken(HttpServletRequest request, HttpServletResponse response) throws ExpiredJwtException, IllegalArgumentException {
         String accessToken = extractToken(request.getHeader("Authorization"));
         String refreshToken = extractToken(request.getHeader("Refresh-Token"));
@@ -72,13 +58,11 @@ public class UserServiceImpl implements UserService {
 
         try {
             jwtService.validateToken(accessToken);
-            //return new AuthResponse(Code.SUCCESS);
         } catch (ExpiredJwtException e) {
             log.info("Access token expired. Attempting to validate refresh token.");
             if (refreshToken != null) {
                 jwtService.validateToken(refreshToken);
 
-                // Generate new tokens
                 String newAuthToken = jwtService.refreshToken(refreshToken, exp);
                 String newRefreshToken = jwtService.refreshToken(refreshToken, refreshExp);
 
@@ -86,19 +70,19 @@ public class UserServiceImpl implements UserService {
                 response.setHeader("Refresh-Token", "Bearer " + newRefreshToken);
 
                 log.info("New tokens issued successfully.");
-                //return new AuthResponse(Code.SUCCESS, newAuthToken, newRefreshToken);
             } else {
                 throw new UnauthorizedException("Refresh token is missing or invalid.", "REFRESH_TOKEN_MISSING");
             }
-        } catch (IllegalArgumentException e) {
+        } catch (MalformedJwtException | IllegalArgumentException e) {
             log.info("Invalid access token.");
             throw new ApiRequestException("Invalid token.", e, "INVALID_TOKEN");
         }
     }
 
+    @Override
     public void loggedIn(HttpServletRequest request, HttpServletResponse response) {
         try {
-            validateToken(request, response);  // Walidacja tokena
+            validateToken(request, response);
         } catch (ExpiredJwtException e) {
             log.info("Token is expired.");
             throw new UnauthorizedException("Token is expired.", "TOKEN_EXPIRED");
@@ -109,127 +93,118 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void loginByToken(HttpServletRequest request, HttpServletResponse response) {
+    @Override
+    public AuthResponse register(UserRegisterRequest userRegisterRequest) {
         try {
-            validateToken(request, response);
+            userRepository.findUserByEmail(userRegisterRequest.getEmail()).ifPresent(value -> {
+                log.info("User already exists with this email");
+                throw new ApiRequestException("User already exists with this email", "EMAIL_EXISTS");
+            });
+            User user = UserMapper.INSTANCE.mapUserRegisterDtoToUser(userRegisterRequest);
 
-            String refresh = null;
-            for (Cookie value : Arrays.stream(request.getCookies()).toList()) {
-                if (value.getName().equals("refresh")) {
-                    refresh = value.getValue();
-                }
-            }
+            saveUser(user);
 
-            if (refresh == null) {
-                throw new UnauthorizedException("Refresh token not found in cookies.", "REFRESH_TOKEN_MISSING");
-            }
+            String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
+            String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
 
-//            String email = jwtService.getSubject(refresh);
-//
-//            User user = userRepository.findUserByEmail(email)
-//                    .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
-
-        } catch (ExpiredJwtException e) {
-            log.info("Can't login, token is expired.");
-            throw new UnauthorizedException("Token is expired.", "TOKEN_EXPIRED", Map.of("token", "refresh"));
-        } catch (IllegalArgumentException e) {
-            log.info("Can't login, token is invalid.");
-            throw new ApiRequestException("Invalid token.", e, "INVALID_TOKEN");
+            return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
+        } catch (ApiRequestException e) {
+            log.error("ApiRequestException during registration: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error during user registration: {}", e.getMessage(), e);
+            throw new ApiRequestException("Unexpected error during registration", e, "INTERNAL_ERROR");
         }
     }
 
-    public AuthResponse register(UserRegisterRequest userRegisterRequest) {
-        userRepository.findUserByEmail(userRegisterRequest.getEmail()).ifPresent(value -> {
-            log.info("Users alredy exist with this mail");
-            throw new ApiRequestException("User already exists with this email", "EMAIL_EXISTS");
-        });
-        User user = UserMapper.INSTANCE.mapUserRegisterDtoToUser(userRegisterRequest);
-        saveUser(user);
-        String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
-        String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
-        return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
-    }
-
+    @Override
     public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findUserByEmailAndLockAndEnabled(loginRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", loginRequest.getEmail()));
+
         try {
             Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
-
             if (authenticate.isAuthenticated()) {
                 String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
                 String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
-
-
-                //Cookie authCookie = cookieService.generateCookie("Authorization", authToken, exp);
-                //Cookie refreshCookie = cookieService.generateCookie("refresh", refreshToken, refreshExp);
-
-                //response.addCookie(authCookie);
-                //response.addCookie(refreshCookie);
 
                 return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
             } else {
                 log.info("--STOP LoginService: Invalid credentials");
                 throw new UnauthorizedException("Invalid credentials", "INVALID_CREDENTIALS");
             }
+        } catch (BadCredentialsException e) {
+            log.error("Invalid credentials: {}", e.getMessage());
+            throw new UnauthorizedException("Invalid credentials", "INVALID_CREDENTIALS");
         } catch (Exception e) {
-            log.info("Authentication failed", e);
+            log.error("Authentication failed: {}", e.getMessage());
             throw new ApiRequestException("Authentication failed", e, "AUTH_FAILED");
         }
     }
 
-
-    public void setAsAdmin(UserRegisterRequest user) {
-//        userRepository.findUserByLogin(user.getLogin()).ifPresent(value -> {
-//            value.setRole(Role.ADMIN);
-//            userRepository.save(value);
-//        });
-    }
-
-    public void activateUser(String uid) {
-        User user = userRepository.findUserByUuid(uid).orElse(null);
-        if (user != null) {
-            user.setLock(false);
-            user.setEnabled(true);
-            userRepository.save(user);
-            return;
-        }
-    }
-
-    public void recoveryPassword(String email) {
-        User user = userRepository.findUserByEmail(email).orElse(null);
-        if (user != null) {
-            ResetOperations resetOperations = resetOperationService.initResetOperation(user);
-            emailService.sendPasswordRecovery(user, resetOperations.getUid());
-            return;
-        }
-    }
-
-    public void restPassword(ChangePasswordData changePasswordData) {
-        ResetOperations resetOperations = resetOperationsRepository.findByUid(changePasswordData.getUid()).orElse(null);
-        if (resetOperations != null) {
-            User user = userRepository.findUserByUuid(resetOperations.getUser().getUuid()).orElse(null);
-
-            if (user != null) {
-                user.setPassword(changePasswordData.getPassword());
-                saveUser(user);
-                resetOperationService.endOperation(resetOperations.getUid());
-                return;
-            }
-        }
-    }
-
+    @Override
     public void authorize(HttpServletRequest request) {
-        String accessToken = extractToken(request.getHeader("Authorization"));
+        try {
+            String accessToken = extractToken(request.getHeader("Authorization"));
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            throw new UnauthorizedException("Access token is missing or invalid.", "ACCESS_TOKEN_MISSING");
+            if (accessToken == null || accessToken.isEmpty()) {
+                throw new UnauthorizedException("Access token is missing or invalid.", "ACCESS_TOKEN_MISSING");
+            }
+
+            jwtService.validateToken(accessToken);
+
+            String email = jwtService.getEmailFromToken(accessToken);
+            User user = userRepository.findUserByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+            if (user.getRole() != Role.ADMIN) {
+                log.warn("Access denied: User is not an admin. Role: {}", user.getRole());
+                throw new UnauthorizedException("Access denied. Admin role required.", "ACCESS_DENIED");
+            }
+
+            log.info("User authorized successfully as ADMIN.");
+        } catch (UnauthorizedException e) {
+            log.error("Authorization failed: {}", e.getMessage());
+            throw e;
+        } catch (ResourceNotFoundException e) {
+            log.error("User not found: {}", e.getMessage());
+            throw new UnauthorizedException("User not found.", "USER_NOT_FOUND");
+        } catch (MalformedJwtException e) {
+            log.error("Invalid token format: {}", e.getMessage());
+            throw new UnauthorizedException("Invalid token format.", "INVALID_TOKEN_FORMAT");
+        } catch (Exception e) {
+            log.error("Unexpected error during authorization: {}", e.getMessage(), e);
+            throw new ApiRequestException("Unexpected error during authorization.", e, "AUTHORIZATION_ERROR");
         }
+    }
 
-        jwtService.validateToken(accessToken);
-        log.info("User authorized successfully.");
+    @Override
+    public AuthResponse changePassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest request) {
+        try {
+            String token = extractToken(request.getHeader("Authorization"));
+            String userUuid = jwtService.getUuidFromToken(token);
+            User user = userRepository.findUserByUuid(userUuid)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", userUuid));
+            if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+                userRepository.save(user);
+                return new AuthResponse(Code.SUCCESS, null, null);
+            } else {
+                throw new UnauthorizedException(
+                        "Invalid old password",
+                        "INVALID_PASSWORD",
+                        Map.of("userUuid", userUuid, "reason", "Old password does not match")
+                );
+            }
+        } catch (MalformedJwtException | IllegalArgumentException e) {
+            throw new UnauthorizedException(
+                    "Invalid token",
+                    "INVALID_TOKEN",
+                    Map.of("reason", "Malformed or missing token", "timestamp", LocalDateTime.now())
+            );
+        }
     }
 
     private String extractToken(String header) {

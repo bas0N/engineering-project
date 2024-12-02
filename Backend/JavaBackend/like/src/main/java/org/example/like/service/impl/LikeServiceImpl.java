@@ -23,6 +23,7 @@ import org.example.like.repository.LikeRepository;
 import org.example.like.repository.ProductRepository;
 import org.example.like.response.LikeResponse;
 import org.example.like.service.LikeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,7 +41,7 @@ public class LikeServiceImpl implements LikeService {
     private final ProductRepository productRepository;
 
     @Override
-    public LikeResponse addLike(String productUuid, HttpServletRequest request) {
+    public ResponseEntity<LikeResponse> addLike(String productUuid, HttpServletRequest request) {
         try {
             log.info("adding like for product: {}", productUuid);
             String token = jwtCommonService.getTokenFromRequest(request);

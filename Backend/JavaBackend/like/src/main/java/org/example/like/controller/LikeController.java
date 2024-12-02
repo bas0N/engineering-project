@@ -18,8 +18,7 @@ public class LikeController {
 
     @RequestMapping(path = "/{productId}", method = RequestMethod.POST)
     public ResponseEntity<LikeResponse> addLike(@PathVariable String productId, HttpServletRequest request) {
-        LikeResponse addLikeResponse = likeService.addLike(productId, request);
-        return ResponseEntity.ok(addLikeResponse);
+        return likeService.addLike(productId, request);
     }
 
     @RequestMapping(path = "/my", method = RequestMethod.GET)

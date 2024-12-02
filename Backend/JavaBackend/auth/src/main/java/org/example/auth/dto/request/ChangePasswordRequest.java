@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ChangePasswordData {
-    private String password;
-    private String uid;
+public class ChangePasswordRequest {
+    String oldPassword;
+    private String newPassword;
 }

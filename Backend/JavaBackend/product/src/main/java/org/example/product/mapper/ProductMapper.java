@@ -1,6 +1,7 @@
 package org.example.product.mapper;
 
 import org.example.commondto.ProductEvent;
+import org.example.product.dto.Response.ProductDetailResponse;
 import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Product;
 import org.mapstruct.Mapper;
@@ -12,8 +13,11 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
-    @Mapping(target = "owner", source = "user")
+
     ProductResponse toProductResponse(Product product);
+
+    @Mapping(target = "owner", source = "user")
+    ProductDetailResponse toProductDetailResponse(Product product);
 
     @Mapping(target = "productId", source = "parentAsin")
     ProductEvent toProductEvent(Product product);

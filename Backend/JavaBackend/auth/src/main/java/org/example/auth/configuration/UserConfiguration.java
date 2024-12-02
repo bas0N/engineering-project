@@ -30,7 +30,7 @@ public class UserConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // CSRF protection disabled
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers(
@@ -44,10 +44,10 @@ public class UserConfiguration {
                                     "/api/v1/auth/logged-in",
                                     "/api/v1/auth/authorize",
                                     "/api/v1/auth/user/**",
-                                    "/v3/api-docs/**",         // Swagger API documentation
-                                    "/swagger-ui/**",          // Swagger UI resources
+                                    "/v3/api-docs/**",
+                                    "/swagger-ui/**",
                                     "/swagger-ui.html"
-                            ).permitAll();  // Public endpoints
+                            ).permitAll();
                 });
 
         return http.build();
