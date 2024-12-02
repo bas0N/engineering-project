@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.LikeEvent;
 import org.example.commondto.ProductEvent;
-import org.example.exception.exceptions.ApiRequestException;
-import org.example.exception.exceptions.InvalidTokenException;
-import org.example.exception.exceptions.LikeAlreadyExistsException;
-import org.example.exception.exceptions.UnauthorizedException;
+import org.example.exception.exceptions.*;
 import org.example.jwtcommon.jwt.JwtCommonService;
 import org.example.like.dto.ProductResponse;
 import org.example.like.entity.Image;
@@ -23,6 +20,7 @@ import org.example.like.repository.LikeRepository;
 import org.example.like.repository.ProductRepository;
 import org.example.like.response.LikeResponse;
 import org.example.like.service.LikeService;
+import org.example.like.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,100 +34,162 @@ import java.util.concurrent.TimeUnit;
 public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
     private final JwtCommonService jwtCommonService;
-    private final ProductInfoProducer productInfoProducer;
-    private final ProductInfoConsumer productInfoConsumer;
     private final ProductRepository productRepository;
+    private final ProductService productService;
 
     @Override
     public ResponseEntity<LikeResponse> addLike(String productUuid, HttpServletRequest request) {
         try {
-            log.info("adding like for product: {}", productUuid);
-            String token = jwtCommonService.getTokenFromRequest(request);
-            String userId = jwtCommonService.getCurrentUserId(token);
+            log.info("Adding like for product: {}", productUuid);
 
-            if (likeRepository.existsByUserIdAndProductId(userId, productUuid)) {
+            String userUuid = jwtCommonService.getUserFromRequest(request);
+
+            if (likeRepository.existsByUserIdAndProductId(userUuid, productUuid)) {
                 throw new LikeAlreadyExistsException("Like already exists for user and product.");
             }
-            Optional<Product> optionalProduct = productRepository.findByUuid(productUuid);
 
-            if (optionalProduct.isPresent()) {
-                Product product = optionalProduct.get();
-                Like like = new Like(userId, product, new Date());
-                likeRepository.save(like);
-                return LikeMapper.INSTANCE.mapLikeToLikeResponse(like);
-            } else {
-                productInfoProducer.sendProductEvent(new LikeEvent(userId, productUuid));
-                CompletableFuture<ProductEvent> productFuture = productInfoConsumer.getProductDetails(productUuid)
-                        .orTimeout(30, TimeUnit.SECONDS)
-                        .exceptionally(ex -> {
-                            log.error("Failed to retrieve product details for productId: {}", productUuid, ex);
-                            throw new ApiRequestException("Could not retrieve product details");
-                        });
+            Product product = getOrFetchProduct(productUuid, userUuid);
 
-                ProductEvent productEvent = productFuture.join();
-                Product product = ProductMapper.INSTANCE.toProduct(productEvent);
+            Like like = new Like(userUuid, product, new Date());
+            likeRepository.save(like);
 
-                List<Image> images = new ArrayList<>();
-                productEvent.getImages().forEach(imageEvent -> {
-                    images.add(ImageMapper.INSTANCE.toImage(imageEvent, product));
-                });
-                product.setImages(images);
-                log.info("Saving product: {}", product);
-                productRepository.saveAndFlush(product);
-                Like like = likeRepository.findByUserIdAndProductId(userId, productUuid)
-                        .orElseThrow(() -> new ApiRequestException("An error occurred while adding a like", "ADD_LIKE_ERROR"));
-                return new LikeResponse(like.getUuid(), like.getProduct().getUuid(), like.getUserId(), like.getDateAdded());
-            }
+            LikeResponse likeResponse = LikeMapper.INSTANCE.toLikeResponse(like);
+            return ResponseEntity.ok(likeResponse);
+
         } catch (InvalidTokenException e) {
+            log.error("Invalid token while adding like for product: {}", productUuid, e);
             throw new UnauthorizedException("Invalid token: " + e.getMessage(), "INVALID_TOKEN");
         } catch (LikeAlreadyExistsException e) {
+            log.error("Like already exists for user and product: {}", productUuid, e);
             throw new ApiRequestException("Like already exists: " + e.getMessage(), "LIKE_EXISTS");
         } catch (Exception e) {
-            throw new ApiRequestException("An error occurred while adding a like: " + e.getMessage(), "ADD_LIKE_ERROR");
+            log.error("Unexpected error while adding like for product: {}", productUuid, e);
+            throw new UnExpectedError("An unexpected error occurred while adding like", e);
         }
     }
 
     @Override
-    public List<ProductResponse> getMyLikedProducts(HttpServletRequest request) {
-        String token = jwtCommonService.getTokenFromRequest(request);
-        String userId = jwtCommonService.getCurrentUserId(token);
+    public ResponseEntity<List<ProductResponse>> getMyLikedProducts(HttpServletRequest request) {
+        try {
+            String userUuid = jwtCommonService.getUserFromRequest(request);
 
-        List<Product> productList = productRepository.findLikedProductsByUserId(userId);
-        return ProductMapper.INSTANCE.toProductResponseList(productList);
-    }
+            List<Product> productList = productRepository.findLikedProductsByUserId(userUuid);
 
-    @Override
-    public Long getNumberOfLikes(String productUuid) {
-        Optional<Product> productOpt = productRepository.findByUuid(productUuid);
-        if (productOpt.isEmpty()) {
-            return 0L;
-        }
-        Product product = productOpt.get();
-        return likeRepository.countByProductId(product.getId());
+            if (productList.isEmpty()) {
+                throw new ResourceNotFoundException("Liked products not found for user", "userId", userUuid);
+            }
 
-    }
+            List<ProductResponse> productResponseList = ProductMapper.INSTANCE.toProductResponseList(productList);
 
-    @Override
-    public void removeLike(String likeUuid, HttpServletRequest request) {
-        Optional<Like> optionalLike = likeRepository.findByUuid(likeUuid);
-        if (optionalLike.isEmpty()) {
-            throw new ApiRequestException("Like does not exist", "LIKE_NOT_FOUND");
-        }
-        String token = jwtCommonService.getTokenFromRequest(request);
-        String userId = jwtCommonService.getCurrentUserId(token);
-        Like like = optionalLike.get();
+            return ResponseEntity.ok(productResponseList);
 
-        if (!Objects.equals(like.getUserId(), userId)) {
-            throw new UnauthorizedException("User is not authorized to remove like", "UNAUTHORIZED");
-        }
-        if (likeRepository.deleteByUuid(likeUuid) == 0) {
-            throw new ApiRequestException("An error occurred while removing like", "REMOVE_LIKE_ERROR");
+        } catch (InvalidTokenException e) {
+            log.error("Invalid token: {}", e.getMessage());
+            throw new UnauthorizedException("Invalid token: " + e.getMessage(), "INVALID_TOKEN");
+        } catch (ResourceNotFoundException e) {
+            log.error("No liked products found for user: {}", e.getMessage());
+            throw new ResourceNotFoundException("No liked products found for user", "USER_ID", e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error while fetching liked products", e);
+            throw new UnExpectedError("An unexpected error occurred while fetching liked products", e);
         }
     }
 
     @Override
-    public Boolean isLiked(String productId, HttpServletRequest request) {
-        String userId = jwtCommonService.getUserFromRequest(request);
-        return likeRepository.existsByUserIdAndProductId(userId, productId);
+    public ResponseEntity<Long> getNumberOfLikes(String productUuid) {
+        try {
+            Product product = productRepository.findByUuid(productUuid)
+                    .orElseThrow(() -> new ResourceNotFoundException("Product", "uuid", productUuid));
+
+            Long likeCount = likeRepository.countByProductId(product.getId());
+
+            return ResponseEntity.ok(likeCount);
+
+        } catch (ResourceNotFoundException e) {
+            log.error("Product not found with uuid: {}", productUuid, e);
+            throw new ResourceNotFoundException("Product not found", "uuid", productUuid);
+        } catch (Exception e) {
+            log.error("Unexpected error while retrieving like count for product: {}", productUuid, e);
+            throw new UnExpectedError("An unexpected error occurred while retrieving like count", e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> removeLike(String likeUuid, HttpServletRequest request) {
+        try {
+            Like like = likeRepository.findByUuid(likeUuid)
+                    .orElseThrow(() -> new ApiRequestException("Like does not exist", "LIKE_NOT_FOUND"));
+
+            String userUuid = jwtCommonService.getUserFromRequest(request);
+
+            if (!Objects.equals(like.getUserId(), userUuid)) {
+                throw new UnauthorizedException("User is not authorized to remove this like", "UNAUTHORIZED");
+            }
+
+            int deletedCount = likeRepository.deleteByUuid(likeUuid);
+            if (deletedCount == 0) {
+                throw new ApiRequestException("An error occurred while removing the like", "REMOVE_LIKE_ERROR");
+            }
+
+            productRepository.findById(like.getProduct().getId())
+                    .ifPresent(product -> {
+                        if (!likeRepository.existsByProductId(product.getId())) {
+                            productRepository.deleteById(product.getId());
+                        }
+                    });
+
+            return ResponseEntity.ok().build();
+        } catch (UnauthorizedException e) {
+            log.error("Unauthorized access while removing like with UUID: {}", likeUuid, e);
+            throw e;
+        } catch (ApiRequestException e) {
+            log.error("Error occurred while removing like with UUID: {}", likeUuid, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error while removing like with UUID: {}", likeUuid, e);
+            throw new ApiRequestException("An unexpected error occurred while removing the like", e, "REMOVE_LIKE_ERROR");
+        }
+    }
+    @Override
+    public ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request) {
+        try {
+            String userId = jwtCommonService.getUserFromRequest(request);
+
+            boolean isLiked = likeRepository.existsByUserIdAndProductId(userId, productId);
+
+            return ResponseEntity.ok(isLiked);
+        } catch (InvalidTokenException e) {
+            log.error("Invalid token while checking like status for productId: {}", productId, e);
+            throw new UnauthorizedException("Invalid token: " + e.getMessage(), "INVALID_TOKEN");
+        } catch (Exception e) {
+            log.error("Unexpected error while checking like status for productId: {}", productId, e);
+            throw new ApiRequestException("An unexpected error occurred while checking like status", e, "LIKE_STATUS_ERROR");
+        }
+    }
+
+
+    private Product getOrFetchProduct(String productUuid, String userUuid) {
+        Optional<Product> optionalProduct = productRepository.findByUuid(productUuid);
+
+        if (optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        } else {
+            try {
+                ProductEvent productEvent = productService.getProduct(productUuid, userUuid);
+
+                Product product = ProductMapper.INSTANCE.toProduct(productEvent);
+                List<Image> images = productEvent.getImages().stream()
+                        .map(imageEvent -> ImageMapper.INSTANCE.toImage(imageEvent, product))
+                        .toList();
+
+                product.setImages(images);
+                log.info("Saving fetched product: {}", product);
+                return productRepository.saveAndFlush(product);
+
+            } catch (Exception ex) {
+                log.error("Failed to retrieve product details for productId: {}", productUuid, ex);
+                throw new ApiRequestException("Could not retrieve product details", ex, "PRODUCT_FETCH_ERROR");
+            }
+        }
     }
 }

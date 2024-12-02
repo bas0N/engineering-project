@@ -7,8 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.security.access.AccessDeniedException;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,23 +32,42 @@ public class CustomGlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException ex,
                                                                         WebRequest webRequest) {
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails> handleGeneralException(Exception ex,
-                                                               WebRequest webRequest) {
+    public ResponseEntity<ErrorDetails> handleGeneralException(Exception ex, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                "INTERNAL_SERVER_ERROR",
+                Map.of("errorType", ex.getClass().getSimpleName())
+        );
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorDetails> handleAccessDeniedException(Exception ex,
-                                                               WebRequest webRequest) {
+    public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException ex, WebRequest webRequest) {
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                "ACCESS_DENIED",
+                Map.of("hint", "You do not have the necessary permissions to access this resource.")
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
+
 
     @ExceptionHandler(ApiRequestException.class)
     public ResponseEntity<ErrorDetails> handleApiRequestException(ApiRequestException ex, WebRequest webRequest) {

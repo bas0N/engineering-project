@@ -1,9 +1,10 @@
 package org.example.exception.exceptions;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.CONFLICT)  // Możesz ustawić odpowiedni status HTTP
+@Getter
 public class LikeAlreadyExistsException extends RuntimeException {
     private final String errorCode;
 
@@ -17,7 +18,4 @@ public class LikeAlreadyExistsException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
 }

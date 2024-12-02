@@ -10,12 +10,12 @@ import java.util.List;
 public interface LikeService {
     ResponseEntity<LikeResponse> addLike(String productId, HttpServletRequest request);
 
-    List<ProductResponse> getMyLikedProducts(HttpServletRequest request);
+    ResponseEntity<List<ProductResponse>> getMyLikedProducts(HttpServletRequest request);
 
-    Long getNumberOfLikes(String productId);
+    ResponseEntity<Long> getNumberOfLikes(String productId);
 
-    void removeLike(String likeId, HttpServletRequest request);
+    ResponseEntity<?> removeLike(String likeId, HttpServletRequest request);
 
-    Boolean isLiked(String productId, HttpServletRequest request);
+    ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request);
 }
 
