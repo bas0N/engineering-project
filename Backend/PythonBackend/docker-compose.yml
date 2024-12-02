@@ -8,23 +8,34 @@ services:
       - 8000:8000
     networks:
       - net
-  recc-system-1:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./volume/chromadb-data:/volume/chromadb-data
-    ports:
-      - 5000:5000
+  postgres:
+    image: postgres
+    container_name: my_postgres
     environment:
-      - MONGO_URI=${MONGO_URI}
-      - MONGO_DB=dev
-      - PORT=5000
-      - CHROMA_HOST=chroma
-    depends_on:
-      - chroma
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
     networks:
       - net
+  # recc-system-1:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./volume/chromadb-data:/volume/chromadb-data
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     - MONGO_URI=${MONGO_URI}
+  #     - MONGO_DB=dev
+  #     - PORT=5000
+  #     - CHROMA_HOST=chroma
+  #   depends_on:
+  #     - chroma
+  #   networks:
+  #     - net
   # zookeeper:
   #   image: bitnami/zookeeper:latest
   #   container_name: zookeeper
