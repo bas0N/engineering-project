@@ -34,7 +34,7 @@ public class AuthController {
         return ResponseEntity.ok(userService.login(loginRequest));
     }
 
-    @RequestMapping(path = "/logged-in", method = RequestMethod.GET)
+    @GetMapping("/logged-in")
     public ResponseEntity<?> loggedIn(HttpServletResponse response, HttpServletRequest request) {
         userService.loggedIn(request, response);
         return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
@@ -74,8 +74,13 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<AuthResponse> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, HttpServletRequest request) {
+    public ResponseEntity<AuthResponse> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest, HttpServletRequest request) {
         return ResponseEntity.ok(userService.changePassword(changePasswordRequest, request));
+    }
+
+    @DeleteMapping("/delete-my-account")
+    public ResponseEntity<?> deleteMyAccount(HttpServletRequest request) {
+        return userService.deleteMyAccount(request);
     }
 
 }

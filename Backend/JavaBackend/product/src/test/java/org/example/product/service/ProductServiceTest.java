@@ -5,7 +5,7 @@ import org.example.commondto.UserDetailInfoEvent;
 import org.example.exception.exceptions.ErrorDetails;
 import org.example.exception.exceptions.InvalidParameterException;
 import org.example.exception.exceptions.ResourceNotFoundException;
-import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.jwtcommon.jwt.Utils;
 import org.example.product.dto.Request.AddProductRequest;
 import org.example.product.dto.Request.UpdateProductRequest;
 import org.example.product.dto.Response.ImageUploadResponse;
@@ -15,7 +15,6 @@ import org.example.product.entity.Image;
 import org.example.product.entity.Product;
 import org.example.product.entity.User;
 import org.example.product.enums.DetailKey;
-import org.example.product.kafka.history.ProductHistoryEventProducer;
 import org.example.product.repository.ProductRepository;
 import org.example.product.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +59,7 @@ public class ProductServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private JwtCommonService jwtCommonService;
+    private Utils utils;
 
     @Mock
     private HttpServletRequest request;
@@ -170,7 +169,7 @@ public class ProductServiceTest {
         product.setMainCategory("Health and Personal Care");
 
         when(productRepository.findByParentAsin(parentAsin)).thenReturn(Optional.of(product));
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
 
         // Act
         ResponseEntity<?> response = productService.getProductById(parentAsin, request);
@@ -224,7 +223,7 @@ public class ProductServiceTest {
         AddProductRequest addProductRequest = createAddProductRequest();
         UserDetailInfoEvent userInfo = new UserDetailInfoEvent("1", "email", "John", "Doe", "user123");
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(userService.getUserDetailInfo(userId)).thenReturn(userInfo);
         when(productRepository.save(any(Product.class))).thenReturn(new Product());
 
@@ -271,7 +270,7 @@ public class ProductServiceTest {
         );
 
         when(productRepository.findByParentAsin(productId)).thenReturn(Optional.of(existingProduct));
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -322,7 +321,7 @@ public class ProductServiceTest {
         Product product = new Product();
         product.setUser(new User("test@gmail.com", "John", "Doe", userId));
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.findByParentAsin(productId)).thenReturn(Optional.of(product));
 
         ResponseEntity<?> response = productService.deleteProduct(productId, request);
@@ -374,7 +373,7 @@ public class ProductServiceTest {
                 "thumbUrl", "largeUrl", "variantUrl", "hiResUrl"
         );
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.findByParentAsin(productId)).thenReturn(Optional.of(product));
         when(imageService.addImage(eq(productId), eq(hiRes), eq(large), eq(thumb), eq(variant)))
                 .thenReturn(imageUploadResponse);
@@ -435,7 +434,7 @@ public class ProductServiceTest {
                 "newThumb", "newLarge", "newVariant", "newHiRes"
         );
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.findByParentAsin(productId)).thenReturn(Optional.of(product));
         when(imageService.addImage(eq(productId), eq(hiRes), eq(large), eq(thumb), eq(variant)))
                 .thenReturn(imageUploadResponse);
@@ -489,7 +488,7 @@ public class ProductServiceTest {
                 new Image("thumb2", "large2", "variant2", "hiRes2")
         )));
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.findByParentAsin(productId)).thenReturn(Optional.of(product));
 
         // Act
@@ -539,7 +538,7 @@ public class ProductServiceTest {
 
         Page<Product> productPage = new PageImpl<>(List.of(product), pageable, 1);
 
-        when(jwtCommonService.getUserFromRequest(request)).thenReturn(userId);
+        when(utils.getUserFromRequest(request)).thenReturn(userId);
         when(productRepository.findByUserId(eq(userId), eq(pageable))).thenReturn(productPage);
 
         // Act

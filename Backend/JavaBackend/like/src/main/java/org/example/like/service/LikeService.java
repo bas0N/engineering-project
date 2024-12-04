@@ -14,7 +14,7 @@ public interface LikeService {
 
     ResponseEntity<Long> getNumberOfLikes(String productId);
 
-    ResponseEntity<?> removeLike(String likeId, HttpServletRequest request);
+    ResponseEntity<String> removeLike(String likeId, HttpServletRequest request);
 
     ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request);
 }

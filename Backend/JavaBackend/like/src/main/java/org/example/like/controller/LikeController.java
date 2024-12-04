@@ -32,7 +32,7 @@ public class LikeController {
     }
 
     @RequestMapping(path = "/remove/{likeId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeLike(@PathVariable String likeId, HttpServletRequest request) {
+    public ResponseEntity<String> removeLike(@PathVariable String likeId, HttpServletRequest request) {
         return likeService.removeLike(likeId, request);
     }
 

@@ -22,5 +22,7 @@ public class ProductEvent {
 
     private Double averageRating;
 
-    List<ImageEvent> images;
+    private List<ImageEvent> images;
+
+    private Boolean isActive;
 }

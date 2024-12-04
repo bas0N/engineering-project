@@ -71,51 +71,133 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(ApiRequestException.class)
     public ResponseEntity<ErrorDetails> handleApiRequestException(ApiRequestException ex, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorDetails> handleUnauthorizedException(UnauthorizedException ex, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(InvalidParameterException.class)
     public ResponseEntity<ErrorDetails> handleInvalidParameterException(InvalidParameterException ex, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DatabaseAccessException.class)
     public ResponseEntity<ErrorDetails> handleDatabaseAccessException(DatabaseAccessException ex, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(SearchOperationException.class)
     public ResponseEntity<ErrorDetails> handleSearchOperationException(SearchOperationException ex, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), webRequest.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                webRequest.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NoBasketInfoException.class)
     public ResponseEntity<ErrorDetails> handleNoBasketInfoException(NoBasketInfoException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(MissingUserDetailsException.class)
-    public ResponseEntity<ErrorDetails> handleMissingUserDetailsException(MissingUserDetailsException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnExpectedError.class)
     public ResponseEntity<ErrorDetails> handleUnExpectedError(UnExpectedError ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "INVALID_TOKEN",
+                null
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(LikeAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> handleLikeAlreadyExistsException(LikeAlreadyExistsException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                ex.getErrorCode(),
+                ex.getAdditionalDetails()
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserIsUnActiveException.class)
+    public ResponseEntity<ErrorDetails> handleUserIsUnActiveException(UserIsUnActiveException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "USER_IS_UNACTIVE",
+                null
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductIsUnActive.class)
+    public ResponseEntity<ErrorDetails> handleProductIsUnActive(ProductIsUnActive ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false),
+                "PRODUCT_IS_UNACTIVE",
+                null
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 
 }

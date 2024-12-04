@@ -7,11 +7,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
-import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.jwtcommon.jwt.Utils;
+import org.example.order.dto.BasketItemDto;
 import org.example.order.dto.ListBasketItemDto;
 import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
-import org.example.order.dto.response.ItemResponse;
 import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Deliver;
 import org.example.order.entity.Order;
@@ -31,16 +31,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final DeliverRepository deliverRepository;
-    private final JwtCommonService jwtCommonService;
+    private final Utils utils;
     private final BasketService basketService;
-    private final ItemService itemService;
+    private final OrderMapper orderMapper = OrderMapper.INSTANCE;
+    private final ItemMapper itemMapper = ItemMapper.INSTANCE;
     private final UserService userService;
     private final ItemRepository itemRepository;
 
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse createOrder(OrderRequest order, HttpServletRequest request, HttpServletResponse response) {
-        String userId = jwtCommonService.getUserFromRequest(request);
+        String userId = utils.extractUserIdFromRequest(request);
         if (userId == null || userId.isEmpty()) {
             throw new RuntimeException();
         }
@@ -92,10 +92,9 @@ public class OrderServiceImpl implements OrderService {
         UserDetailInfoEvent userDetailInfoEvent = userService.getUserInfo(userId);
 
         Order finalOrder = save(userDetailInfoEvent, order);
-        List<OrderItems> savedItems = new ArrayList<>();
         if (order.getBasketId() != null && !order.getBasketId().isEmpty()) {
             basketItems.getBasketProducts().forEach(item -> {
-                OrderItems orderItem = ItemMapper.INSTANCE.toToOrderItems(item);
+                OrderItems orderItem = itemMapper.toToOrderItems(item);
                 orderItem.setOrder(finalOrder);
                 orderItem.setUuid(UUID.randomUUID().toString());
                 finalOrder.getOrderItems().add(orderItem);
@@ -105,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
 
             Order savedOrder = orderRepository.findByUuidWithItems(finalOrder.getUuid())
                     .orElseThrow(() -> new RuntimeException("Order not found after saving"));
-            return OrderMapper.INSTANCE.toOrderResponse(savedOrder);
+            return orderMapper.toOrderResponse(savedOrder);
         } else {
             throw new RuntimeException();
         }

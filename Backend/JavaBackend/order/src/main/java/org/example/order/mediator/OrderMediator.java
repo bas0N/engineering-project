@@ -1,13 +1,11 @@
 package org.example.order.mediator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.exception.exceptions.ApiRequestException;
-import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.jwtcommon.jwt.Utils;
 import org.example.order.dto.response.ItemResponse;
-import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Order;
@@ -17,9 +15,7 @@ import org.example.order.mapper.ItemMapper;
 import org.example.order.mapper.OrderMapper;
 import org.example.order.repository.ItemRepository;
 import org.example.order.repository.OrderRepository;
-import org.example.order.service.ItemService;
 import org.example.order.service.OrderService;
-import org.example.order.service.ProductService;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
@@ -30,8 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class OrderMediator {
     private final OrderService orderService;
-    private final JwtCommonService jwtCommonService;
+    private final Utils utils;
     private final OrderRepository orderRepository;
     @Value("${stripe.endpoint.secret}")
     private String endpointSecret;
@@ -113,7 +107,7 @@ public class OrderMediator {
     }
 
     public ResponseEntity<?> getOrdersByClient(HttpServletRequest request) {
-        String userId = jwtCommonService.getUserFromRequest(request);
+        String userId = utils.extractUserIdFromRequest(request);
         if (userId == null || userId.isEmpty()) {
             throw new ApiRequestException("User not found");
         }

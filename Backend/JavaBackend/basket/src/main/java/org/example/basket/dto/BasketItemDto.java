@@ -16,4 +16,5 @@ public class BasketItemDto {
     private String imageUrl;
     private double price;
     private double summaryPrice;
+    private boolean isActive;
 }

@@ -56,7 +56,12 @@ public class User implements UserDetails {
     @Column(name = "isenabled")
     private boolean enabled;
 
-    public User(long id, String uuid, String email, String password, Role role, boolean isLock, boolean isEnabled) {
+    @Column(name = "isActive")
+    @Getter
+    @Setter
+    private boolean isActive;
+
+    public User(long id, String uuid, String email, String password, Role role, boolean isLock, boolean isEnabled, boolean isActive) {
         this.id = id;
         this.uuid = uuid;
         this.email = email;
@@ -64,6 +69,7 @@ public class User implements UserDetails {
         this.role = role;
         this.lock = isLock;
         this.enabled = isEnabled;
+        this.isActive = isActive;
         generateUuid();
     }
 

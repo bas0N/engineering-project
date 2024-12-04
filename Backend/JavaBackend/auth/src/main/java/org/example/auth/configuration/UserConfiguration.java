@@ -43,7 +43,9 @@ public class UserConfiguration {
                                     "/api/v1/auth/auto-login",
                                     "/api/v1/auth/logged-in",
                                     "/api/v1/auth/authorize",
+                                    "api/v1/auth/change-password",
                                     "/api/v1/auth/user/**",
+                                    "/api/v1/auth/admin/**",
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/swagger-ui.html"

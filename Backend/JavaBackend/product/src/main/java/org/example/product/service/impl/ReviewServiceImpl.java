@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.UserDetailInfoEvent;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.jwtcommon.jwt.Utils;
 import org.example.product.dto.Request.CreateReviewRequest;
 import org.example.product.dto.Response.ReviewResponse;
+import org.example.product.entity.Product;
 import org.example.product.entity.Review;
 import org.example.product.mapper.ReviewMapper;
 import org.example.product.mapper.UserMapper;
@@ -19,52 +20,68 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-    private final JwtCommonService jwtCommonService;
+    private final Utils utils;
     private final UserService userService;
     private final ProductRepository productRepository;
+    private final ReviewMapper reviewMapper = ReviewMapper.INSTANCE;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     @Override
     public ResponseEntity<Page<ReviewResponse>> getReviews(String productId, int page, int size, boolean ascending) {
-        try {
-            if (page < 0 || size <= 0) {
-                throw new IllegalArgumentException("Page index must be >= 0 and size must be > 0");
-            }
+        if (page < 0 || size <= 0) {
+            throw new InvalidParameterException(
+                    "Page index must be >= 0 and size must be > 0",
+                    "INVALID_PAGINATION_PARAMETERS",
+                    Map.of("page", page, "size", size)
+            );
+        }
 
+        try {
             Pageable pageable = PageRequest.of(page, size);
             Page<Review> reviewPage = reviewRepository.findAllByParentAsin(productId, pageable, ascending);
 
             if (reviewPage.isEmpty()) {
-                throw new ResourceNotFoundException("Reviews", "productId", productId);
+                throw new ResourceNotFoundException(
+                        "Reviews",
+                        "productId",
+                        productId,
+                        "REVIEWS_NOT_FOUND",
+                        Map.of("productId", productId)
+                );
             }
 
             Page<ReviewResponse> responsePage = reviewPage.map(
-                    review -> ReviewMapper.INSTANCE.toReviewResponse(review, new Date((long) review.getTimestamp()))
+                    review -> reviewMapper.toReviewResponse(review, new Date((long) review.getTimestamp()))
             );
             return ResponseEntity.ok(responsePage);
 
-        } catch (ResourceNotFoundException e) {
-            log.error("No reviews found for product with ID: {}", productId, e);
-            throw new ResourceNotFoundException("Reviews", "productId", productId);
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid pagination parameters for reviews of product with ID: {}", productId, e);
-            throw new IllegalArgumentException("Invalid pagination parameters for reviews");
         } catch (DataAccessException e) {
             log.error("Database access error while retrieving reviews for product with ID: {}", productId, e);
-            throw new DatabaseAccessException("Error accessing the review database", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the review database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "getReviews", "productId", productId)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while retrieving reviews for product with ID: {}", productId, e);
-            throw new UnExpectedError("An unexpected error occurred while retrieving reviews", e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving reviews",
+                    e,
+                    "GET_REVIEWS_ERROR",
+                    Map.of("productId", productId)
+            );
         }
     }
 
@@ -72,111 +89,200 @@ public class ReviewServiceImpl implements ReviewService {
     public ResponseEntity<ReviewResponse> getReview(String reviewId) {
         try {
             Review review = reviewRepository.findById(reviewId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Review",
+                            "id",
+                            reviewId,
+                            "REVIEW_NOT_FOUND",
+                            Map.of("reviewId", reviewId)
+                    ));
 
-            ReviewResponse reviewResponse = ReviewMapper.INSTANCE.toReviewResponse(review, new Date((long) review.getTimestamp()));
+            ReviewResponse reviewResponse = reviewMapper.toReviewResponse(review, new Date((long) review.getTimestamp()));
 
             return ResponseEntity.ok(reviewResponse);
 
-        } catch (ResourceNotFoundException e) {
-            log.error("Review not found with ID: {}", reviewId, e);
-            throw new ResourceNotFoundException("Review", "id", reviewId);
         } catch (DataAccessException e) {
             log.error("Database error while retrieving review with ID: {}", reviewId, e);
-            throw new DatabaseAccessException("Error accessing the review database", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the review database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "getReview", "reviewId", reviewId)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while retrieving review with ID: {}", reviewId, e);
-            throw new UnExpectedError("An unexpected error occurred while retrieving the review", e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving the review",
+                    e,
+                    "GET_REVIEW_ERROR",
+                    Map.of("reviewId", reviewId)
+            );
         }
     }
 
     @Override
     public ResponseEntity<ReviewResponse> createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
         try {
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
 
+            if (userInfo == null) {
+                throw new ResourceNotFoundException(
+                        "User",
+                        "ID",
+                        userId,
+                        "USER_NOT_FOUND",
+                        Map.of("userId", userId)
+                );
+            }
+
+            Product product = productRepository.findByParentAsin(productId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "parentAsin",
+                            productId,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", productId)
+                    ));
+
             Review review = buildReview(productId, createReviewRequest, userId, userInfo);
 
-            addProductRating(productId, createReviewRequest.getRating());
+            addProductRating(product.getParentAsin(), createReviewRequest.getRating());
 
             review = reviewRepository.save(review);
 
-            return ResponseEntity.ok(ReviewMapper.INSTANCE.toReviewResponse(review, new Date((long) review.getTimestamp())));
+            return ResponseEntity.ok(reviewMapper.toReviewResponse(review, new Date((long) review.getTimestamp())));
 
+        } catch (ResourceNotFoundException e) {
+            log.error("Resource not found: {}", e.getMessage());
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while creating review for productId: {}", productId, e);
-            throw new DatabaseAccessException("Error accessing the review database", e);
-        } catch (ApiRequestException e) {
-            log.error("Failed to create review for productId: {}", productId, e);
-            throw new ApiRequestException("Failed to create review", e.getMessage());
+            throw new DatabaseAccessException(
+                    "Error accessing the review database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "createReview", "productId", productId)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while creating review for productId: {}", productId, e);
-            throw new UnExpectedError("An unexpected error occurred while creating the review", e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while creating the review",
+                    e,
+                    "CREATE_REVIEW_ERROR",
+                    Map.of("productId", productId)
+            );
         }
     }
 
     @Override
     public ResponseEntity<ReviewResponse> updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request) {
         try {
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             Review review = reviewRepository.findById(reviewId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Review",
+                            "id",
+                            reviewId,
+                            "REVIEW_NOT_FOUND",
+                            Map.of("reviewId", reviewId)
+                    ));
             int oldRating = review.getRating();
 
             validateUserAuthorization(userId, review);
 
             updateReviewFields(review, createReviewRequest);
 
-            updateProductRating(review.getAsin(), createReviewRequest.getRating(), oldRating);
+            Product product = productRepository.findByParentAsin(review.getAsin())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "parentAsin",
+                            review.getAsin(),
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", review.getAsin())
+                    ));
+
+            updateProductRating(product.getParentAsin(), createReviewRequest.getRating(), oldRating);
 
             Review updatedReview = reviewRepository.save(review);
 
-            return ResponseEntity.ok(ReviewMapper.INSTANCE.toReviewResponse(updatedReview, new Date((long) updatedReview.getTimestamp() * 1000)));
+            return ResponseEntity.ok(reviewMapper.toReviewResponse(updatedReview, new Date((long) updatedReview.getTimestamp())));
 
-        } catch (ResourceNotFoundException e) {
-            log.error("Review not found with ID: {}", reviewId, e);
-            throw new ResourceNotFoundException("Review", "id", reviewId);
-        } catch (ApiRequestException e) {
-            log.error("Unauthorized attempt to update review with ID: {}", reviewId, e);
+        } catch (ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error updating review: {}", e.getMessage());
             throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while updating review with ID: {}", reviewId, e);
-            throw new DatabaseAccessException("Error accessing the review database", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the review database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "updateReview", "reviewId", reviewId)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while updating review with ID: {}", reviewId, e);
-            throw new UnExpectedError("An unexpected error occurred while updating the review", e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while updating the review",
+                    e,
+                    "UPDATE_REVIEW_ERROR",
+                    Map.of("reviewId", reviewId)
+            );
         }
     }
 
     @Override
-    public ResponseEntity<?> deleteReview(String reviewId) {
+    public ResponseEntity<String> deleteReview(String reviewId, HttpServletRequest request) {
         try {
-            Review review = reviewRepository.findById(reviewId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
+            String userId = utils.extractUserIdFromRequest(request);
 
-            deleteProductRating(review.getAsin(), review.getRating());
+            Review review = reviewRepository.findById(reviewId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Review",
+                            "id",
+                            reviewId,
+                            "REVIEW_NOT_FOUND",
+                            Map.of("reviewId", reviewId)
+                    ));
+
+            validateUserAuthorization(userId, review);
+
+            Product product = productRepository.findByParentAsin(review.getAsin())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "parentAsin",
+                            review.getAsin(),
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", review.getAsin())
+                    ));
+
+            deleteProductRating(product.getParentAsin(), review.getRating());
+
             reviewRepository.delete(review);
 
             return ResponseEntity.ok("Review deleted successfully");
 
-        } catch (ResourceNotFoundException e) {
-            log.error("Review not found with ID: {}", reviewId, e);
-            throw new ResourceNotFoundException("Review", "id", reviewId);
+        } catch (ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error deleting review: {}", e.getMessage());
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while deleting review with ID: {}", reviewId, e);
-            throw new DatabaseAccessException("Error accessing the review database", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the review database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "deleteReview", "reviewId", reviewId)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while deleting review with ID: {}", reviewId, e);
-            throw new ApiRequestException("An unexpected error occurred while deleting the review", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while deleting the review",
+                    e,
+                    "DELETE_REVIEW_ERROR",
+                    Map.of("reviewId", reviewId)
+            );
         }
-    }
-
-    private ResponseEntity<ErrorDetails> buildErrorResponse(String message, HttpStatus status) {
-        return ResponseEntity.status(status)
-                .body(new ErrorDetails(new Date(), message, null));
     }
 
     private Review buildReview(String productId, CreateReviewRequest createReviewRequest, String userId, UserDetailInfoEvent userInfo) {
@@ -192,13 +298,17 @@ public class ReviewServiceImpl implements ReviewService {
                 userId,
                 System.currentTimeMillis(),
                 false,
-                UserMapper.INSTANCE.toUser(userInfo)
+                userMapper.toUser(userInfo)
         );
     }
 
     private void validateUserAuthorization(String userId, Review review) {
         if (!review.getUser().getUserId().equals(userId)) {
-            throw new ApiRequestException("You are not authorized to update this review", "UNAUTHORIZED");
+            throw new UnauthorizedException(
+                    "You are not authorized to perform this action on the review",
+                    "UNAUTHORIZED",
+                    Map.of("userId", userId, "reviewOwnerId", review.getUser().getUserId())
+            );
         }
     }
 

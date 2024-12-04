@@ -38,4 +38,11 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     @Query("SELECT a FROM Address a WHERE a.user = :user")
     List<Address> findAllByUser(User user);
+
+    @Query("SELECT a FROM Address a WHERE a.user.id = :id")
+    List<Address> findAllByUserId(Long id);
+
+    @Modifying
+    @Query("DELETE FROM Address a WHERE a.user.id = :id")
+    void deleteAddressesByUserId(Long id);
 }

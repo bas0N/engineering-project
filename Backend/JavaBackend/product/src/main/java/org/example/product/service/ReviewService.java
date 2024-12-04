@@ -15,5 +15,5 @@ public interface ReviewService {
 
     ResponseEntity<ReviewResponse> updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
 
-    ResponseEntity<?> deleteReview(String reviewId);
+    ResponseEntity<String> deleteReview(String reviewId, HttpServletRequest request);
 }

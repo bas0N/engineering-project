@@ -6,6 +6,7 @@ import org.example.auth.dto.request.ChangePasswordRequest;
 import org.example.auth.dto.request.LoginRequest;
 import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
@@ -20,4 +21,6 @@ public interface UserService {
     void authorize(HttpServletRequest request);
 
     AuthResponse changePassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest request);
+
+    ResponseEntity<?> deleteMyAccount(HttpServletRequest request);
 }

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.example.product", "org.example.jwtcommon.jwt"})
+@ComponentScan(basePackages = {"org.example.product", "org.example.jwtcommon.jwt", "org.example.exception"})
 public class ProductApplication {
 
     public static void main(String[] args) {

@@ -93,7 +93,7 @@
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>jwt-common</artifactId>
+            <artifactId>util-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

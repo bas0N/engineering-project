@@ -15,26 +15,45 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    @Query("SELECT u FROM User u WHERE u.email = :login AND u.lock = false AND u.enabled = true")
-    Optional<User> findUserByEmailAndLockAndEnabled(String login);
+    @Query("SELECT u FROM User u WHERE u.email = :email AND u.isActive = true")
+    Optional<User> findUserByEmailAndIsActive(String email);
+
+    @Query("SELECT u FROM User u WHERE u.uuid = :uuid AND u.isActive = true")
+    Optional<User> findUserByUuidAndIsActive(String uuid);
 
     Optional<User> findUserByEmail(String email);
 
     Optional<User> findUserByUuid(String uuid);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM users where uuid=:userId")
+    @Query("SELECT u FROM User u WHERE u.uuid = :userId")
     Optional<User> findByUuid(String userId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE User u SET u.imageUrl = :imageUrl WHERE u.uuid = :userUuid")
-    void updateImageUrlByUuid(@Param("userUuid") String userUuid, @Param("imageUrl") String imageUrl);
+    @Query("UPDATE User u SET u.imageUrl = :imageUrl WHERE u.id = :userId")
+    void updateImageUrlById(@Param("userId") Long userId, @Param("imageUrl") String imageUrl);
 
-    @Query("SELECT u FROM User u WHERE u.id = :id")
-    User findById(long id);
+    @Query("SELECT u FROM User u WHERE u.id = :userId")
+    User findById(long userId);
 
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.role = :role WHERE u.id = :userId")
     int changeRole(Long userId, Role role);
+
+    @Modifying
+    @Query("""
+            UPDATE User u
+            SET u.isActive = false,
+                u.email = null,
+                u.imageUrl = null,
+                u.phoneNumber = null,
+                u.firstName = null,
+                u.lastName = null,
+                u.password = null,
+                u.lock = true,
+                u.enabled = false
+            WHERE u.id = :userId
+            """)
+    void deactivateAndClearUser(@Param("userId") Long userId);
 }

@@ -1,24 +1,18 @@
 package org.example.product.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.UserDetailInfoEvent;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.JwtCommonService;
+import org.example.jwtcommon.jwt.Utils;
 import org.example.product.dto.Request.AddProductRequest;
-import org.example.product.dto.Request.ImageRequest;
 import org.example.product.dto.Request.UpdateProductRequest;
 import org.example.product.dto.Response.ImageUploadResponse;
 import org.example.product.dto.Response.ProductDetailResponse;
 import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Image;
 import org.example.product.entity.Product;
-import org.example.product.entity.User;
-import org.example.product.kafka.history.ProductHistoryEventProducer;
-import org.example.product.kafka.user.UserEventConsumer;
-import org.example.product.kafka.user.UserEventProducer;
 import org.example.product.mapper.ProductMapper;
 import org.example.product.mapper.UserMapper;
 import org.example.product.repository.ProductRepository;
@@ -30,7 +24,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,17 +37,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final JwtCommonService jwtCommonService;
+    private final Utils utils;
     private final ImageService imageService;
-    private final ProductHistoryEventProducer productHistoryEventProducer;
     private final MongoTemplate mongoTemplate;
     private final UserService userService;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     public ResponseEntity<Page<ProductResponse>> getProducts(int page, int limit, String sort, String mainCategory, String title, Double minPrice, Double maxPrice, Double minRating, Double maxRating, List<String> categories, String store) {
         try {
             validateRequestParameters(page, limit, minPrice, maxPrice, minRating, maxRating);
             Query query = new Query();
 
+            query.addCriteria(Criteria.where("isActive").is(true));
             if (mainCategory != null) {
                 query.addCriteria(Criteria.where("mainCategory").is(mainCategory));
             }
@@ -77,67 +73,110 @@ public class ProductServiceImpl implements ProductService {
             List<Product> products = mongoTemplate.find(query, Product.class);
 
             if (products.isEmpty()) {
-                throw new ResourceNotFoundException("Product", "query", query.toString());
+                throw new ResourceNotFoundException(
+                        "Product",
+                        "query",
+                        query.toString(),
+                        "PRODUCTS_NOT_FOUND",
+                        Map.of("query", query.toString())
+                );
             }
 
             List<ProductResponse> productResponses = products.stream()
-                    .map(ProductMapper.INSTANCE::toProductResponse)
+                    .map(productMapper::toProductResponse)
                     .toList();
 
             return ResponseEntity.ok(new PageImpl<>(productResponses, pageable, products.size()));
-        } catch (InvalidParameterException e) {
-            log.error("Invalid parameters provided: {}", e.getMessage());
-            throw new InvalidParameterException(e.getMessage());
-        } catch (DatabaseAccessException e) {
+
+        } catch (DataAccessException e) {
             log.error("Database access error while retrieving products", e);
-            throw new DatabaseAccessException("Error accessing the product database", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the product database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "getProducts")
+            );
         } catch (Exception e) {
             log.error("Unexpected error while retrieving products", e);
-            throw new ApiRequestException("An unexpected error occurred while retrieving products", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving products",
+                    e,
+                    "GET_PRODUCTS_ERROR",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
     public ResponseEntity<ProductDetailResponse> getProductById(String parentAsin, HttpServletRequest request) {
         try {
             Product product = productRepository.findByParentAsin(parentAsin)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "parentAsin", parentAsin));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "parentAsin",
+                            parentAsin,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("parentAsin", parentAsin)
+                    ));
 
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
-            productHistoryEventProducer.sendProductHistoryEvent(product.getParentAsin(), userId);
+            UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
+            if(!userInfo.isActive()){
+                throw new UserIsUnActiveException("User is not active");
+            }
 
-            ProductDetailResponse productResponse = ProductMapper.INSTANCE.toProductDetailResponse(product);
+            ProductDetailResponse productResponse = productMapper.toProductDetailResponse(product, userMapper.toUser(userInfo));
 
             return ResponseEntity.ok(productResponse);
         } catch (ResourceNotFoundException e) {
             log.error("Product not found with parentAsin: {}", parentAsin, e);
-            throw new ResourceNotFoundException("Product", "parentAsin", parentAsin);
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while retrieving product with parentAsin: {}", parentAsin, e);
-            throw new DatabaseAccessException("Error accessing the product database while retrieving product with parentAsin: " + parentAsin, e);
+            throw new DatabaseAccessException(
+                    "Error accessing the product database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "getProductById", "parentAsin", parentAsin)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while retrieving product with parentAsin: {}", parentAsin, e);
-            throw new ApiRequestException("An unexpected error occurred while retrieving product with parentAsin: " + parentAsin, e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving product",
+                    e,
+                    "GET_PRODUCT_BY_ID_ERROR",
+                    Map.of("parentAsin", parentAsin)
+            );
         }
     }
 
     @Override
     public ResponseEntity<ProductDetailResponse> createProduct(AddProductRequest addProductRequest, HttpServletRequest request) {
         try {
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
 
             if (userInfo == null) {
-                throw new ResourceNotFoundException("User", "ID", userId);
+                throw new ResourceNotFoundException(
+                        "User",
+                        "ID",
+                        userId,
+                        "USER_NOT_FOUND",
+                        Map.of("userId", userId)
+                );
             }
 
             if (userInfo.getFirstName() == null || userInfo.getLastName() == null || userInfo.getEmail() == null) {
+                List<String> missingDetails = new ArrayList<>();
+                if (userInfo.getFirstName() == null) missingDetails.add("First Name");
+                if (userInfo.getLastName() == null) missingDetails.add("Last Name");
+                if (userInfo.getEmail() == null) missingDetails.add("Email");
+
                 throw new MissingUserDetailsException(
-                        "User must complete profile information. Missing details: " +
-                                (userInfo.getFirstName() == null ? "First Name, " : "") +
-                                (userInfo.getLastName() == null ? "Last Name, " : "") +
-                                (userInfo.getEmail() == null ? "Email" : "")
+                        "User must complete profile information. Missing details: " + String.join(", ", missingDetails),
+                        "MISSING_USER_DETAILS",
+                        Map.of("missingDetails", missingDetails)
                 );
             }
 
@@ -165,22 +204,33 @@ public class ProductServiceImpl implements ProductService {
                     addProductRequest.getTitle(),
                     null,
                     0.0,
-                    UserMapper.INSTANCE.toUser(userInfo)
+                    true
             );
 
             Product savedProduct = productRepository.save(product);
 
-            ProductDetailResponse productResponse = ProductMapper.INSTANCE.toProductDetailResponse(savedProduct);
+            ProductDetailResponse productResponse = productMapper.toProductDetailResponse(savedProduct, userMapper.toUser(userInfo));
             return ResponseEntity.ok(productResponse);
+
         } catch (MissingUserDetailsException e) {
             log.error("Missing user details: {}", e.getMessage());
-            throw new MissingUserDetailsException(e.getMessage());
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while creating product", e);
-            throw new DatabaseAccessException("Error accessing the product database while creating product", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the product database while creating product",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "createProduct")
+            );
         } catch (Exception e) {
             log.error("Unexpected error while creating product", e);
-            throw new ApiRequestException("An unexpected error occurred while creating product", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while creating product",
+                    e,
+                    "CREATE_PRODUCT_ERROR",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
@@ -188,12 +238,22 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<ProductDetailResponse> updateProduct(String id, UpdateProductRequest updateProductRequest, HttpServletRequest request) {
         try {
             Product existingProduct = productRepository.findByParentAsin(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ID", id));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "ID",
+                            id,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", id)
+                    ));
 
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             if (userId != null && !userId.equals(existingProduct.getUserId())) {
-                throw new UnauthorizedException("You are not authorized to update this product", "UNAUTHORIZED");
+                throw new UnauthorizedException(
+                        "You are not authorized to update this product",
+                        "UNAUTHORIZED",
+                        Map.of("userId", userId, "productOwnerId", existingProduct.getUserId())
+                );
             }
 
             Map<String, String> detailsAsStringMap = new HashMap<>();
@@ -232,68 +292,103 @@ public class ProductServiceImpl implements ProductService {
             }
 
             Product savedProduct = productRepository.save(existingProduct);
+            UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
 
-            ProductDetailResponse productResponse = ProductMapper.INSTANCE.toProductDetailResponse(savedProduct);
+            ProductDetailResponse productResponse =productMapper.toProductDetailResponse(savedProduct, userMapper.toUser(userInfo));
             return ResponseEntity.ok(productResponse);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException | UnauthorizedException e) {
             log.error("Product not found: {}", e.getMessage());
-            throw new ResourceNotFoundException("Product", "ID", id);
-        } catch (UnauthorizedException e) {
-            log.error("Unauthorized access: {}", e.getMessage());
-            throw new UnauthorizedException("You are not authorized to update this product", "UNAUTHORIZED");
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while updating product", e);
-            throw new DatabaseAccessException("Error accessing the product database while updating product", e);
+            throw new DatabaseAccessException(
+                    "Error accessing the product database while updating product",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "updateProduct", "productId", id)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while updating product", e);
-            throw new ApiRequestException("An unexpected error occurred while updating product", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while updating product",
+                    e,
+                    "UPDATE_PRODUCT_ERROR",
+                    Map.of("productId", id)
+            );
         }
     }
 
     @Override
-    public ResponseEntity<?> deleteProduct(String id, HttpServletRequest request) {
+    public ResponseEntity<String> deleteProduct(String id, HttpServletRequest request) {
         try {
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             Product product = productRepository.findByParentAsin(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ID", id));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "ID",
+                            id,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", id)
+                    ));
 
-            if (userId == null || !userId.equals(product.getUser().getUserId())) {
-                throw new UnauthorizedException("You are not authorized to delete this product", "UNAUTHORIZED");
+
+            if (userId == null || !userId.equals(product.getUserId())) {
+                throw new UnauthorizedException(
+                        "You are not authorized to delete this product",
+                        "UNAUTHORIZED",
+                        Map.of("userId", userId, "productOwnerId", product.getUserId())
+                );
             }
 
-            productRepository.deleteByParentAsin(id);
+            Query query = new Query(Criteria.where("parent_asin").is(id));
+            Update update = new Update().set("isActive", false);
+            mongoTemplate.updateMulti(query, update, Product.class);
 
             return ResponseEntity.ok("Product with ID: " + id + " has been successfully deleted.");
-        } catch (ResourceNotFoundException e) {
-            log.error("Product not found with ID: {}", id, e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorDetails(new Date(), e.getMessage(), null));
-        } catch (UnauthorizedException e) {
-            log.error("Unauthorized access while deleting product with ID: {}", id, e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorDetails(new Date(), e.getMessage(), null));
+
+        } catch (ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error deleting product: {}", e.getMessage());
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while deleting product with ID: {}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorDetails(new Date(), "Error accessing the product database", null));
+            throw new DatabaseAccessException(
+                    "Error accessing the product database while deleting product",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "deleteProduct", "productId", id)
+            );
         } catch (Exception e) {
             log.error("Unexpected error while deleting product with ID: {}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorDetails(new Date(), "An unexpected error occurred while deleting product", null));
+            throw new UnExpectedError(
+                    "An unexpected error occurred while deleting product",
+                    e,
+                    "DELETE_PRODUCT_ERROR",
+                    Map.of("productId", id)
+            );
         }
     }
 
     @Override
     public ResponseEntity<ImageUploadResponse> addImageToProduct(String productId, MultipartFile hi_Res, MultipartFile large, MultipartFile thumb, String variant, HttpServletRequest request) {
         try {
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             Product product = productRepository.findByParentAsin(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ID", productId));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "ID",
+                            productId,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", productId)
+                    ));
 
             if (!userId.equals(product.getUserId())) {
-                throw new UnauthorizedException("You are not authorized to upload images for this product", "UNAUTHORIZED");
+                throw new UnauthorizedException(
+                        "You are not authorized to upload images for this product",
+                        "UNAUTHORIZED",
+                        Map.of("userId", userId, "productOwnerId", product.getUserId())
+                );
             }
 
             ImageUploadResponse imageUploadResponse = imageService.addImage(productId, hi_Res, large, thumb, variant);
@@ -315,15 +410,18 @@ public class ProductServiceImpl implements ProductService {
             productRepository.save(product);
 
             return ResponseEntity.ok(imageUploadResponse);
-        } catch (ResourceNotFoundException e) {
-            log.error("Product not found with ID: {}", productId, e);
-            throw new ResourceNotFoundException("Product", "ID", productId);
-        } catch (UnauthorizedException e) {
-            log.error("Unauthorized access to product with ID: {}", productId, e);
-            throw new UnauthorizedException("You are not authorized to upload images for this product", "UNAUTHORIZED");
+
+        } catch (ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error adding image to product: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error while uploading images for product with ID: {}", productId, e);
-            throw new ApiRequestException("An unexpected error occurred while uploading images", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while uploading images",
+                    e,
+                    "ADD_IMAGE_ERROR",
+                    Map.of("productId", productId)
+            );
         }
     }
 
@@ -331,16 +429,30 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<ImageUploadResponse> updateImage(String productId, MultipartFile hiRes, MultipartFile large, MultipartFile thumb, String variant, int order, HttpServletRequest request) {
         try {
             if (order < 1) {
-                throw new InvalidParameterException("Order parameter must be a positive integer starting from 1.");
+                throw new InvalidParameterException(
+                        "Order parameter must be a positive integer starting from 1.",
+                        "INVALID_ORDER_PARAMETER",
+                        Map.of("order", order)
+                );
             }
 
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             Product product = productRepository.findByParentAsin(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ID", productId));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "ID",
+                            productId,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", productId)
+                    ));
 
             if (!userId.equals(product.getUserId())) {
-                throw new UnauthorizedException("You are not authorized to update images for this product", "UNAUTHORIZED");
+                throw new UnauthorizedException(
+                        "You are not authorized to update images for this product",
+                        "UNAUTHORIZED",
+                        Map.of("userId", userId, "productOwnerId", product.getUserId())
+                );
             }
 
             List<Image> images = product.getImages();
@@ -363,40 +475,59 @@ public class ProductServiceImpl implements ProductService {
 
             return ResponseEntity.ok(imageUploadResponse);
 
-        } catch (InvalidParameterException e) {
-            log.error("Invalid parameter: {}", e.getMessage());
-            throw new InvalidParameterException(e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            log.error("Resource not found: {}", e.getMessage());
-            throw new ResourceNotFoundException("Image", "order", String.valueOf(order));
-        } catch (UnauthorizedException e) {
-            log.error("Unauthorized access to product with ID: {}", productId, e);
-            throw new UnauthorizedException("You are not authorized to update images for this product", "UNAUTHORIZED");
+        } catch (InvalidParameterException | ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error updating image: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error while updating images for product with ID: {}", productId, e);
-            throw new ApiRequestException("An unexpected error occurred while updating the image", e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while updating the image",
+                    e,
+                    "UPDATE_IMAGE_ERROR",
+                    Map.of("productId", productId, "order", order)
+            );
         }
     }
 
     @Override
-    public ResponseEntity<?> deleteImage(String productId, int order, HttpServletRequest request) {
+    public ResponseEntity<String> deleteImage(String productId, int order, HttpServletRequest request) {
         try {
             if (order < 1) {
-                throw new InvalidParameterException("Order parameter must be a positive integer starting from 1.");
+                throw new InvalidParameterException(
+                        "Order parameter must be a positive integer starting from 1.",
+                        "INVALID_ORDER_PARAMETER",
+                        Map.of("order", order)
+                );
             }
 
-            String userId = jwtCommonService.getUserFromRequest(request);
+            String userId = utils.extractUserIdFromRequest(request);
 
             Product product = productRepository.findByParentAsin(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "ID", productId));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Product",
+                            "ID",
+                            productId,
+                            "PRODUCT_NOT_FOUND",
+                            Map.of("productId", productId)
+                    ));
 
             if (!userId.equals(product.getUserId())) {
-                throw new UnauthorizedException("You are not authorized to delete images for this product", "UNAUTHORIZED");
+                throw new UnauthorizedException(
+                        "You are not authorized to delete images for this product",
+                        "UNAUTHORIZED",
+                        Map.of("userId", userId, "productOwnerId", product.getUserId())
+                );
             }
 
             List<Image> images = product.getImages();
             if (images == null || images.isEmpty() || order > images.size()) {
-                throw new ResourceNotFoundException("Image", "order", String.valueOf(order));
+                throw new ResourceNotFoundException(
+                        "Image",
+                        "order",
+                        String.valueOf(order),
+                        "IMAGE_NOT_FOUND",
+                        Map.of("order", order)
+                );
             }
 
             images.remove(order - 1);
@@ -406,50 +537,69 @@ public class ProductServiceImpl implements ProductService {
 
             return ResponseEntity.ok("Image successfully deleted from product with ID: " + productId);
 
-        } catch (InvalidParameterException e) {
-            log.error("Invalid parameter: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorDetails(new Date(), e.getMessage(), null));
-        } catch (ResourceNotFoundException e) {
-            log.error("Resource not found: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorDetails(new Date(), e.getMessage(), null));
-        } catch (UnauthorizedException e) {
-            log.error("Unauthorized access to product with ID: {}", productId, e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorDetails(new Date(), e.getMessage(), null));
+        } catch (InvalidParameterException | ResourceNotFoundException | UnauthorizedException e) {
+            log.error("Error deleting image: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error while deleting images for product with ID: {}", productId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorDetails(new Date(), "An unexpected error occurred while deleting the image", null));
+            throw new UnExpectedError(
+                    "An unexpected error occurred while deleting the image",
+                    e,
+                    "DELETE_IMAGE_ERROR",
+                    Map.of("productId", productId, "order", order)
+            );
         }
     }
 
     @Override
     public ResponseEntity<Page<ProductResponse>> getMyProducts(HttpServletRequest request, int page, int limit) {
-        try{
-            String userId = jwtCommonService.getUserFromRequest(request);
+        try {
+            String userId = utils.extractUserIdFromRequest(request);
+
+            if (page < 0 || limit <= 0) {
+                throw new InvalidParameterException(
+                        "Page index must be >= 0 and limit must be > 0",
+                        "INVALID_PAGINATION_PARAMETERS",
+                        Map.of("page", page, "limit", limit)
+                );
+            }
 
             Pageable pageable = PageRequest.of(page, limit);
 
             Page<Product> productPage = productRepository.findByUserId(userId, pageable);
 
             if (productPage.isEmpty()) {
-                throw new ResourceNotFoundException("Product", "userId", userId);
+                throw new ResourceNotFoundException(
+                        "Product",
+                        "userId",
+                        userId,
+                        "PRODUCTS_NOT_FOUND",
+                        Map.of("userId", userId)
+                );
             }
 
-            Page<ProductResponse> productResponsePage = productPage.map(ProductMapper.INSTANCE::toProductResponse);
+            Page<ProductResponse> productResponsePage = productPage.map(productMapper::toProductResponse);
 
             return ResponseEntity.ok(productResponsePage);
-        } catch (ResourceNotFoundException e) {
-            log.error("No products found for user with ID: {}", e.getMessage());
-            throw new ResourceNotFoundException("Product", "userId", e.getMessage());
+        } catch (InvalidParameterException | ResourceNotFoundException e) {
+            log.error("Error retrieving products: {}", e.getMessage());
+            throw e;
         } catch (DataAccessException e) {
             log.error("Database access error while retrieving products for user with ID: {}", e.getMessage(), e);
-            throw new DatabaseAccessException("Error accessing the product database while retrieving products for user with ID: " + e.getMessage(), e);
+            throw new DatabaseAccessException(
+                    "Error accessing the product database",
+                    e,
+                    "DATABASE_ACCESS_ERROR",
+                    Map.of("operation", "getMyProducts", "userId", e.getMessage())
+            );
         } catch (Exception e) {
             log.error("Unexpected error while retrieving products for user with ID: {}", e.getMessage(), e);
-            throw new ApiRequestException("An unexpected error occurred while retrieving products for user with ID: " + e.getMessage(), e.getMessage());
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving products",
+                    e,
+                    "GET_MY_PRODUCTS_ERROR",
+                    Map.of("userId", e.getMessage())
+            );
         }
     }
 
@@ -459,13 +609,25 @@ public class ProductServiceImpl implements ProductService {
 
     private void validateRequestParameters(int page, int limit, Double minPrice, Double maxPrice, Double minRating, Double maxRating) {
         if (page < 1 || limit < 1) {
-            throw new InvalidParameterException("Page and limit parameters must be positive.");
+            throw new InvalidParameterException(
+                    "Page and limit parameters must be positive.",
+                    "INVALID_PAGINATION_PARAMETERS",
+                    Map.of("page", page, "limit", limit)
+            );
         }
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
-            throw new InvalidParameterException("Minimum price cannot be greater than maximum price.");
+            throw new InvalidParameterException(
+                    "Minimum price cannot be greater than maximum price.",
+                    "INVALID_PRICE_RANGE",
+                    Map.of("minPrice", minPrice, "maxPrice", maxPrice)
+            );
         }
         if (minRating != null && maxRating != null && minRating > maxRating) {
-            throw new InvalidParameterException("Minimum rating cannot be greater than maximum rating.");
+            throw new InvalidParameterException(
+                    "Minimum rating cannot be greater than maximum rating.",
+                    "INVALID_RATING_RANGE",
+                    Map.of("minRating", minRating, "maxRating", maxRating)
+            );
         }
     }
 

@@ -2,6 +2,7 @@ package org.example.auth.mapper;
 
 import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.UserAdminDetailsResponse;
+import org.example.auth.dto.response.UserDetailsResponse;
 import org.example.auth.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    @Mapping(target = "active", constant = "true")
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "phoneNumber", ignore = true)
     @Mapping(target = "lastName", ignore = true)
@@ -30,4 +32,6 @@ public interface UserMapper {
     @Mapping(target = "id", source = "id")
     UserAdminDetailsResponse toUserAdminDetailsResponse(User user);
 
+    @Mapping(target = "id", source = "uuid")
+    UserDetailsResponse toUserDetailsResponse(User user);
 }

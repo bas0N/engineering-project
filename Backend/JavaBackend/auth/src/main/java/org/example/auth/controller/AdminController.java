@@ -2,8 +2,10 @@ package org.example.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.auth.dto.response.UserAdminDetailsResponse;
 import org.example.auth.entity.Role;
 import org.example.auth.service.AdminService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +21,29 @@ public class AdminController {
     }
 
     @GetMapping("/user-details/{userId}")
-    public ResponseEntity<?> userDetails(@PathVariable Long userId) {
+    public ResponseEntity<UserAdminDetailsResponse> userDetails(@PathVariable Long userId) {
         return adminService.getUserById(userId);
     }
 
     @GetMapping("/all-users")
-    public ResponseEntity<?> allUsers(@RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "10") int size,
-                                      @RequestParam(required = false) String email,
-                                      @RequestParam(required = false) String firstName,
-                                      @RequestParam(required = false) String lastName,
-                                      @RequestParam(required = false) Boolean enabled,
-                                      @RequestParam(required = false) Role role) {
+    public ResponseEntity<Page<UserAdminDetailsResponse>> allUsers(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(required = false) String email,
+                                                                   @RequestParam(required = false) String firstName,
+                                                                   @RequestParam(required = false) String lastName,
+                                                                   @RequestParam(required = false) Boolean enabled,
+                                                                   @RequestParam(required = false) Role role) {
         return adminService.getAllUsers(page, size, email, firstName, lastName, enabled, role);
     }
 
     @PatchMapping("/change-role/{userId}")
-    public ResponseEntity<?> changeRole(@PathVariable Long userId, @RequestParam Role role) {
+    public ResponseEntity<String> changeRole(@PathVariable Long userId, @RequestParam Role role) {
         return adminService.changeRole(userId, role);
+    }
+
+    @DeleteMapping("/delete-user/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        return adminService.deleteUser(userId);
     }
 
 }

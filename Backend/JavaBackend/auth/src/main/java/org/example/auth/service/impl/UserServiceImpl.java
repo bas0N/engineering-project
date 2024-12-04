@@ -12,12 +12,16 @@ import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
 import org.example.auth.entity.*;
 import org.example.auth.mapper.UserMapper;
+import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
 import org.example.auth.service.*;
+import org.example.commonutils.Utils;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.ResourceNotFoundException;
+import org.example.exception.exceptions.UnExpectedError;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,9 +37,12 @@ import java.util.Map;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final Utils utils;
     @Value("${jwt.exp}")
     private int exp;
     @Value("${jwt.refresh.exp}")
@@ -53,7 +60,11 @@ public class UserServiceImpl implements UserService {
         String refreshToken = extractToken(request.getHeader("Refresh-Token"));
 
         if (accessToken == null) {
-            throw new UnauthorizedException("Access token is missing or invalid", "ACCESS_TOKEN_MISSING");
+            throw new UnauthorizedException(
+                    "Access token is missing or invalid",
+                    "ACCESS_TOKEN_MISSING",
+                    Map.of("reason", "Access token not provided or invalid format")
+            );
         }
 
         try {
@@ -71,11 +82,19 @@ public class UserServiceImpl implements UserService {
 
                 log.info("New tokens issued successfully.");
             } else {
-                throw new UnauthorizedException("Refresh token is missing or invalid.", "REFRESH_TOKEN_MISSING");
+                throw new UnauthorizedException(
+                        "Refresh token is missing or invalid.",
+                        "REFRESH_TOKEN_MISSING",
+                        Map.of("reason", "Refresh token not provided or invalid format")
+                );
             }
         } catch (MalformedJwtException | IllegalArgumentException e) {
             log.info("Invalid access token.");
-            throw new ApiRequestException("Invalid token.", e, "INVALID_TOKEN");
+            throw new UnauthorizedException(
+                    "Invalid access token.",
+                    "INVALID_TOKEN",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
@@ -85,11 +104,19 @@ public class UserServiceImpl implements UserService {
             validateToken(request, response);
         } catch (ExpiredJwtException e) {
             log.info("Token is expired.");
-            throw new UnauthorizedException("Token is expired.", "TOKEN_EXPIRED");
+            throw new UnauthorizedException(
+                    "Token is expired.",
+                    "TOKEN_EXPIRED",
+                    Map.of("reason", "Access token has expired")
+            );
 
         } catch (IllegalArgumentException e) {
             log.info("Token is invalid.");
-            throw new ApiRequestException("Invalid token.", e, "INVALID_TOKEN");
+            throw new UnauthorizedException(
+                    "Invalid token.",
+                    "INVALID_TOKEN",
+                    Map.of("reason", e.getMessage())
+            );
         }
     }
 
@@ -98,9 +125,13 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.findUserByEmail(userRegisterRequest.getEmail()).ifPresent(value -> {
                 log.info("User already exists with this email");
-                throw new ApiRequestException("User already exists with this email", "EMAIL_EXISTS");
+                throw new ApiRequestException(
+                        "User already exists with this email",
+                        "EMAIL_EXISTS",
+                        Map.of("email", userRegisterRequest.getEmail())
+                );
             });
-            User user = UserMapper.INSTANCE.mapUserRegisterDtoToUser(userRegisterRequest);
+            User user = userMapper.mapUserRegisterDtoToUser(userRegisterRequest);
 
             saveUser(user);
 
@@ -108,19 +139,31 @@ public class UserServiceImpl implements UserService {
             String refreshToken = jwtService.generateToken(user.getEmail(), user.getUuid(), refreshExp);
 
             return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
+
         } catch (ApiRequestException e) {
             log.error("ApiRequestException during registration: {}", e.getMessage());
             throw e;
         } catch (Exception e) {
             log.error("Unexpected error during user registration: {}", e.getMessage(), e);
-            throw new ApiRequestException("Unexpected error during registration", e, "INTERNAL_ERROR");
+            throw new UnExpectedError(
+                    "Unexpected error during registration",
+                    e,
+                    "INTERNAL_ERROR",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findUserByEmailAndLockAndEnabled(loginRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "email", loginRequest.getEmail()));
+        User user = userRepository.findUserByEmailAndIsActive(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User",
+                        "email",
+                        loginRequest.getEmail(),
+                        "USER_NOT_FOUND",
+                        Map.of("email", loginRequest.getEmail())
+                ));
 
         try {
             Authentication authenticate = authenticationManager.authenticate(
@@ -133,14 +176,27 @@ public class UserServiceImpl implements UserService {
                 return new AuthResponse(Code.SUCCESS, authToken, refreshToken);
             } else {
                 log.info("--STOP LoginService: Invalid credentials");
-                throw new UnauthorizedException("Invalid credentials", "INVALID_CREDENTIALS");
+                throw new UnauthorizedException(
+                        "Invalid credentials",
+                        "INVALID_CREDENTIALS",
+                        Map.of("email", loginRequest.getEmail())
+                );
             }
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials: {}", e.getMessage());
-            throw new UnauthorizedException("Invalid credentials", "INVALID_CREDENTIALS");
+            throw new UnauthorizedException(
+                    "Invalid credentials",
+                    "INVALID_CREDENTIALS",
+                    Map.of("email", loginRequest.getEmail())
+            );
         } catch (Exception e) {
             log.error("Authentication failed: {}", e.getMessage());
-            throw new ApiRequestException("Authentication failed", e, "AUTH_FAILED");
+            throw new UnExpectedError(
+                    "Authentication failed",
+                    e,
+                    "AUTH_FAILED",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
@@ -150,7 +206,11 @@ public class UserServiceImpl implements UserService {
             String accessToken = extractToken(request.getHeader("Authorization"));
 
             if (accessToken == null || accessToken.isEmpty()) {
-                throw new UnauthorizedException("Access token is missing or invalid.", "ACCESS_TOKEN_MISSING");
+                throw new UnauthorizedException(
+                        "Access token is missing or invalid.",
+                        "ACCESS_TOKEN_MISSING",
+                        Map.of("reason", "Access token not provided or invalid format")
+                );
             }
 
             jwtService.validateToken(accessToken);
@@ -161,7 +221,11 @@ public class UserServiceImpl implements UserService {
 
             if (user.getRole() != Role.ADMIN) {
                 log.warn("Access denied: User is not an admin. Role: {}", user.getRole());
-                throw new UnauthorizedException("Access denied. Admin role required.", "ACCESS_DENIED");
+                throw new UnauthorizedException(
+                        "Access denied. Admin role required.",
+                        "ACCESS_DENIED",
+                        Map.of("userRole", user.getRole())
+                );
             }
 
             log.info("User authorized successfully as ADMIN.");
@@ -170,26 +234,46 @@ public class UserServiceImpl implements UserService {
             throw e;
         } catch (ResourceNotFoundException e) {
             log.error("User not found: {}", e.getMessage());
-            throw new UnauthorizedException("User not found.", "USER_NOT_FOUND");
+            throw new UnauthorizedException(
+                    "User not found.",
+                    "USER_NOT_FOUND",
+                    Map.of("reason", e.getMessage())
+            );
         } catch (MalformedJwtException e) {
             log.error("Invalid token format: {}", e.getMessage());
-            throw new UnauthorizedException("Invalid token format.", "INVALID_TOKEN_FORMAT");
+            throw new UnauthorizedException(
+                    "Invalid token format.",
+                    "INVALID_TOKEN_FORMAT",
+                    Map.of("error", e.getMessage())
+            );
         } catch (Exception e) {
             log.error("Unexpected error during authorization: {}", e.getMessage(), e);
-            throw new ApiRequestException("Unexpected error during authorization.", e, "AUTHORIZATION_ERROR");
+            throw new UnExpectedError(
+                    "Unexpected error during authorization.",
+                    e,
+                    "AUTHORIZATION_ERROR",
+                    Map.of("error", e.getMessage())
+            );
         }
     }
 
     @Override
     public AuthResponse changePassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest request) {
         try {
-            String token = extractToken(request.getHeader("Authorization"));
-            String userUuid = jwtService.getUuidFromToken(token);
+            String userUuid = utils.extractUserIdFromRequest(request);
+
             User user = userRepository.findUserByUuid(userUuid)
-                    .orElseThrow(() -> new ResourceNotFoundException("User", "uuid", userUuid));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "User",
+                            "uuid",
+                            userUuid,
+                            "USER_NOT_FOUND",
+                            Map.of("uuid", userUuid)
+                    ));
+
             if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-                userRepository.save(user);
+                userRepository.saveAndFlush(user);
                 return new AuthResponse(Code.SUCCESS, null, null);
             } else {
                 throw new UnauthorizedException(
@@ -203,6 +287,63 @@ public class UserServiceImpl implements UserService {
                     "Invalid token",
                     "INVALID_TOKEN",
                     Map.of("reason", "Malformed or missing token", "timestamp", LocalDateTime.now())
+            );
+        } catch (ResourceNotFoundException e) {
+            log.error("User not found: {}", e.getMessage());
+            throw new UnauthorizedException(
+                    "User not found.",
+                    "USER_NOT_FOUND",
+                    Map.of("uuid", e.getFieldValue())
+            );
+        } catch (Exception e) {
+            log.error("Unexpected error during password change: {}", e.getMessage(), e);
+            throw new UnExpectedError(
+                    "Unexpected error during password change.",
+                    e,
+                    "PASSWORD_CHANGE_ERROR",
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> deleteMyAccount(HttpServletRequest request) {
+        try {
+            String userUuid = utils.extractUserIdFromRequest(request);
+
+            User user = userRepository.findUserByUuid(userUuid)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "User",
+                            "uuid",
+                            userUuid,
+                            "USER_NOT_FOUND",
+                            Map.of("uuid", userUuid)
+                    ));
+
+            userRepository.deactivateAndClearUser(user.getId());
+            addressRepository.deleteAddressesByUserId(user.getId());
+
+            return ResponseEntity.ok().build();
+        } catch (MalformedJwtException | IllegalArgumentException e) {
+            throw new UnauthorizedException(
+                    "Invalid token",
+                    "INVALID_TOKEN",
+                    Map.of("reason", "Malformed or missing token", "timestamp", LocalDateTime.now())
+            );
+        } catch (ResourceNotFoundException e) {
+            log.error("User not found: {}", e.getMessage());
+            throw new UnauthorizedException(
+                    "User not found.",
+                    "USER_NOT_FOUND",
+                    Map.of("uuid", e.getFieldValue())
+            );
+        } catch (Exception e) {
+            log.error("Unexpected error during account deletion: {}", e.getMessage(), e);
+            throw new UnExpectedError(
+                    "Unexpected error during account deletion.",
+                    e,
+                    "ACCOUNT_DELETION_ERROR",
+                    Map.of("error", e.getMessage())
             );
         }
     }

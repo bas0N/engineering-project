@@ -26,5 +26,5 @@ public class ProductDetailResponse {
     private UserResponse owner;
     private List<String> features;
     private List<String> description;
-    private Map<String, String> detail;
+    private Map<String, String> details;
 }

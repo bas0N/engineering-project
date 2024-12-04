@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.LikeEvent;
 import org.example.commondto.ProductEvent;
-import org.example.jwtcommon.jwt.JwtCommonService;
 import org.example.like.kafka.ProductInfoConsumer;
 import org.example.like.kafka.ProductInfoProducer;
 import org.example.like.service.ProductService;

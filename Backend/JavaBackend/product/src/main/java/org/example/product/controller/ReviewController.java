@@ -40,8 +40,8 @@ public class ReviewController {
     }
 
     @DeleteMapping(path = "/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable String reviewId) {
-        return reviewService.deleteReview(reviewId);
+    public ResponseEntity<String> deleteReview(@PathVariable String reviewId, HttpServletRequest request) {
+        return reviewService.deleteReview(reviewId, request);
     }
 
 

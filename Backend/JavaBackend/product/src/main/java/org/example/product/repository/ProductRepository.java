@@ -20,4 +20,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     @Query("{ 'userId': ?0 }")
     Page<Product> findByUserId(String userId, Pageable pageable);
+
+    @Query("{ 'parent_asin': ?0, 'active': true }")
+    void setProductAsInactive(String id);
 }

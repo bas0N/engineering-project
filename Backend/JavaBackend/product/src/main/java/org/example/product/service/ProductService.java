@@ -30,13 +30,13 @@ public interface ProductService {
 
     ResponseEntity<ProductDetailResponse> updateProduct(String id, UpdateProductRequest updateProductRequest, HttpServletRequest request);
 
-    ResponseEntity<?> deleteProduct(String id, HttpServletRequest request);
+    ResponseEntity<String> deleteProduct(String id, HttpServletRequest request);
 
     ResponseEntity<ImageUploadResponse> addImageToProduct(String productId, MultipartFile hi_Res, MultipartFile large, MultipartFile thumb, String variant , HttpServletRequest request);
 
     ResponseEntity<ImageUploadResponse> updateImage(String productId, MultipartFile hiRes, MultipartFile large, MultipartFile thumb, String variant, int order, HttpServletRequest request);
 
-    ResponseEntity<?> deleteImage(String productId, int order, HttpServletRequest request);
+    ResponseEntity<String> deleteImage(String productId, int order, HttpServletRequest request);
 
     ResponseEntity<Page<ProductResponse>> getMyProducts(HttpServletRequest request, int page, int limit);
 }
