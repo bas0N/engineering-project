@@ -11,6 +11,7 @@ import org.example.auth.dto.request.LoginRequest;
 import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
 import org.example.auth.entity.*;
+import org.example.auth.kafka.userDeActive.UserDeActiveProducer;
 import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserDeActiveProducer userDeActiveProducer;
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private final Utils utils;
     @Value("${jwt.exp}")
@@ -322,6 +324,7 @@ public class UserServiceImpl implements UserService {
 
             userRepository.deactivateAndClearUser(user.getId());
             addressRepository.deleteAddressesByUserId(user.getId());
+            userDeActiveProducer.sendUserDeactivateEvent(user.getUuid());
 
             return ResponseEntity.ok().build();
         } catch (MalformedJwtException | IllegalArgumentException e) {

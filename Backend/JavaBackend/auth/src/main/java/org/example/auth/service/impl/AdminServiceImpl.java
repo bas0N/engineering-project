@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.auth.dto.response.UserAdminDetailsResponse;
 import org.example.auth.entity.Role;
 import org.example.auth.entity.User;
+import org.example.auth.kafka.userDeActive.UserDeActiveProducer;
 import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
@@ -29,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final UserDeActiveProducer userDeActiveProducer;
 
     @Override
     public ResponseEntity<?> deleteAccount(String userUuid) {
@@ -183,6 +185,7 @@ public class AdminServiceImpl implements AdminService {
                     ));
             userRepository.deactivateAndClearUser(user.getId());
             addressRepository.deleteAddressesByUserId(user.getId());
+            userDeActiveProducer.sendUserDeactivateEvent(user.getUuid());
 
             log.info("User deleted successfully with ID: {}", userId);
             return ResponseEntity.ok("User deleted successfully");

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class UserDeActiveProducer {
-    private static final String USER_TOPIC = "user-deactive-request-topic";
+    private static final String USER_TOPIC = "user-deactivate-request-topic";
 
     private final KafkaTemplate<String, String> userDeactiveKafkaTemplate;
 
-    public void sendUserEvent(String userUuid) {
+    public void sendUserDeactivateEvent(String userUuid) {
         log.info("Producing user Uuid event: {}", userUuid);
         userDeactiveKafkaTemplate.send(USER_TOPIC, userUuid);
     }

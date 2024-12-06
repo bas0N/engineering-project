@@ -61,16 +61,16 @@ public class KafkaConfig {
     //User DeActive
 
     @Bean
-    public ProducerFactory<String, UserDetailInfoEvent> userProducerFactory() {
+    public ProducerFactory<String, String> userDeactivateProducerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
     }
 
     @Bean
-    public KafkaTemplate<String, UserDetailInfoEvent> userKafkaTemplate() {
-        return new KafkaTemplate<>(userProducerFactory());
+    public KafkaTemplate<String, String> userDeactiveKafkaTemplate() {
+        return new KafkaTemplate<>(userDeactivateProducerFactory());
     }
 }

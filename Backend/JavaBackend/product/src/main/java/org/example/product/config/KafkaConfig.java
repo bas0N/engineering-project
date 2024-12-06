@@ -69,7 +69,6 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, BasketProductEvent> basketProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        //configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -84,9 +83,8 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, String> basketConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        //props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "product-service-basket-group"); // Changed group ID
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "product-service-basket-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -109,7 +107,6 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, String> userProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-       // configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -132,7 +129,6 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, UserDetailInfoEvent> userConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        //props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "product-service-user-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
@@ -145,5 +141,27 @@ public class KafkaConfig {
                 props,
                 new StringDeserializer(),
                 new ErrorHandlingDeserializer<>(new JsonDeserializer<>(UserDetailInfoEvent.class)));
+    }
+    //User Deactivate
+    @Bean
+    public ConsumerFactory<String, String> userDeactivateConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-service-basket-group");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean(name = "userDeactivateKafkaListenerContainerFactory")
+    public ConcurrentKafkaListenerContainerFactory<String, String> userDeactivateKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(userDeactivateConsumerFactory());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        return factory;
     }
 }
