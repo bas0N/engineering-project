@@ -15,27 +15,30 @@ import { useTranslation } from 'react-i18next';
 export type BasketItemType = {
     uuid: string;
     name: string;
-    image: string;
+    imageUrl: string;
     quantity: number;
     summaryPrice: number;
 };
 
 interface BasketItemsProps {
     items: BasketItemType[];
+    deleteItemCallback: (id: string) => void;
 }
 
 export const BasketItems = ({
-    items
+    items,
+    deleteItemCallback,
 }: BasketItemsProps) => {
 
     const {t} = useTranslation();
+    console.log(items);
 
     return (<BasketItemsWrapper>
         {items.length > 0 ?
         items.map((item, ind) => <BasketItem 
             key={`basket-item-${ind}`}>
                 <BasketItemDescription>
-                    <Image src={item.image} alt={item.name} />
+                    <Image src={item.imageUrl} alt={item.name} />
                     {item.name.length > 32 ? (
                         <Tooltip content={item.name} relationship='description'>
                             <BasketItemTitle size={500}>
@@ -57,7 +60,10 @@ export const BasketItems = ({
                         type='number' 
                         value={item.quantity.toString()} 
                     />
-                    <BasketItemDeleteButton aria-label={t('basket.deleteButton')}>
+                    <BasketItemDeleteButton 
+                        aria-label={t('basket.deleteButton')}
+                        onClick={() => deleteItemCallback(item.uuid)}
+                    >
                         <DeleteRegular />
                     </BasketItemDeleteButton>
                 </BasketItemManagement>

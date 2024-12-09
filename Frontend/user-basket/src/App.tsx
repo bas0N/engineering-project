@@ -9,7 +9,8 @@ import { Toast, ToastTitle, Text, useToastController } from '@fluentui/react-com
 export default function Basket() {
 
   const {t} = useTranslation();
-  const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'mainToaster';
+  const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'localToaster';
+  console.log(toasterId)
   const token = localStorage.getItem('authToken');
   const [basketItems, setBasketItems] = useState<BasketItemType[]|null>(null);
   const [basketPrice, setBasketPrice] = useState(0);
@@ -27,10 +28,11 @@ export default function Basket() {
       setBasketItems(result.data.basketProducts);
       setBasketPrice(result.data.summaryPrice);
 
-    } catch {
+    } catch (error){
+      console.log(error);
       dispatchToast(<Toast>
         <ToastTitle>{t('basket.somethingWentWrong')}</ToastTitle>
-      </Toast>);
+      </Toast>, {position: 'top-end', intent: 'error'});
       setLoadingFailed(true);
     }
   }, [dispatchToast, t, token])
@@ -38,6 +40,25 @@ export default function Basket() {
   useEffect(() => {
     getBasketStuff();
   }, [getBasketStuff]);
+
+  const deleteItemCallback = async(itemId: string) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}basket`, {
+        data: {
+          basketItemUuid: itemId,
+          quantity: (basketItems as BasketItemType[]).find((elem) => elem.uuid === itemId).quantity
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      await getBasketStuff();
+    } catch {
+      dispatchToast(<Toast>
+        <ToastTitle>{t('basket.failedToDelete')}</ToastTitle>
+      </Toast>, {position: 'top-end', intent: 'error'});
+    }
+  };
 
   return (
     <BasketWrapper>
@@ -51,7 +72,10 @@ export default function Basket() {
             <Text>{t('basket.loadingFailed')}</Text>
           )
           : basketItems !== null ? (<>
-            <BasketItems items={basketItems as BasketItemType[]} />
+            <BasketItems 
+              items={basketItems as BasketItemType[]} 
+              deleteItemCallback={deleteItemCallback}
+            />
             <BasketSummary orderValue={basketPrice} /> 
           </>)
           : (<LoadingSpinner label={t('basket.basketLoading')} /> )
