@@ -91,6 +91,8 @@
     "noItems": "No items present in the basket",
     "basketLoading": "Loading items...",
     "loadingFailed": "Items loading failed. Try later",
-    "somethingWentWrong": "Something went wrong..."
+    "somethingWentWrong": "Something went wrong...",
+    "quantityInput": "Product's quantity input",
+    "deleteButton": "Delete button"
   }
 }

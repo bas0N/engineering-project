@@ -9,7 +9,7 @@ import {
     BasketItemTitle,
     BasketItemQuantity,
     BasketItemDeleteButton,
-} from './BasketItems.styled.tsx';
+} from './BasketItems.styled';
 import { useTranslation } from 'react-i18next';
 
 export type BasketItemType = {
@@ -35,7 +35,7 @@ export const BasketItems = ({
         items.map((item, ind) => <BasketItem 
             key={`basket-item-${ind}`}>
                 <BasketItemDescription>
-                    <Image src={item.image} />
+                    <Image src={item.image} alt={item.name} />
                     {item.name.length > 32 ? (
                         <Tooltip content={item.name} relationship='description'>
                             <BasketItemTitle size={500}>
@@ -52,8 +52,12 @@ export const BasketItems = ({
                     </BasketItemPrice>
                 </BasketItemDescription>
                 <BasketItemManagement>
-                    <BasketItemQuantity type='number' value={item.quantity.toString()} />
-                    <BasketItemDeleteButton>
+                    <BasketItemQuantity 
+                        aria-label={t('basket.quantityInput')}
+                        type='number' 
+                        value={item.quantity.toString()} 
+                    />
+                    <BasketItemDeleteButton aria-label={t('basket.deleteButton')}>
                         <DeleteRegular />
                     </BasketItemDeleteButton>
                 </BasketItemManagement>
