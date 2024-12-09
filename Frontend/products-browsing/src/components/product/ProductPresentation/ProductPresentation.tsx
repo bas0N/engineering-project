@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState, useCallback } from "react";
-import { Button, Tag, Text } from "@fluentui/react-components";
+import { Button, useId, Tag, Text, Toast, Toaster, ToastTitle, useToastController } from "@fluentui/react-components";
 import { ThumbLikeRegular } from '@fluentui/react-icons';
 import { ProductCategoriesWrapper } from "../DetailsAndFeatures/DetailsAndFeatures.styled";
 import { 
@@ -55,9 +55,11 @@ export const ProductPresentation = ({
     setIsReviewAdded
 } : ProductPresentationProps) => {
 
+    const toasterId = useId("toaster");
     const [productNumber, setProductNumber] = useState(0);
     const [numberOfLikes, setNumberOfLikes] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
+    const { dispatchToast } = useToastController(toasterId);
 
     const {t} = useTranslation();
 
@@ -110,8 +112,34 @@ export const ProductPresentation = ({
         }
     }
 
+    const addToBasket = async() => {
+        try {
+            const result = await axios.post(`${import.meta.env.VITE_API_URL}basket`, {
+                quantity: productNumber,
+                product: productId
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(result);
+            dispatchToast(<Toast>
+                    <ToastTitle>{t('product.addedToBasket')}</ToastTitle>
+                </Toast>, 
+                {position: 'top-end', intent: 'success'}
+            );
+        } catch {
+            dispatchToast(<Toast>
+                    <ToastTitle>{t('product.failedToAdd')}</ToastTitle>
+                </Toast>, 
+                {position: 'top-end', intent: 'error'}
+            );
+        }
+    }
+
     return (
         <ProductPresentationOrderingSection>
+            <Toaster toasterId={toasterId} />
             <ProductPresentationHeader>
                 {title}
             </ProductPresentationHeader>
@@ -146,7 +174,10 @@ export const ProductPresentation = ({
                     value={productNumber.toString()} 
                     onChange={(_e, data) => setProductNumber(Number(data.value))} 
                 />
-                <ProductAddToTheBaskedButton>
+                <ProductAddToTheBaskedButton 
+                    disabled={productNumber === 0}
+                    onClick={() => addToBasket()}
+                >
                     {t('product.addToBasket')}
                 </ProductAddToTheBaskedButton>
             </ProductBuyingSection>

@@ -1,6 +1,8 @@
 {
   "product": {
     "addToBasket": "Add to basket",
+    "addedToBasket": "Product added to basket",
+    "failedToAdd": "Failed to add the product to your basket",
     "detailsHeader": "Details",
     "featuresHeader": "Features",
     "loadingFailed": "Could not load this item. Try again",

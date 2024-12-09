@@ -42,9 +42,7 @@ export const Recommendations = ({
                 }
             });
             
-            console.log(result);
             const recomsRaw:RawData[] = result.data;
-            console.log(recomsRaw);
             recomsRaw.shift();
             const data = recomsRaw.map((elem: RawData) => ({
                 ...elem,
