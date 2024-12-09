@@ -20,26 +20,28 @@ jest.mock('../../../tiles/tile/Tile', () => ({
   ),
 }));
 
+const MOCK_PRODUCT_ID = "mockProductId";
+
 describe('Recommendations Component', () => {
 
     it('has no a11y violations', async() => {
-        const {container} = render(<Recommendations />);
+        const {container} = render(<Recommendations productId={MOCK_PRODUCT_ID} />);
         expect(await axe(container)).toHaveNoViolations();
     })
 
   it('renders without crashing', () => {
-    render(<Recommendations />);
+    render(<Recommendations  productId={MOCK_PRODUCT_ID}/>);
     expect(screen.getByText('product.recommendations')).toBeInTheDocument();
   });
 
   it('renders the correct number of recommendation tiles', () => {
-    render(<Recommendations />);
+    render(<Recommendations  productId={MOCK_PRODUCT_ID}/>);
     const tiles = screen.getAllByTestId('mock-tile');
     expect(tiles).toHaveLength(5); 
   });
 
   it('renders product titles correctly', () => {
-    render(<Recommendations />);
+    render(<Recommendations  productId={MOCK_PRODUCT_ID}/>);
     const titleElements = screen.getAllByText('$100 Mastercard Gift Card (plus $5.95 Purchase Fee)');
     expect(titleElements.length).toBe(5);
   });

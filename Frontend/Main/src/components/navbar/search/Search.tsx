@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../../node_modules/react-i18next";
-import { ItemsSearchBox, ItemsSearchButton, NoItemsBanner, SearchContainer } from "./Search.styled";
+import { 
+    ItemsSearchBox, 
+    ItemsSearchButton, 
+    NoItemsBanner, 
+    SearchContainer,
+    SearchResponseWrapper, 
+} from "./Search.styled";
 import { SearchRegular } from "@fluentui/react-icons";
 import { ItemType, LastItems } from "./lastItems/LastItems";
 import { Spinner } from "@fluentui/react-components";
@@ -13,8 +19,9 @@ export const Search = () => {
     const [search, setSearch] = useState('');
     const {t} = useTranslation();
     const navigate = useNavigate();
+    const token = localStorage.getItem('authToken');
 
-    const [lastItemsOpened] = useState(true);
+    const [lastItemsOpened, setLastItemsOpened] = useState(true);
     const [items, setItems] = useState<ItemType[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,13 +40,19 @@ export const Search = () => {
 
     useEffect(() => {
         const getSearchData = async() => {
-            // TODO: this URL is just for the test purposes, change it after we have the backend ready
-            const results = await axios.get('http://localhost:3000/items');
-            console.log(results.data);
-            setItems(results.data as ItemType[]);
+            const results = await axios.get(`${import.meta.env.VITE_API_URL}product/search`, {
+                params: {
+                    title: search
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(results);
+            setItems(results.data.content as ItemType[]);
         };
         getSearchData();
-    }, []);
+    }, [search, token]);
 
     const handleSearchBox = (query: string) => {
         setIsLoading(true);
@@ -50,7 +63,10 @@ export const Search = () => {
 
     const handleSearchButton = () => {
         navigate(`/products/search/${search}`);
+        setLastItemsOpened(false);
     }
+
+    const closeLastItems = () => setLastItemsOpened(false);
 
     return (
         <>
@@ -64,13 +80,18 @@ export const Search = () => {
                     <SearchRegular />
                 </ItemsSearchButton>
             </SearchContainer>
-            {
-                lastItemsOpened && (filteredItems.length > 0 ? (
-                    <LastItems items={filteredItems} />
-                ) : search.length > 0 ? (!isLoading ? (
-                    <NoItemsBanner>{t('searchBox.noItems')}</NoItemsBanner>
-                ) :  <Spinner label={t('searchBox.loading')}/>) : null)
-            }
+            <SearchResponseWrapper>
+                {
+                    lastItemsOpened && (filteredItems.length > 0 ? (
+                        <LastItems 
+                            items={filteredItems} 
+                            closeLastItems={closeLastItems}
+                        />
+                    ) : search.length > 0 ? (!isLoading ? (
+                        <NoItemsBanner>{t('searchBox.noItems')}</NoItemsBanner>
+                    ) :  <Spinner label={t('searchBox.loading')}/>) : null)
+                }
+            </SearchResponseWrapper>
         </>
       )
 }

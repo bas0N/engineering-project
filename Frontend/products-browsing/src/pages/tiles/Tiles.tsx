@@ -2,110 +2,96 @@ import { useParams } from "react-router-dom";
 import { Sidebar } from "../../components/tiles/sidebar/Sidebar.tsx";
 import { TilesWrapper, TilesContainer, TilesFiltersOpeningWrapper } from "./Tiles.styled";
 import { Tile } from "../../components/tiles/tile/Tile.tsx";
-import { useState } from "react";
-import { Button } from '@fluentui/react-components';
+import { useEffect, useState } from "react";
+import { Button, Text } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
 import '../../i18n/i18n.tsx';
+import axios from "axios";
+import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation.tsx";
 
 const Tiles = () => {
 
     const {query} = useParams();
     const {t} = useTranslation();
+    const token = localStorage.getItem('authToken');
+    const [tiles, setTiles] = useState<ItemType[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [minPrice, selectMinPrice] = useState<number|undefined>(undefined);
+    const [maxPrice, selectMaxPrice] = useState<number|undefined>(undefined);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 
-    console.log(query);
-
     const closeSidebar = () => setIsSidebarOpened(false);
+
+    useEffect(() => {
+        const getData = async() => {
+            try {
+                console.log(selectedCategories);
+                const result = await axios.get(`${import.meta.env.VITE_API_URL}product/search`, {
+                    params: {
+                        title: query,
+                        categories: selectedCategories,
+                        minPrice,
+                        maxPrice,
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log(result);
+                
+                const newCategories = result.data.content
+                .map((item: ItemType) => [item.mainCategory, ...item.categories]);
+                console.log(newCategories)
+                const flattenedCategories:string[] = [].concat(...newCategories);
+                const distinctCategories = flattenedCategories.filter((value, index, array) => array.indexOf(value) === index);
+                
+                setCategories(distinctCategories);
+                setTiles(result.data.content);
+            } catch (error){
+                console.log(error);
+            }
+        }
+        getData();
+    }, [maxPrice, minPrice, query, selectedCategories, token]);
+
+    if(token === null) return <></>
 
     return (<>
         <TilesWrapper>
-            <Sidebar isOpened={isSidebarOpened} closeSidebar={closeSidebar} />
+            <Sidebar 
+                isOpened={isSidebarOpened} 
+                closeSidebar={closeSidebar} 
+                categories={categories}
+                onCategoriesSelect={setSelectedCategories}
+                minPrice={minPrice}
+                selectMinPrice={selectMinPrice}
+                maxPrice={maxPrice}
+                selectMaxPrice={selectMaxPrice}
+            />
             <TilesFiltersOpeningWrapper>
                 <Button onClick={() => setIsSidebarOpened(true)}>
                     {t('tiles.sidebarOpeningButton')}
                 </Button>
             </TilesFiltersOpeningWrapper>
             <TilesContainer>
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
-
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
-                <Tile 
-                    id='mockId' 
-                    title='mock title' 
-                    images={[{
-                        thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-                        large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-                        variant: "MAIN",
-                        hiRes: null
-                    }]}
-                    averageRating={4.8}
-                    ratingNumber={2000}
-                    price={'148.2'}
-                />
+                {
+                    tiles.length > 0 ?
+                    tiles.map((tile, ind) => (
+                        <Tile 
+                            id={tile.parentAsin}
+                            title={tile.title} 
+                            images={tile.images}
+                            averageRating={tile.averageRating}
+                            ratingNumber={tile.ratingNumber}
+                            price={tile.price}
+                            key={`tile-${ind}`}
+                        />
+                    )) : <Text size={500}>
+                        No results
+                    </Text>
+                }
             </TilesContainer>
         </TilesWrapper>
     </>);
