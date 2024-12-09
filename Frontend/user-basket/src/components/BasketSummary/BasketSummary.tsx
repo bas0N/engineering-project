@@ -7,7 +7,13 @@ import {
 } from './BasketSummary.styled';
 import { useTranslation } from 'react-i18next';
 
-export const BasketSummary = () => {
+interface BasketSummaryProps {
+    orderValue: number;
+}
+
+export const BasketSummary = ({
+    orderValue
+}: BasketSummaryProps) => {
 
     const {t} = useTranslation();
 
@@ -16,7 +22,7 @@ export const BasketSummary = () => {
             <Text as='h2' size={500}>{t('basket.summary.title')}</Text>
             <BasketSummaryItem>
                 <Text weight='semibold' size={400}>{t('basket.summary.order')}</Text>
-                <Text size={400}>123.24$</Text>
+                <Text size={400}>{orderValue}$</Text>
             </BasketSummaryItem>
             <BasketSummaryItem>
                 <Text weight='semibold' size={400}>{t('basket.summary.delivery')}</Text>
@@ -24,7 +30,7 @@ export const BasketSummary = () => {
             </BasketSummaryItem>
             <BasketSummaryItem>
                 <Text weight='semibold' size={400}>{t('basket.summary.total')}</Text>
-                <Text size={400}>123.24$</Text>
+                <Text size={400}>{orderValue}$</Text>
             </BasketSummaryItem>
             <BasketSummaryDivider />
             <BasketSummaryBtn>

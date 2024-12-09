@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { DeleteRegular } from '@fluentui/react-icons';
 import { Image, Text, Tooltip } from '@fluentui/react-components';
 import { 
@@ -11,64 +10,55 @@ import {
     BasketItemQuantity,
     BasketItemDeleteButton,
 } from './BasketItems.styled.tsx';
+import { useTranslation } from 'react-i18next';
 
-type ProductImage = {
-    thumb: string,
-    large: string,
-    variant: string,
-    hiRes: string | null,
+export type BasketItemType = {
+    uuid: string;
+    name: string;
+    image: string;
+    quantity: number;
+    summaryPrice: number;
 };
 
-type BasketItemType = {
-    id: string;
-    title: string;
-    images: ProductImage[];
-    price: string;
-};
+interface BasketItemsProps {
+    items: BasketItemType[];
+}
 
-export const BasketItems = () => {
+export const BasketItems = ({
+    items
+}: BasketItemsProps) => {
 
-    const [items] = useState<BasketItemType[]>([{
-        id: 'test1',
-        title: 'Lorem ipsum dolor sit amet consectetur adipiscing elit',
-        images: [{
-            thumb: "https://m.media-amazon.com/images/I/519AAiepM1L._SX38_SY50_CR,0,0,38,50_.jpg",
-            large: "https://m.media-amazon.com/images/I/519AAiepM1L.jpg",
-            variant: "MAIN",
-            hiRes: null
-        },],
-        price: "104.95"
-    }]);
+    const {t} = useTranslation();
 
     return (<BasketItemsWrapper>
         {items.length > 0 ?
         items.map((item, ind) => <BasketItem 
             key={`basket-item-${ind}`}>
                 <BasketItemDescription>
-                    <Image src={item.images[0].thumb} />
-                    {item.title.length > 32 ? (
-                        <Tooltip content={item.title} relationship='description'>
+                    <Image src={item.image} />
+                    {item.name.length > 32 ? (
+                        <Tooltip content={item.name} relationship='description'>
                             <BasketItemTitle size={500}>
-                                {item.title}
+                                {item.name}
                             </BasketItemTitle>
                         </Tooltip>)
                         : (
                         <BasketItemTitle size={500}>
-                            {item.title}
+                            {item.name}
                         </BasketItemTitle>
                     )}
                     <BasketItemPrice>
-                        {item.price}$
+                        {item.summaryPrice}$
                     </BasketItemPrice>
                 </BasketItemDescription>
                 <BasketItemManagement>
-                    <BasketItemQuantity type='number' value={'10'} />
+                    <BasketItemQuantity type='number' value={item.quantity.toString()} />
                     <BasketItemDeleteButton>
                         <DeleteRegular />
                     </BasketItemDeleteButton>
                 </BasketItemManagement>
             </BasketItem>
         )
-    : <Text size={600} align='center'>No items present in the basket</Text>}
+    : <Text size={600} align='center'>{t('basket.noItems')}</Text>}
     </BasketItemsWrapper>);
 }
