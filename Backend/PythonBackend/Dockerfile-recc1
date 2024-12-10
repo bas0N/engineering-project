@@ -17,7 +17,7 @@ COPY . /app
 EXPOSE 5000
 
 # Set the environment variable for Flask
-ENV FLASK_APP=app.py
+ENV FLASK_APP=app-recc1.py
 ENV FLASK_ENV=production
 
 # Command to run the Flask app

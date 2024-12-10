@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from app.config.db_config import Config
+from recc_system_2.app.config.db_config import Config
 
 def get_mysql_engine():
     print(Config.MYSQL_CONNECTION_STRING)

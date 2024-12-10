@@ -1,13 +1,14 @@
+from dotenv import load_dotenv
 from flask import Flask
-from app.routes.main import bp
-from app.database.mongo import get_mongo_collection
-from app.database.mysql import get_mysql_engine
-from app.data.loader import load_n_products
-from app.svd.trainer import train_svd
-from app.factors.saver import save_latent_factors_to_db
+from recc_system_2.app.routes.main import bp
+from recc_system_2.app.database.mongo import get_mongo_collection
+from recc_system_2.app.database.mysql import get_mysql_engine
+from recc_system_2.app.data.loader import load_n_products
+from recc_system_2.app.svd.trainer import train_svd
+from recc_system_2.app.factors.saver import save_latent_factors_to_db
 from pymongo import MongoClient
 import certifi
-from app.config.db_config import Config
+from recc_system_2.app.config.db_config import Config
 import pandas as pd
 
 def init_recommendation_system():
@@ -23,8 +24,8 @@ def init_recommendation_system():
         # should_run is True, so we execute the logic
 
         # 1. Load reviews data
-        main_collection = get_mongo_collection()  # from mongo.py, gets the main reviews collection
-        reviews = load_n_products(main_collection, n=1000)
+        main_collection = get_mongo_collection(Config.MONGO_COLLECTION_NAME_REVIEWS)  # from mongo.py, gets the main reviews collection
+        reviews = load_n_products(main_collection, n=Config.NUM_PRODUCTS)
 
         # 2. Train SVD
         user_factors, item_factors = train_svd(reviews, n_components=30)
@@ -38,12 +39,3 @@ def init_recommendation_system():
             {"_id": config_doc["_id"]},
             {"$set": {"should_run": False}}
         )
-
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(bp)
-
-    # Run initialization logic after app is created
-    init_recommendation_system()
-
-    return app

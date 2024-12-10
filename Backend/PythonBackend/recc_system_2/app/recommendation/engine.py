@@ -1,6 +1,69 @@
 from sqlalchemy import MetaData, Table, select
 import numpy as np
 
+from pymongo import MongoClient
+import certifi
+from pymongo import MongoClient
+import certifi
+from recc_system_2.app.database.mongo import get_mongo_collection
+from recc_system_2.app.config.db_config import Config
+
+
+
+def fetch_product_details_for_recommendations(recommendations):
+    # Extract all item_ids from recommendations
+    item_ids = [rec["item_id"] for rec in recommendations]
+
+    collection = get_mongo_collection(Config.MONGO_COLLECTION_NAME_PRODUCTS)
+
+    # Query all products with asin in the item_ids list
+    cursor = collection.find({"parent_asin": {"$in": item_ids}})
+    docs = list(cursor)
+
+    # Create a mapping from asin to product doc
+    doc_map = {doc["parent_asin"]: doc for doc in docs if "parent_asin" in doc}
+
+    # Transform each recommendation with product details
+    detailed_recommendations = []
+    for rec in recommendations:
+        item_id = rec["item_id"]
+        doc = doc_map.get(item_id)
+
+        if doc:
+            average_rating = doc.get("average_rating", 0.0)
+            description_list = doc.get("description", [])
+            description = description_list[0] if description_list and isinstance(description_list[0], str) else ""
+            images = doc.get("images", [])
+            image_url = images[0]["large"] if images and "large" in images[0] else ""
+            main_category = doc.get("main_category", "")
+            price_str = doc.get("price", 0)
+            try:
+                price = float(price_str)
+            except ValueError:
+                price = 0.0
+            rating_number = doc.get("rating_number", 0)
+            title = doc.get("title", "")
+            ids = item_id  # from doc.get("asin", item_id) but already have item_id
+
+            detailed_rec = {
+                "fit_ratio": rec.get("fit_ratio", 0),
+                "average_rating": average_rating,
+                "description": description,
+                "ids": ids,
+                "image": image_url,
+                "main_category": main_category,
+                "price": price,
+                "rating_number": rating_number,
+                "title": title
+            }
+            detailed_recommendations.append(detailed_rec)
+        else:
+            # If no doc found, just append the recommendation as-is or handle accordingly
+            detailed_recommendations.append(rec)
+
+    return detailed_recommendations
+
+
 def fetch_top_n_recommendations(engine, user_id, n):
     metadata = MetaData()
     metadata.reflect(engine)

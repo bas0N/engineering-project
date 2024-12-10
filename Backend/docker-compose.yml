@@ -13,7 +13,7 @@ services:
   recc-system-1:
     build:
       context: ./PythonBackend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-recc1
     volumes:
       - ./PythonBackend/volume/chromadb-data:/volume/chromadb-data
     ports:
@@ -29,7 +29,38 @@ services:
       - microservices-network
     env_file:
       - .env
-
+  recc-system-2:
+    build:
+      context: ./PythonBackend
+      dockerfile: Dockerfile-recc2
+    ports:
+      - 5001:5001
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB=dev
+      - PORT=5001
+    depends_on:
+      - factors-db
+    networks:
+      - microservices-network
+    env_file:
+      - .env
+  factors-db:
+    image: mysql:8.0
+    container_name: mysql-factors-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - microservices-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+    env_file:
+      - .env
   # Eureka service for service discovery
   eureka:
     build:
@@ -307,3 +338,6 @@ services:
 networks:
   microservices-network:
     driver: bridge
+
+volumes:
+  mysql_data:
