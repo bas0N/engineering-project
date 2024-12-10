@@ -1,30 +1,42 @@
 version: "3.8"
 services:
-  chroma:
-    image: ghcr.io/chroma-core/chroma:latest
-    volumes:
-      - ./volume/chromadb-data-server:/chroma/chroma/
-    ports:
-      - 8000:8000
-    networks:
-      - net
-  recc-system-1:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./volume/chromadb-data:/volume/chromadb-data
-    ports:
-      - 5000:5000
+  # chroma:
+  #   image: ghcr.io/chroma-core/chroma:latest
+  #   volumes:
+  #     - ./volume/chromadb-data-server:/chroma/chroma/
+  #   ports:
+  #     - 8000:8000
+  #   networks:
+  #     - net
+  mysql:
+    image: mysql:latest
+    container_name: my_sql
     environment:
-      - MONGO_URI=${MONGO_URI}
-      - MONGO_DB=dev
-      - PORT=5000
-      - CHROMA_HOST=chroma
-    depends_on:
-      - chroma
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3306:3306"
     networks:
       - net
+  # recc-system-1:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./volume/chromadb-data:/volume/chromadb-data
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     - MONGO_URI=${MONGO_URI}
+  #     - MONGO_DB=dev
+  #     - PORT=5000
+  #     - CHROMA_HOST=chroma
+  #   depends_on:
+  #     - chroma
+  #   networks:
+  #     - net
   # zookeeper:
   #   image: bitnami/zookeeper:latest
   #   container_name: zookeeper
