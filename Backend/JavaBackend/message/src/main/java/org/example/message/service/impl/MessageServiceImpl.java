@@ -2,12 +2,10 @@ package org.example.message.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
-import org.example.jwtcommon.jwt.JwtCommonService;
 import org.example.message.dto.request.MessageRequest;
 import org.example.message.dto.response.ChatResponse;
 import org.example.message.dto.response.MessageResponse;
 import org.example.message.dto.response.MessagesResponse;
-import org.example.message.dto.response.UserDetailsResponse;
 import org.example.message.entity.Message;
 import org.example.message.mapper.MessageMapper;
 import org.example.message.mapper.UserMapper;

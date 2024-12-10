@@ -32,4 +32,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     @Query("SELECT l FROM Like l WHERE l.userId = :userId AND l.product.uuid = :productId")
     Optional<Like> findByUserIdAndProductId(String userId, String productId);
+
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN TRUE ELSE FALSE END FROM Like l WHERE l.product.id = :id")
+    boolean existsByProductId(long id);
 }

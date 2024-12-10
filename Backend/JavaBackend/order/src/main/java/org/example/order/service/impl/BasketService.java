@@ -2,6 +2,7 @@ package org.example.order.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.commondto.BasketItemEvent;
 import org.example.commondto.ListBasketItemEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.order.dto.ListBasketItemDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class BasketService {
     private final BasketItemsProducer basketItemsEventProducer;
     private  final BasketItemsConsumer basketItemsEventConsumer;
     private final BasketRemoveProducer basketRemoveProducer;
+    private final ListBasketItemsMapper listBasketItemsMapper = ListBasketItemsMapper.INSTANCE;
     public ListBasketItemDto getBasket(String basketId) {
         basketItemsEventProducer.sendBasketItemsEvent(basketId);
         CompletableFuture<ListBasketItemEvent> basketItemsFuture = basketItemsEventConsumer.getListBasketItemsDetails(basketId)
@@ -33,12 +36,10 @@ public class BasketService {
                 });
 
         ListBasketItemEvent basketInfo = basketItemsFuture.join();
-        return ListBasketItemsMapper.INSTANCE.toListBasketItemDto(basketInfo);
-
+        return listBasketItemsMapper.toListBasketItemDto(basketInfo);
     }
 
     public void removeBasket(List<OrderItems> items, String basketId) {
-        List<String> itemsId = items.stream().map(OrderItems::getUuid).toList();
         basketRemoveProducer.sendBasketRemoveEvent(basketId);
     }
 }

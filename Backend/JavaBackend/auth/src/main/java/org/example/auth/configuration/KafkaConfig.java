@@ -22,6 +22,7 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfig {
     private static final String KAFKA_BROKER = "kafka:9092";
+
     @Bean
     public ProducerFactory<String, UserDetailInfoEvent> userProducerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -36,7 +37,7 @@ public class KafkaConfig {
         return new KafkaTemplate<>(userProducerFactory());
     }
 
-    @Bean(name= "userKafkaListenerContainerFactory")
+    @Bean(name = "userKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, String> userKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -44,6 +45,7 @@ public class KafkaConfig {
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
+
     @Bean
     public ConsumerFactory<String, String> userConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -54,5 +56,21 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    //User DeActive
+
+    @Bean
+    public ProducerFactory<String, String> userDeactivateProducerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> userDeactiveKafkaTemplate() {
+        return new KafkaTemplate<>(userDeactivateProducerFactory());
     }
 }

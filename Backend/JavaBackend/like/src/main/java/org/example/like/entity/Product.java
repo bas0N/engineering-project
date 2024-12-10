@@ -28,16 +28,19 @@ public class Product {
 
     private Double averageRating;
 
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Image> images;
 
-    public Product(String productId, String title, String price, Integer ratingNumber, Double averageRating, List<Image> images) {
+    public Product(String productId, String title, String price, Integer ratingNumber, Double averageRating, List<Image> images, Boolean isActive) {
         this.title = title;
         this.price = price;
         this.ratingNumber = ratingNumber;
         this.averageRating = averageRating;
         this.images = images;
         this.uuid = productId;
+        this.isActive = isActive;
     }
 
 

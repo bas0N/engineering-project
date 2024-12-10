@@ -13,14 +13,13 @@
         <module>auth</module>
         <module>like</module>
         <module>product</module>
-        <module>history</module>
         <module>order</module>
         <module>message</module>
         <module>basket</module>
         <module>exception</module>
         <module>RegisterEndpointInformation</module>
         <module>common-dto</module>
-        <module>jwt-common</module>
+        <module>common-utils</module>
     </modules>
 
     <dependencyManagement>
