@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { DismissCircle48Regular } from '@fluentui/react-icons';
 import { 
@@ -100,7 +100,7 @@ export const Sidebar = ({
                         min='0' 
                         placeholder={t('tiles.sidebar.minPrice')}
                         value={String(minPrice)}
-                        onChange={(e) => processPriceChange(Number(e.currentTarget.value), 'min')} />
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => processPriceChange(Number(e.currentTarget.value), 'min')} />
                     <Text>-</Text>
                     <SidebarPriceInput type='number' min='0' placeholder={t('tiles.sidebar.maxPrice')} />
                 </SidebarPriceContainer>

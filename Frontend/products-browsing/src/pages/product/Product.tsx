@@ -48,8 +48,6 @@ const Product = () => {
 
     //if(params.productId === undefined) return <></>
 
-
-
     const closeReviewForm = async() => {
         setIsReviewAdded(false);
         setReviewDisplayReloadTriggerer((state) => !state);
