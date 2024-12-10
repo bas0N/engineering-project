@@ -14,6 +14,7 @@
     "shareOpinionHeader": "Would you like to share some details?",
     "opinionPlaceholder": "Elaborate on your opinion...",
     "opinionTitle": "Put your opinion's title here...",
+    "failedToLoad": "Failed to load the liking info",
     "reviews": {
       "anonymusUser": "Anonymus user",
       "reviewsTitle": "Product reviews",

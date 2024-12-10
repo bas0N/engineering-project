@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState, useCallback } from "react";
-import { Button, useId, Tag, Text, Toast, Toaster, ToastTitle, useToastController } from "@fluentui/react-components";
+import { ChangeEvent, useEffect, useState, useCallback } from "react";
+import { Button, useId, Tag, Text, Toast, Toaster, ToastTitle, useToastController, InputOnChangeData } from "@fluentui/react-components";
 import { ThumbLikeRegular } from '@fluentui/react-icons';
 import { ProductCategoriesWrapper } from "../DetailsAndFeatures/DetailsAndFeatures.styled";
 import { 
@@ -13,7 +13,7 @@ import {
     ProductAddToTheBaskedButton, 
     ProductLikeingSection
 } from "./ProductPresentation.styled";
-import { ProductImage } from '../ImagesCarousel/ImagesCarousel.tsx';
+import { ProductImage } from '../ImagesCarousel/ImagesCarousel';
 import axios from "axios";
 
 export type ItemType = {
@@ -83,12 +83,16 @@ export const ProductPresentation = ({
                     }
                 });
                 setIsLiked(isLikedResult.data);
-            } catch (error) {
-                console.log(error);
+            } catch {
+                dispatchToast(<Toast>
+                    <ToastTitle>{t('product.failedToLoad')}</ToastTitle>
+                </Toast>, 
+                {position: 'top-end', intent: 'error'}
+            );
             }
         }
         getLikesInfo();
-    }, [productId, token, getLikesNumberInfo]);
+    }, [productId, token, getLikesNumberInfo, dispatchToast, t]);
 
     const likeProduct = async() => {
         try {
@@ -114,7 +118,7 @@ export const ProductPresentation = ({
 
     const addToBasket = async() => {
         try {
-            const result = await axios.post(`${import.meta.env.VITE_API_URL}basket`, {
+             await axios.post(`${import.meta.env.VITE_API_URL}basket`, {
                 quantity: productNumber,
                 product: productId
             }, {
@@ -122,7 +126,6 @@ export const ProductPresentation = ({
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(result);
             dispatchToast(<Toast>
                     <ToastTitle>{t('product.addedToBasket')}</ToastTitle>
                 </Toast>, 
@@ -171,8 +174,9 @@ export const ProductPresentation = ({
                 <ProductPrice>{price}</ProductPrice>
                 <ProductAmountInput 
                     aria-label={t('product.selectProductAmount')}
+                    placeholder={`${t('product.selectProductAmount')}...`}
                     value={productNumber.toString()} 
-                    onChange={(_e, data) => setProductNumber(Number(data.value))} 
+                    onChange={(_e: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => setProductNumber(Number(data.value))} 
                 />
                 <ProductAddToTheBaskedButton 
                     disabled={productNumber === 0}
