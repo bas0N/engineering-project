@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useTranslation } from '../../../node_modules/react-i18next';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
-import '../../i18n/i18n.tsx';
 import axios from 'axios';
 
 export const SignUpPanel = () => {
