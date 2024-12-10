@@ -1,5 +1,6 @@
+import { Toaster } from "@fluentui/react-components";
 import { ReactNode, useCallback, useEffect } from "react"
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 interface WrapperProps {
     children: JSX.Element[] | ReactNode[];
@@ -8,8 +9,6 @@ interface WrapperProps {
 export const PageWrapper = ({children}:WrapperProps) => {
 
     const navigate = useNavigate();
-    const params = useParams();
-    console.log(params);
 
     const handleStorageRedirect = useCallback(() => {
         const data = localStorage.getItem('redirect');
@@ -26,5 +25,8 @@ export const PageWrapper = ({children}:WrapperProps) => {
         }
     },[handleStorageRedirect]);
 
-    return children
+    return <>
+        <Toaster toasterId="mainToaster" />
+        {children}
+    </>
 }

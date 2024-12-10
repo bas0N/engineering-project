@@ -7,6 +7,13 @@
             "delivery": "Delivery",
             "total": "Total",
             "buy": "Buy now"
-        }
+        },
+        "noItems": "No items present in the basket",
+        "basketLoading": "Loading items...",
+        "loadingFailed": "Items loading failed. Try later",
+        "somethingWentWrong": "Something went wrong...",
+        "quantityInput": "Product's quantity input",
+        "deleteButton": "Delete button",
+        "failedToDelete": "Failed to remove the product from the list"
     }
 }

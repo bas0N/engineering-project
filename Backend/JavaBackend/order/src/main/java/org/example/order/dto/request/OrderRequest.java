@@ -10,9 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
-    //private String uuid;
-    //private String orders;
-    //private Status status;
     private AddressRequest addressRequest;
     private String deliverId;
     private String basketId;
