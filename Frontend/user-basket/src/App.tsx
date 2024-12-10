@@ -46,7 +46,7 @@ export default function Basket() {
       await axios.delete(`${import.meta.env.VITE_API_URL}basket`, {
         data: {
           basketItemUuid: itemId,
-          quantity: (basketItems as BasketItemType[]).find((elem) => elem.uuid === itemId).quantity
+          quantity: (basketItems as BasketItemType[]).find((elem) => elem.uuid === itemId)?.quantity
         },
         headers: {
           'Authorization': `Bearer ${token}`

@@ -6,6 +6,7 @@ import {
     BasketSummaryBtn 
 } from './BasketSummary.styled';
 import { useTranslation } from 'react-i18next';
+import {useNavigate} from "react-router-dom";
 
 interface BasketSummaryProps {
     orderValue: number;
@@ -16,6 +17,11 @@ export const BasketSummary = ({
 }: BasketSummaryProps) => {
 
     const {t} = useTranslation();
+    const navigate = useNavigate();
+
+    const handleBuyClick = () =>{
+        navigate('/order');
+    }
 
     return (
         <BasketSummaryWrapper>
@@ -33,7 +39,7 @@ export const BasketSummary = ({
                 <Text size={400}>{orderValue}$</Text>
             </BasketSummaryItem>
             <BasketSummaryDivider />
-            <BasketSummaryBtn>
+            <BasketSummaryBtn onClick = {handleBuyClick}>
                 {t('basket.summary.buy')}
             </BasketSummaryBtn>
         </BasketSummaryWrapper>
