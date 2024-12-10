@@ -12,6 +12,9 @@ export const ProductPresentationImagesSection = styled.div`
 
     @media screen and (min-width: 1024px){
         height: 100%;
+        width: 60vw !important;
+        max-width: 60vw !important;
+        overflow-x: hidden;
     }
 `;
 
@@ -21,6 +24,7 @@ export const ProductPresentationImage = styled(Image)`
     display: block;
     margin-left: auto;
     margin-right: auto;
+    z-index: 7;
 
     @media screen and (min-width: 1024px){
         max-height: 60vh;

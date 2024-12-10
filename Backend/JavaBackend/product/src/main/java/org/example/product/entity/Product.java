@@ -65,6 +65,6 @@ public class Product {
     @Field("average_rating")
     private Double averageRating;
 
-    @Field("user")
-    private User user;
+    @Field("isActive")
+    private Boolean isActive;
 }

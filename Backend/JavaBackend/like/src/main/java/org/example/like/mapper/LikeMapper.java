@@ -14,5 +14,5 @@ public interface LikeMapper {
     @Mapping(source = "like.userId", target = "userId")
     @Mapping(source = "like.product.uuid", target = "productId")
     @Mapping(source = "like.dateAdded", target = "dateAdded")
-    LikeResponse mapLikeToLikeResponse(Like like);
+    LikeResponse toLikeResponse(Like like);
 }

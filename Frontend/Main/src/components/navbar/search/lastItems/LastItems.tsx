@@ -27,7 +27,7 @@ export type ItemType = {
     images: ProductImage[],
     averageRating: number | null,
     mainCategory: string | null,
-    parentAsin: string | null,
+    parentAsin: string,
     price: string,
     ratingNumber: number | null,
     store: string,
@@ -41,8 +41,9 @@ export type ItemType = {
 
 interface LastItemsProps {
     items: ItemType[];
+    closeLastItems: () => void;
 }
-export const LastItems = ({items}: LastItemsProps) => {
+export const LastItems = ({items, closeLastItems}: LastItemsProps) => {
 
     const [hoveredItem, setHoveredItem] = useState<ItemType | null>(null);
     const navigate = useNavigate();
@@ -51,7 +52,8 @@ export const LastItems = ({items}: LastItemsProps) => {
 
     const onRelatedItemClick = () => {
         if(hoveredItem !== null){
-            navigateToProduct(hoveredItem.id);
+            navigateToProduct(hoveredItem.parentAsin);
+            closeLastItems();
         }
     };
 
@@ -59,10 +61,10 @@ export const LastItems = ({items}: LastItemsProps) => {
            <LastItemsListContainer>
                 {items.map((item, ind) => (
                     <LastItemsListItem 
-                        key={`items-searched-${item.id}`}
-                        bgOpacity={ind % 2 === 0 ? '58' : '38'}
+                        key={`items-searched-${item.parentAsin}`}
+                        bgOpacity={ind % 2 === 0 ? '88' : '78'}
                         onMouseEnter={() => setHoveredItem(item)}
-                        onClick={() => navigateToProduct(item.id)}
+                        onClick={() => navigateToProduct(item.parentAsin)}
                     >
                         <Search24Regular />
                         <Text size={400}>{item.title.length > 70 ? item.title.substring(0, 67)+'...' : item.title}</Text>

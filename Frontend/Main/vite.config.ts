@@ -15,7 +15,7 @@ export default defineConfig({
         userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js',
         productsBrowsing: 'http://localhost:4176/assets/remoteProductsBrowsingEntry.js'
       },
-      shared: ['react', 'react-dom', '@fluentui/react-components']
+      shared: ['react', 'react-dom', 'react-router-dom', '@fluentui/react-components']
     })
   ],
 })

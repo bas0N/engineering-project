@@ -16,4 +16,5 @@ public class BasketProductEvent {
     private String name;
     private double price;
     private List<String> imageUrls;
+    private Boolean isActive;
 }

@@ -6,19 +6,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.auth.dto.request.ChangePasswordData;
+import org.example.auth.dto.request.ChangePasswordRequest;
 import org.example.auth.dto.request.LoginRequest;
-import org.example.auth.dto.request.ResetPasswordData;
 import org.example.auth.dto.request.UserRegisterRequest;
 import org.example.auth.dto.response.AuthResponse;
 import org.example.auth.entity.Code;
-import org.example.auth.message.ValidationMessage;
 import org.example.auth.service.UserService;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.UnauthorizedException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,44 +24,29 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final UserService userService;
 
-    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody UserRegisterRequest user) {
-        //userService.register(user);
-        //return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
         return ResponseEntity.ok(userService.register(user));
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        //userService.login(response, loginRequest);
-        //return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.login(loginRequest));
     }
 
-    @RequestMapping(path = "/auto-login", method = RequestMethod.GET)
-    public ResponseEntity<?> autoLogin(HttpServletResponse response, HttpServletRequest request) {
-        userService.loginByToken(request, response);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
-    }
-
-    @RequestMapping(path = "/logged-in", method = RequestMethod.GET)
+    @GetMapping("/logged-in")
     public ResponseEntity<?> loggedIn(HttpServletResponse response, HttpServletRequest request) {
         userService.loggedIn(request, response);
         return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
     }
 
-    @RequestMapping(path = "/logout", method = RequestMethod.GET)
-    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) {
-        return userService.logout(request, response);
-    }
-
-    @RequestMapping(path = "/validate", method = RequestMethod.GET)
+    @GetMapping("/validate")
     public ResponseEntity<AuthResponse> validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info("--START validateToken");
-            userService.validateToken(request, response);  // Walidacja tokena w serwisie
+            userService.validateToken(request, response);
             log.info("--STOP validateToken");
-            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));  // Token poprawny
+            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));
         } catch (ExpiredJwtException e) {
             log.info("Token has expired");
             throw new UnauthorizedException("Token has expired", "TOKEN_EXPIRED");
@@ -75,14 +56,14 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(path = "/authorize", method = RequestMethod.GET)
+    @GetMapping("/authorize")
     public ResponseEntity<AuthResponse> authorize(HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info("--START authorize");
-            userService.validateToken(request, response);  // Walidacja tokena
-            userService.authorize(request);  // Autoryzacja użytkownika
+            userService.validateToken(request, response);
+            userService.authorize(request);
             log.info("--STOP authorize");
-            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null , null));  // Użytkownik autoryzowany
+            return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));
         } catch (ExpiredJwtException e) {
             log.info("Token is expired.");
             throw new UnauthorizedException("Token is expired.", "TOKEN_EXPIRED");
@@ -92,54 +73,14 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(path = "/activate", method = RequestMethod.GET)
-    public ResponseEntity<AuthResponse> activateUser(@RequestParam String uid) {
-//        try{
-//            log.info("--START activateUser");
-//            userService.activateUser(uid);
-//            log.info("--STOP activateUser");
-//            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
-//        }catch (UserDontExistException e){
-//            log.info("User dont exist in database");
-//            return ResponseEntity.status(400).body(new AuthResponse(Code.A6));
-//        }
-        return null;
+    @PostMapping("/change-password")
+    public ResponseEntity<AuthResponse> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest, HttpServletRequest request) {
+        return ResponseEntity.ok(userService.changePassword(changePasswordRequest, request));
     }
 
-    @RequestMapping(path = "/reset-password", method = RequestMethod.POST)
-    public ResponseEntity<AuthResponse> sendMailRecovery(@RequestBody ResetPasswordData resetPasswordData) {
-//        try{
-//            log.info("--START sendMailRecovery");
-//            userService.recoveryPassword(resetPasswordData.getEmail());
-//            log.info("--STOP sendMailRecovery");
-//            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
-//        }catch (UserDontExistException e){
-//            log.info("User dont exist in database");
-//            return ResponseEntity.status(400).body(new AuthResponse(Code.A6));
-//        }
-        return null;
+    @DeleteMapping("/delete-my-account")
+    public ResponseEntity<?> deleteMyAccount(HttpServletRequest request) {
+        return userService.deleteMyAccount(request);
     }
 
-    @RequestMapping(path = "/reset-password", method = RequestMethod.PATCH)
-    public ResponseEntity<AuthResponse> recoveryMail(@RequestBody ChangePasswordData changePasswordData) {
-//        try{
-//            log.info("--START recoveryMail");
-//            userService.restPassword(changePasswordData);
-//            log.info("--STOP recoveryMail");
-//            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
-//        }catch (UserDontExistException e){
-//            log.info("User dont exist in database");
-//            return ResponseEntity.status(400).body(new AuthResponse(Code.A6));
-//        }
-        return null;
-    }
-
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ValidationMessage handleValidationExceptions(
-            MethodArgumentNotValidException ex
-    ) {
-        return new ValidationMessage(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-    }
 }

@@ -3,18 +3,19 @@ package org.example.like.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.like.dto.ProductResponse;
 import org.example.like.response.LikeResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface LikeService {
-    LikeResponse addLike(String productId, HttpServletRequest request);
+    ResponseEntity<LikeResponse> addLike(String productId, HttpServletRequest request);
 
-    List<ProductResponse> getMyLikedProducts(HttpServletRequest request);
+    ResponseEntity<List<ProductResponse>> getMyLikedProducts(HttpServletRequest request);
 
-    Long getNumberOfLikes(String productId);
+    ResponseEntity<Long> getNumberOfLikes(String productId);
 
-    void removeLike(String likeId, HttpServletRequest request);
+    ResponseEntity<String> removeLike(String likeId, HttpServletRequest request);
 
-    Boolean isLiked(String productId, HttpServletRequest request);
+    ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request);
 }
 

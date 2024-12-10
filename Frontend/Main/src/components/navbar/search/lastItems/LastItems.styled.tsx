@@ -2,11 +2,11 @@ import { Image, tokens } from "@fluentui/react-components";
 import { styled } from "styled-components";
 
 export const LastItemsWrapper = styled.section`
-    position: relative;
+    position: fixed;
     left: 1%;
     width: calc(98% - 20px);
     padding: 10px;
-    background: #a9d3f208;
+    background: #222;
     height: calc(90vh - 20px);
     border-radius: 20px;
     box-shadow: ${tokens.shadow16};

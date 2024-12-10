@@ -29,11 +29,25 @@
   },
   "product": {
     "addToBasket": "Add to basket",
+    "addedToBasket": "Product added to basket",
+    "failedToAdd": "Failed to add the product to your basket",
     "detailsHeader": "Details",
     "featuresHeader": "Features",
     "loadingFailed": "Could not load this item. Try again",
     "noRatings": "No ratings available",
-    "recommendations": "Others browsed through"
+    "recommendations": "Others browsed through",
+    "noRecommendations": "No recommendations available",
+    "addReview": "Add review",
+    "addReviewHeader": "Review adding",
+    "shareOpinionHeader": "Would you like to share some details?",
+    "opinionPlaceholder": "Elaborate on your opinion...",
+    "opinionTitle": "Put your opinion's title here...",
+    "reviews": {
+      "anonymusUser": "Anonymus user",
+      "reviewsTitle": "Product reviews",
+      "loadingReviews": "Loading reviews...",
+      "verifiedPurchase": "Purchase verified"
+    }
   },
   "tiles": {
     "sidebar": {

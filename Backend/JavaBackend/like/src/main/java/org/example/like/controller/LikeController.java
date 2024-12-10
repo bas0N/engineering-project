@@ -18,29 +18,27 @@ public class LikeController {
 
     @RequestMapping(path = "/{productId}", method = RequestMethod.POST)
     public ResponseEntity<LikeResponse> addLike(@PathVariable String productId, HttpServletRequest request) {
-        LikeResponse addLikeResponse = likeService.addLike(productId, request);
-        return ResponseEntity.ok(addLikeResponse);
+        return likeService.addLike(productId, request);
     }
 
     @RequestMapping(path = "/my", method = RequestMethod.GET)
     public ResponseEntity<List<ProductResponse>> getMyLike(HttpServletRequest request) {
-        return ResponseEntity.ok(likeService.getMyLikedProducts(request));
+        return likeService.getMyLikedProducts(request);
     }
 
     @RequestMapping(path = "/number/{productId}", method = RequestMethod.GET)
     public ResponseEntity<Long> getNumberOfLikes(@PathVariable String productId) {
-        return ResponseEntity.ok(likeService.getNumberOfLikes(productId));
+        return likeService.getNumberOfLikes(productId);
     }
 
     @RequestMapping(path = "/remove/{likeId}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeLike(@PathVariable String likeId, HttpServletRequest request) {
-        likeService.removeLike(likeId, request);
-        return ResponseEntity.ok("Like removed successfully.");
+        return likeService.removeLike(likeId, request);
     }
 
     @RequestMapping(path = "/isLiked/{productId}", method = RequestMethod.GET)
     public ResponseEntity<Boolean> isLiked(@PathVariable String productId, HttpServletRequest request) {
-        return ResponseEntity.ok(likeService.isLiked(productId, request));
+        return likeService.isLiked(productId, request);
     }
 
 }

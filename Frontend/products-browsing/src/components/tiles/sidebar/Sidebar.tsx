@@ -26,21 +26,48 @@ const SidebarFilterSection = ({header, children}:{header: string, children: JSX.
 interface SidebarProps {
     isOpened: boolean;
     closeSidebar: () => void;
+    categories: string[];
+    onCategoriesSelect: (categories: string[]) => void;
+    minPrice: number|undefined;
+    maxPrice: number|undefined;
+    selectMinPrice: (price: number) => void;
+    selectMaxPrice: (price: number) => void;
 }
 
 export const Sidebar = ({
     isOpened,
     closeSidebar,
+    categories,
+    onCategoriesSelect,
+    minPrice,
+    selectMinPrice,
+    maxPrice,
+    selectMaxPrice,
 } : SidebarProps) => {
     const {t} = useTranslation();
-
-    const categories: string[] = ['mockCategory1', 'mockCategory2'];
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const onCategorySelect: DropdownProps["onOptionSelect"] = (_ev, data) => {
         setSelectedCategories(data.selectedOptions);
+        onCategoriesSelect(data.selectedOptions);
     };
+    
+    const processPriceChange = (newPrice: number, priceType: 'min' | 'max') => {
+        if(
+            (priceType === 'min' && maxPrice !== undefined && newPrice > maxPrice)
+            || (priceType === 'max' && minPrice !== undefined && newPrice < minPrice)
+        ) {
+            return;
+        }
+        
+        if(priceType === 'min') {
+            selectMinPrice(newPrice);
+        }
+        else {
+            selectMaxPrice(newPrice);
+        }
+    }
     
     return (
         <SidebarWrapper isOpened={isOpened}>
@@ -68,7 +95,12 @@ export const Sidebar = ({
             </SidebarFilterSection>
             <SidebarFilterSection header={t('tiles.sidebar.price')}>
                 <SidebarPriceContainer>
-                    <SidebarPriceInput type='number' min='0' placeholder={t('tiles.sidebar.minPrice')} />
+                    <SidebarPriceInput 
+                        type='number' 
+                        min='0' 
+                        placeholder={t('tiles.sidebar.minPrice')}
+                        value={String(minPrice)}
+                        onChange={(e) => processPriceChange(Number(e.currentTarget.value), 'min')} />
                     <Text>-</Text>
                     <SidebarPriceInput type='number' min='0' placeholder={t('tiles.sidebar.maxPrice')} />
                 </SidebarPriceContainer>

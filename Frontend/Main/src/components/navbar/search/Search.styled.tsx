@@ -13,6 +13,14 @@ export const SearchContainer = styled.div`
     }
 `;
 
+export const SearchResponseWrapper = styled.section`
+    position: fixed;
+    top: 10vh;
+    z-index: 9;
+    align-items: center;
+    width: 100%;
+`;
+
 export const ItemsSearchBox = styled(SearchBox)`
     min-width: fit-content !important;
     @media screen and (min-width: 375px){

@@ -7,6 +7,7 @@ export const ProductPresentationOrderingSection = styled.div`
     flex-direction: column;
     gap: 8px;
     align-items: center;
+    z-index: 8;
 `;
 
 export const ProductPresentationHeader = styled(Text).attrs({weight: 'semibold', align: 'center'})`
@@ -18,6 +19,14 @@ export const ProductPresentationHeader = styled(Text).attrs({weight: 'semibold',
         font-size: 32px;
         line-height: 32px;
     }
+`;
+
+export const ProductLikeingSection = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
 `;
 
 export const ProductBuyingSection = styled.div`
