@@ -5,7 +5,7 @@ import {
     ChevronDoubleLeft20Regular,
     ChevronDoubleRight20Regular
 } from '@fluentui/react-icons';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { 
     ReviewDisplayWrapper, 
     ReviewDisplayContainer, 
@@ -69,39 +69,39 @@ export const ReviewDisplay = ({
 
     const processLeftPage = () => {
         if(pageNumber - 1 > 0 && reviews !== null){
-            setPageNumber((number) => number--);
+            setPageNumber((number) => number-=1);
         }
     };
 
     const processRightPage = () => {
         if(reviews !== null && reviews.length === 10){
-            setPageNumber((number) => number++);
+            setPageNumber((number) => number+=1);
         }
     }
 
     const leftPaginationDisabled = pageNumber === 1 || reviews === null;
     const rightPaginationDisabled = reviews === null || reviews.length < 10;
 
-    useEffect(() => {
-        const getReviewsData = async() => {
-            setReviews(null);
-            try {
-                const result = await axios.get(`${import.meta.env.VITE_API_URL}product/review/${productId}/reviews`, {
-                    params: {
-                        page: pageNumber-1
-                    },
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log(result);
-                setReviews(result.data.content);
-            } catch (error) {
-                console.log(error);
-            }
+    const getReviewsData = useCallback(async() => {
+        setReviews(null);
+        try {
+            const result = await axios.get(`${import.meta.env.VITE_API_URL}product/review/${productId}/reviews`, {
+                params: {
+                    page: pageNumber-1
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setReviews(result.data.content);
+        } catch (error) {
+            console.log(error);
         }
+    }, [pageNumber, productId, token]);
+
+    useEffect(() => {
         getReviewsData();
-    }, [pageNumber, productId, token, reloadTriggerer]);
+    }, [reloadTriggerer, getReviewsData]);
 
     return (
         <ReviewDisplayWrapper>
@@ -137,7 +137,7 @@ export const ReviewDisplay = ({
                             </ReviewDisplayContainer>
                         ))
                     }
-                    <ReviewPaginationWrapper>
+                    <ReviewPaginationWrapper data-testid="pagination-section">
                         <Button
                             icon={<ChevronDoubleLeft20Regular />}
                             appearance='subtle'

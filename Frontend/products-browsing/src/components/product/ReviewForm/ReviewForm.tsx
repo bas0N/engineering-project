@@ -53,7 +53,7 @@ export const ReviewForm = ({
 
     const processAddingReview = async() => {
         try {
-            const result = await axios.post(`${import.meta.env.VITE_API_URL}product/review/${productId}`, {
+            await axios.post(`${import.meta.env.VITE_API_URL}product/review/${productId}`, {
                 rating: ratingValue,
                 title,
                 text: textOpinion
@@ -62,7 +62,6 @@ export const ReviewForm = ({
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(result);
             closeReviewForm();
         } catch (error) { 
             console.log(error);
@@ -75,7 +74,10 @@ export const ReviewForm = ({
 
     return (
         <ReviewFormWrapper>
-            <ReviewCloseButton onClick={closeReviewForm}>
+            <ReviewCloseButton 
+                onClick={closeReviewForm}
+                aria-label={t('product.closeButtonLabel')}
+            >
                 <Dismiss32Regular />
             </ReviewCloseButton>
             <ReviewFormContainer>
