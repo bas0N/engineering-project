@@ -29,6 +29,8 @@ services:
       - microservices-network
     env_file:
       - .env
+    hostname: recc-system-1
+
   recc-system-2:
     build:
       context: ./PythonBackend
@@ -45,6 +47,8 @@ services:
       - microservices-network
     env_file:
       - .env
+    hostname: recc-system-2
+
   factors-db:
     image: mysql:8.0
     container_name: mysql-factors-db
