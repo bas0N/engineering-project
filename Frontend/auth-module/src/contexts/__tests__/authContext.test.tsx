@@ -20,6 +20,7 @@ describe('Testing Auth context', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const MOCK_REMOVE_ITEM = jest.fn((_key) => {});
     beforeEach(() => {
+        jest.clearAllMocks();
         Object.defineProperty(window, 'localStorage', {
           value: {
             getItem: jest.fn((key) => mockStorage[key] || null),
@@ -34,9 +35,6 @@ describe('Testing Auth context', () => {
     
         let mockStorage: Record<string, string> = {};
       });
-      beforeEach(() => {
-        jest.clearAllMocks();
-    })
     it('Should be able to login', () => {
         const {getByText} = render(<AuthProvider>
                 <MockUseAuth />

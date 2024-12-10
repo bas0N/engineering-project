@@ -1,6 +1,6 @@
 import { Button, CardHeader, Link, Text } from '@fluentui/react-components'
 import { AuthCard, AuthCardFooter, AuthCardHeader, AuthCardPreview, AuthInput } from '../../App.styled'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useTranslation } from '../../../node_modules/react-i18next';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
@@ -53,21 +53,21 @@ export const SignUpPanel = () => {
               aria-label={t('authCard.emailLabel')}
               type='email' 
               value={email}
-              onChange={(e) => setEmail(e.currentTarget.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.currentTarget.value)}
             />
             <AuthInput 
               placeholder={`${t('authCard.password')}...`}
               aria-label={t('authCard.passwordLabel')}
               type='password' 
               value={passwd}
-              onChange={(e) => setPasswd(e.currentTarget.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPasswd(e.currentTarget.value)}
             />
             <AuthInput 
               placeholder={`${t('authCard.passwordRep')}...`}
               aria-label={t('authCard.passwordRepLabel')}
               type='password' 
               value={passwdRep}
-              onChange={(e) => setPasswdRep(e.currentTarget.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPasswdRep(e.currentTarget.value)}
             />
             {
               error && <Text align='center' size={400} style={{color: 'red'}}>
