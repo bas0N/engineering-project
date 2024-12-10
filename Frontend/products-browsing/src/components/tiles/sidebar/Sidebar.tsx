@@ -71,7 +71,11 @@ export const Sidebar = ({
     
     return (
         <SidebarWrapper isOpened={isOpened}>
-            <SidebarClosingButton appearance='transparent' onClick={closeSidebar}>
+            <SidebarClosingButton 
+                appearance='transparent' 
+                onClick={closeSidebar}
+                aria-label={t('tiles.sidebar.closingButton')}
+            >
                 <DismissCircle48Regular />
             </SidebarClosingButton>
             <SidebarHeader as='h2' align="center" size={500}>{t('tiles.sidebar.header')}</SidebarHeader>
@@ -84,6 +88,7 @@ export const Sidebar = ({
                         value={selectedCategories.join(', ')}
                         placeholder={t('tiles.sidebar.categoriesDropdownPlaceholder')}
                         clearable
+                        data-testid='categories-dropdown'
                     >
                         {categories.map((category) =>
                             <Option text={category} value={category} key={`dropdown-category-${category}`}>
@@ -102,7 +107,13 @@ export const Sidebar = ({
                         value={String(minPrice)}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => processPriceChange(Number(e.currentTarget.value), 'min')} />
                     <Text>-</Text>
-                    <SidebarPriceInput type='number' min='0' placeholder={t('tiles.sidebar.maxPrice')} />
+                    <SidebarPriceInput 
+                        type='number' 
+                        min='0' 
+                        placeholder={t('tiles.sidebar.maxPrice')}
+                        value={String(maxPrice)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => processPriceChange(Number(e.currentTarget.value), 'max')}
+                     />
                 </SidebarPriceContainer>
             </SidebarFilterSection>
         </SidebarWrapper>

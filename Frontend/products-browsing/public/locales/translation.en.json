@@ -30,7 +30,8 @@
             "price": "Price range",
             "minPrice": "Min price...",
             "maxPrice": "Max price...",
-            "categoriesDropdownPlaceholder": "Select categories..."
+            "categoriesDropdownPlaceholder": "Select categories...",
+            "closingButton": "Closing button"
         },
         "sidebarOpeningButton": "Open filters",
         "selectProductAmount": "Select amount of product"
