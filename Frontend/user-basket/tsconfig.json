@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "types": ["vite/client"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "moduleResolution": "node",
     "jsx": "react-jsx"
   },
   "files": [],
