@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.ProductEvent;
+import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.Utils;
 import org.example.like.dto.ProductResponse;
 import org.example.like.entity.Image;
 import org.example.like.entity.Like;
@@ -125,15 +125,14 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public ResponseEntity<Long> getNumberOfLikes(String productUuid) {
         try {
-            Product product = productRepository.findByUuid(productUuid)
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Product",
-                            "uuid",
-                            productUuid,
-                            "PRODUCT_NOT_FOUND",
-                            Map.of("productUuid", productUuid)
-                    ));
-
+            Optional<Product> productOpt = productRepository.findByUuid(productUuid);
+            Product product = null;
+            if(productOpt.isEmpty()) {
+                return ResponseEntity.ok(0L);
+            }
+            else{
+                product = productOpt.get();
+            }
             Long likeCount = likeRepository.countByProductId(product.getId());
 
             return ResponseEntity.ok(likeCount);

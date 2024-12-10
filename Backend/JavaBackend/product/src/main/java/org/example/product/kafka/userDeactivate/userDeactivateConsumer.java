@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class userDeactivateConsumer {
     private final MongoTemplate mongoTemplate;
-    @KafkaListener(topics = "user-deactivate-request-topic", groupId = "user-service-basket-group", containerFactory = "userDeactivateKafkaListenerContainerFactory")
+    @KafkaListener(topics = "user-deactivate-request-topic", groupId = "product-service-userdeactivate-group", containerFactory = "userDeactivateKafkaListenerContainerFactory")
     public void consumeUserDeactivateEvent(String userId, Acknowledgment ack) {
         try {
             log.info("Consumed user deactivate event: {}", userId);

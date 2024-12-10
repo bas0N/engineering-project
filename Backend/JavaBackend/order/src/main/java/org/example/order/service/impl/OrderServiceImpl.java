@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
-import org.example.jwtcommon.jwt.Utils;
+import org.example.commonutils.Utils;
 import org.example.order.dto.BasketItemDto;
 import org.example.order.dto.ListBasketItemDto;
 import org.example.order.dto.notify.Notify;

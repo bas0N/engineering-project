@@ -1,6 +1,7 @@
 package org.example.product.mapper;
 
 import org.example.commondto.ProductEvent;
+import org.example.product.dto.Request.AddProductRequest;
 import org.example.product.dto.Response.ProductDetailResponse;
 import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Product;
@@ -22,5 +23,19 @@ public interface ProductMapper {
 
     @Mapping(target = "productId", source = "parentAsin")
     ProductEvent toProductEvent(Product product);
+
+    List<ProductResponse> toProductResponseList(List<Product> products);
+
+
+    @Mapping(target = "videos", ignore = true)
+    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "ratingNumber", constant = "0")
+    @Mapping(target = "parentAsin", source = "uuid")
+    @Mapping(target = "isActive", constant = "true")
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "boughtTogether", ignore = true)
+    @Mapping(target = "averageRating", constant = "0.0")
+    Product toProduct(AddProductRequest addProductRequest, String uuid, String userId);
 
 }

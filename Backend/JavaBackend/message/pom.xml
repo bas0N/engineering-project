@@ -96,7 +96,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.example</groupId>
-			<artifactId>util-common</artifactId>
+			<artifactId>common-utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
@@ -111,6 +111,12 @@
 		<dependency>
 			<groupId>org.example</groupId>
 			<artifactId>common-dto</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.example</groupId>
+			<artifactId>exception</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>

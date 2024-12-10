@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.UserDetailInfoEvent;
+import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.Utils;
 import org.example.product.dto.Request.CreateReviewRequest;
 import org.example.product.dto.Response.ReviewResponse;
 import org.example.product.entity.Product;
@@ -286,20 +286,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Review buildReview(String productId, CreateReviewRequest createReviewRequest, String userId, UserDetailInfoEvent userInfo) {
-        return new Review(
-                null,
-                productId,
-                0,
-                null,
-                productId,
-                createReviewRequest.getRating(),
-                createReviewRequest.getText(),
-                createReviewRequest.getTitle(),
-                userId,
-                System.currentTimeMillis(),
-                false,
-                userMapper.toUser(userInfo)
-        );
+        return reviewMapper.toReview(createReviewRequest, productId, System.currentTimeMillis(), userMapper.toUser(userInfo));
     }
 
     private void validateUserAuthorization(String userId, Review review) {

@@ -18,7 +18,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     @Query(value = "{ 'parent_asin': ?0 }", delete = true)
     void deleteByParentAsin(String parentAsin);
 
-    @Query("{ 'userId': ?0 }")
+    @Query("{ 'user_id': ?0 }")
     Page<Product> findByUserId(String userId, Pageable pageable);
 
     @Query("{ 'parent_asin': ?0, 'active': true }")

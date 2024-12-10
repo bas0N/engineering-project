@@ -1,7 +1,7 @@
 package org.example.message.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.jwtcommon.jwt.Utils;
+import org.example.commonutils.Utils;
 import org.example.message.interceptor.JwtHandshakeInterceptor;
 import org.example.message.interceptor.UserChannelInterceptor;
 import org.springframework.context.annotation.Configuration;

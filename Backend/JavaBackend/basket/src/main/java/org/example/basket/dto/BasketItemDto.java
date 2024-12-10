@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BasketItemDto {
     private String uuid;
+    private String productId;
     private String name;
     private long quantity;
     private String imageUrl;

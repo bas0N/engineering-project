@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.UserDetailInfoEvent;
+import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.Utils;
 import org.example.product.dto.Request.AddProductRequest;
 import org.example.product.dto.Request.UpdateProductRequest;
 import org.example.product.dto.Response.ImageUploadResponse;
@@ -82,9 +82,7 @@ public class ProductServiceImpl implements ProductService {
                 );
             }
 
-            List<ProductResponse> productResponses = products.stream()
-                    .map(productMapper::toProductResponse)
-                    .toList();
+            List<ProductResponse> productResponses = productMapper.toProductResponseList(products);
 
             return ResponseEntity.ok(new PageImpl<>(productResponses, pageable, products.size()));
 
@@ -121,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
             String userId = utils.extractUserIdFromRequest(request);
 
             UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
-            if(!userInfo.isActive()){
+            if (!userInfo.isActive()) {
                 throw new UserIsUnActiveException("User is not active");
             }
 
@@ -187,25 +185,7 @@ public class ProductServiceImpl implements ProductService {
                             Map.Entry::getValue
                     ));
 
-            Product product = new Product(
-                    null,
-                    userId,
-                    null,
-                    addProductRequest.getCategories(),
-                    addProductRequest.getDescription(),
-                    detailsAsStringMap,
-                    addProductRequest.getFeatures(),
-                    null,
-                    addProductRequest.getMainCategory(),
-                    generateUuid(),
-                    addProductRequest.getPrice(),
-                    0,
-                    addProductRequest.getStore(),
-                    addProductRequest.getTitle(),
-                    null,
-                    0.0,
-                    true
-            );
+            Product product = productMapper.toProduct(addProductRequest, generateUuid(), userId);
 
             Product savedProduct = productRepository.save(product);
 
@@ -294,7 +274,7 @@ public class ProductServiceImpl implements ProductService {
             Product savedProduct = productRepository.save(existingProduct);
             UserDetailInfoEvent userInfo = userService.getUserDetailInfo(userId);
 
-            ProductDetailResponse productResponse =productMapper.toProductDetailResponse(savedProduct, userMapper.toUser(userInfo));
+            ProductDetailResponse productResponse = productMapper.toProductDetailResponse(savedProduct, userMapper.toUser(userInfo));
             return ResponseEntity.ok(productResponse);
         } catch (ResourceNotFoundException | UnauthorizedException e) {
             log.error("Product not found: {}", e.getMessage());

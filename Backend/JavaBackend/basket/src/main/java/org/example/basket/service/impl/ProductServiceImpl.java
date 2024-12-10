@@ -6,6 +6,9 @@ import org.example.basket.kafka.product.BasketConsumer;
 import org.example.basket.kafka.product.BasketProducer;
 import org.example.basket.service.ProductService;
 import org.example.commondto.BasketProductEvent;
+import org.example.commondto.ProductEvent;
+import org.example.commondto.UserDetailInfoEvent;
+import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.DatabaseAccessException;
 import org.example.exception.exceptions.UnExpectedError;
 import org.springframework.stereotype.Service;
@@ -22,28 +25,19 @@ import java.util.concurrent.TimeoutException;
 public class ProductServiceImpl implements ProductService {
     private final BasketConsumer basketConsumer;
     private final BasketProducer basketProducer;
+
     @Override
     public BasketProductEvent getProductById(String productId) {
-        try {
-            CompletableFuture<BasketProductEvent> productFuture = basketConsumer.getProductDetails(productId);
-            basketProducer.requestProductDetails(productId);
-            return productFuture.get(30, TimeUnit.SECONDS);
-        } catch (org.apache.kafka.common.errors.TimeoutException e) {
-            log.error("Timeout while retrieving product details for product ID: {}", productId, e);
-            throw new DatabaseAccessException(
-                    "Timeout while retrieving product details",
-                    e,
-                    "PRODUCT_SERVICE_TIMEOUT",
-                    Map.of("productId", productId)
-            );
-        } catch (Exception e) {
-            log.error("Unexpected error while retrieving product details for product ID: {}", productId, e);
-            throw new UnExpectedError(
-                    "An unexpected error occurred while retrieving product details",
-                    e,
-                    "PRODUCT_RETRIEVAL_ERROR",
-                    Map.of("productId", productId)
-            );
-        }
+        basketProducer.sendProductDetailsEvent(productId);
+        CompletableFuture<BasketProductEvent> productFuture = basketConsumer.getProductDetails(productId)
+                .orTimeout(30, TimeUnit.SECONDS)
+                .exceptionally(ex -> {
+                    log.error("Failed to retrieve product details for productId: {}", productId, ex);
+                    throw new ApiRequestException("Could not retrieve user details");
+                });
+
+        BasketProductEvent basketProductInfo = productFuture.join();
+        log.info("Product details retrieved for productId: {}", productId);
+        return basketProductInfo;
     }
 }

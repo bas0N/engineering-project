@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.example.order", "org.example.jwtcommon.jwt"})
+@ComponentScan(basePackages = {"org.example.order", "org.example.exception", "org.example.commonutils"})
 public class OrderApplication {
 
 	public static void main(String[] args) {

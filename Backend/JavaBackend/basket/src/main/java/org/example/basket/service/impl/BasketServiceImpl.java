@@ -20,8 +20,8 @@ import org.example.basket.service.ProductService;
 import org.example.commondto.BasketItemEvent;
 import org.example.commondto.BasketProductEvent;
 import org.example.commondto.ListBasketItemEvent;
+import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
-import org.example.jwtcommon.jwt.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -39,8 +37,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BasketServiceImpl implements BasketService {
     private final BasketRepository basketRepository;
     private final BasketItemRepository basketItemRepository;
-    private final BasketConsumer basketConsumer;
-    private final BasketProducer basketProducer;
     private final Utils utils;
     private final ProductService productService;
 
@@ -84,7 +80,7 @@ public class BasketServiceImpl implements BasketService {
 
     private void saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         try {
-            BasketProductEvent product = getProductDetails(basketItemRequest.getProduct());
+            BasketProductEvent product = productService.getProductById(basketItemRequest.getProduct());
             if(product == null){
                 throw new ResourceNotFoundException(
                         "Product",
@@ -218,37 +214,71 @@ public class BasketServiceImpl implements BasketService {
     private ListBasketItemDto buildBasketItemDto(Basket basket) {
         ListBasketItemDto listBasketItemDTO = new ListBasketItemDto();
         listBasketItemDTO.setBasketProducts(new ArrayList<>());
+        listBasketItemDTO.setSummaryPrice(0.0);
+        listBasketItemDTO.setSummaryQuantity(0L);
 
-        basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
-            BasketProductEvent product = getProductDetails(item.getProduct());
+        try {
+            basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
+                try {
+                    BasketProductEvent product = productService.getProductById(item.getProduct());
 
-            if (product != null) {
-                listBasketItemDTO.getBasketProducts().add(new BasketItemDto(
-                        product.getId(),
-                        product.getName(),
-                        item.getQuantity(),
-                        product.getImageUrls().getFirst(),
-                        product.getPrice(),
-                        product.getPrice() * item.getQuantity(),
-                        product.getIsActive()
-                ));
-                listBasketItemDTO.setSummaryPrice(
-                        listBasketItemDTO.getSummaryPrice() + (item.getQuantity() * product.getPrice())
-                );
-                listBasketItemDTO.setSummaryQuantity(listBasketItemDTO.getSummaryQuantity() + item.getQuantity());
-            } else {
-                throw new ResourceNotFoundException(
-                        "Product",
-                        "ID",
-                        item.getProduct(),
-                        "PRODUCT_NOT_FOUND",
-                        Map.of("productId", item.getProduct())
-                );
-            }
-        });
+                    if (product == null) {
+                        throw new ResourceNotFoundException(
+                                "Product",
+                                "ID",
+                                item.getProduct(),
+                                "PRODUCT_NOT_FOUND",
+                                Map.of("productId", item.getProduct())
+                        );
+                    }
 
-        return listBasketItemDTO;
+                    BasketItemDto basketItemDto = new BasketItemDto(
+                            item.getUuid(),
+                            product.getId(),
+                            product.getName(),
+                            item.getQuantity(),
+                            product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                            product.getPrice(),
+                            product.getPrice() * item.getQuantity(),
+                            product.getIsActive()
+                    );
+
+                    listBasketItemDTO.getBasketProducts().add(basketItemDto);
+
+                    listBasketItemDTO.setSummaryPrice(
+                            listBasketItemDTO.getSummaryPrice() + (item.getQuantity() * product.getPrice())
+                    );
+                    listBasketItemDTO.setSummaryQuantity(
+                            listBasketItemDTO.getSummaryQuantity() + item.getQuantity()
+                    );
+
+                } catch (ResourceNotFoundException e) {
+                    log.error("Product not found for basket item with ID: {}", item.getProduct(), e);
+                    throw e;
+                } catch (Exception e) {
+                    log.error("Unexpected error while processing basket item with ID: {}", item.getProduct(), e);
+                    throw new ApiRequestException(
+                            "An unexpected error occurred while processing basket item",
+                            e,
+                            "BASKET_ITEM_PROCESSING_ERROR",
+                            Map.of("productId", item.getProduct())
+                    );
+                }
+            });
+
+            return listBasketItemDTO;
+
+        } catch (Exception e) {
+            log.error("Error while building basket item DTO for basket: {}", basket.getUuid(), e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while building basket item DTO",
+                    e,
+                    "BASKET_ITEM_DTO_BUILD_ERROR",
+                    Map.of("basketId", basket.getUuid())
+            );
+        }
     }
+
 
     @Override
     public void removeBasketById(String basketId) {
@@ -327,56 +357,57 @@ public class BasketServiceImpl implements BasketService {
         listBasketItemEvent.setBasketId(basket.getUuid());
         AtomicReference<Double> summaryPrice = new AtomicReference<>(0.0);
 
-        basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
-            BasketProductEvent product = getProductDetails(item.getProduct());
-            if (product != null && product.getIsActive()) {
-                basketProducts.add(new BasketItemEvent(
-                        product.getId(),
-                        product.getName(),
-                        item.getQuantity(),
-                        product.getImageUrls().getFirst(),
-                        product.getPrice(),
-                        product.getPrice() * item.getQuantity()
-                ));
-                summaryPrice.updateAndGet(v -> v + product.getPrice() * item.getQuantity());
-            } else {
-                throw new ResourceNotFoundException(
-                        "Product",
-                        "ID",
-                        item.getProduct(),
-                        "PRODUCT_NOT_FOUND",
-                        Map.of("productId", item.getProduct())
-                );
-            }
-        });
-
-        listBasketItemEvent.setBasketProducts(basketProducts);
-        listBasketItemEvent.setSummaryPrice(summaryPrice.get());
-        return listBasketItemEvent;
-    }
-
-    private BasketProductEvent getProductDetails(String productId) {
         try {
-            BasketProductEvent product = productService.getProductById(productId);
-            log.info("Product details retrieved successfully for product ID: {}", productId);
-            return product;
+            basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
+                try {
+                    BasketProductEvent product = productService.getProductById(item.getProduct());
 
-        } catch (TimeoutException e) {
-            log.error("Timeout while retrieving product details for product ID: {}", productId, e);
-            throw new DatabaseAccessException(
-                    "Timeout while retrieving product details",
-                    e,
-                    "PRODUCT_SERVICE_TIMEOUT",
-                    Map.of("productId", productId)
-            );
+                    if (product != null && product.getIsActive()) {
+                        basketProducts.add(new BasketItemEvent(
+                                product.getId(),
+                                product.getName(),
+                                item.getQuantity(),
+                                product.getImageUrls().getFirst(),
+                                product.getPrice(),
+                                product.getPrice() * item.getQuantity()
+                        ));
+                        summaryPrice.updateAndGet(v -> v + product.getPrice() * item.getQuantity());
+                    } else {
+                        throw new ResourceNotFoundException(
+                                "Product",
+                                "ID",
+                                item.getProduct(),
+                                "PRODUCT_NOT_FOUND",
+                                Map.of("productId", item.getProduct())
+                        );
+                    }
+                } catch (ResourceNotFoundException e) {
+                    log.error("Product not found while building basket item event: {}", item.getProduct(), e);
+                    throw e;
+                } catch (Exception e) {
+                    log.error("Unexpected error while processing product: {}", item.getProduct(), e);
+                    throw new UnExpectedError(
+                            "An unexpected error occurred while processing product",
+                            e,
+                            "PRODUCT_PROCESSING_ERROR",
+                            Map.of("productId", item.getProduct())
+                    );
+                }
+            });
+            listBasketItemEvent.setBasketProducts(basketProducts);
+            listBasketItemEvent.setSummaryPrice(summaryPrice.get());
+
+            return listBasketItemEvent;
+
         } catch (Exception e) {
-            log.error("Unexpected error while retrieving product details for product ID: {}", productId, e);
+            log.error("Error while building basket item event for basket: {}", basket.getUuid(), e);
             throw new UnExpectedError(
-                    "An unexpected error occurred while retrieving product details",
+                    "An unexpected error occurred while building basket item event",
                     e,
-                    "PRODUCT_RETRIEVAL_ERROR",
-                    Map.of("productId", productId)
+                    "BASKET_ITEM_EVENT_BUILD_ERROR",
+                    Map.of("basketId", basket.getUuid())
             );
         }
     }
+
 }
