@@ -10,7 +10,6 @@ export default function Basket() {
 
   const {t} = useTranslation();
   const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'localToaster';
-  console.log(toasterId)
   const token = localStorage.getItem('authToken');
   const [basketItems, setBasketItems] = useState<BasketItemType[]|null>(null);
   const [basketPrice, setBasketPrice] = useState(0);
@@ -46,7 +45,7 @@ export default function Basket() {
       await axios.delete(`${import.meta.env.VITE_API_URL}basket`, {
         data: {
           basketItemUuid: itemId,
-          quantity: (basketItems as BasketItemType[]).find((elem) => elem.uuid === itemId).quantity
+          quantity: (basketItems as BasketItemType[]).find((elem) => elem.uuid === itemId)?.quantity ?? 0
         },
         headers: {
           'Authorization': `Bearer ${token}`
