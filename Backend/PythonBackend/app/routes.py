@@ -48,7 +48,7 @@ def add_product():
         return response
 
 
-@main_routes.route('/recc-system-2', methods=['GET'])
+@main_routes.route('/recc-system-1', methods=['GET'])
 def get_products():
     # Get query parameters
     product_id = request.args.get('product_id')
