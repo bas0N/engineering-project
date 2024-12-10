@@ -4,15 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.errors.TimeoutException;
 import org.example.basket.dto.BasketItemDto;
 import org.example.basket.dto.ListBasketItemDto;
 import org.example.basket.dto.request.AddBasketItemRequest;
 import org.example.basket.dto.request.DeleteItemRequest;
+import org.example.basket.dto.response.BasketItemResponse;
 import org.example.basket.entity.Basket;
 import org.example.basket.entity.BasketItems;
-import org.example.basket.kafka.product.BasketConsumer;
-import org.example.basket.kafka.product.BasketProducer;
 import org.example.basket.repository.BasketItemRepository;
 import org.example.basket.repository.BasketRepository;
 import org.example.basket.service.BasketService;
@@ -41,11 +39,11 @@ public class BasketServiceImpl implements BasketService {
     private final ProductService productService;
 
     @Override
-    public ResponseEntity<?> addProductToBasket(AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<BasketItemResponse> addProductToBasket(AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
             Basket basket = getOrCreateBasket(request);
-            saveProductToBasket(basket, basketItemRequest);
-            return ResponseEntity.ok("Product added to basket");
+            BasketItemResponse basketItemResponse = saveProductToBasket(basket, basketItemRequest);
+            return ResponseEntity.ok(basketItemResponse);
         } catch (InvalidTokenException e) {
             log.error("Invalid token while adding product to basket", e);
             throw new UnauthorizedException(
@@ -78,7 +76,7 @@ public class BasketServiceImpl implements BasketService {
                 });
     }
 
-    private void saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
+    private BasketItemResponse saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         try {
             BasketProductEvent product = productService.getProductById(basketItemRequest.getProduct());
             if(product == null){
@@ -93,17 +91,26 @@ public class BasketServiceImpl implements BasketService {
             if(!product.getIsActive()){
                 throw new ProductIsUnActive(product.getId());
             }
+            AtomicReference<BasketItems> item = new AtomicReference<>(new BasketItems());
             basketItemRepository.findByBasketAndProduct(basket, product.getId()).ifPresentOrElse(existingItem -> {
                 existingItem.setQuantity(existingItem.getQuantity() + basketItemRequest.getQuantity());
-                basketItemRepository.save(existingItem);
+                item.set(basketItemRepository.save(existingItem));
             }, () -> {
                 BasketItems newItem = new BasketItems();
                 newItem.setBasket(basket);
                 newItem.setUuid(UUID.randomUUID().toString());
                 newItem.setQuantity(basketItemRequest.getQuantity());
                 newItem.setProduct(product.getId());
-                basketItemRepository.save(newItem);
+                item.set(basketItemRepository.save(newItem));
             });
+            return new BasketItemResponse(
+                    item.get().getUuid(),
+                    item.get().getProduct(),
+                    item.get().getQuantity(),
+                    product.getPrice(),
+                    product.getPrice() * item.get().getQuantity(),
+                    product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null
+            );
         } catch (ResourceNotFoundException e) {
             log.error("Product not found with ID: {}", basketItemRequest.getProduct(), e);
             throw e;
