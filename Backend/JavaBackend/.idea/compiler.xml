@@ -30,7 +30,6 @@
       <module name="auth" options="-parameters" />
       <module name="basket" options="-parameters" />
       <module name="common-dto" options="-parameters" />
-      <module name="common-utils" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="exception" options="-parameters" />
       <module name="gateway" options="-parameters" />
