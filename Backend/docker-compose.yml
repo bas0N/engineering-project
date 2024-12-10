@@ -82,7 +82,7 @@ services:
     container_name: gateway-service
     ports:
       - "8888:8888"
-      - "5001:5005"
+      - "5002:5005"
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_URL}
       - JWT_SECRET=${JWT_SECRET}
