@@ -7,13 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 public interface ReviewService {
-    Page<ReviewResponse> getReviews(String productId, int page, int size);
+    ResponseEntity<Page<ReviewResponse>> getReviews(String productId, int page, int size, boolean ascending);
 
-    ReviewResponse getReview(String productId);
+    ResponseEntity<ReviewResponse> getReview(String productId);
 
-    ReviewResponse createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
+    ResponseEntity<ReviewResponse> createReview(String productId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
 
-    ReviewResponse updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
+    ResponseEntity<ReviewResponse> updateReview(String reviewId, CreateReviewRequest createReviewRequest, HttpServletRequest request);
 
-    Boolean deleteReview(String reviewId);
+    ResponseEntity<String> deleteReview(String reviewId, HttpServletRequest request);
 }

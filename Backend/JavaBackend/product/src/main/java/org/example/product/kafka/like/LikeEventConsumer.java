@@ -23,6 +23,7 @@ import java.util.List;
 public class LikeEventConsumer {
     private final ProductRepository productRepository;
     private final LikeEventProducer likeEventProducer;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     @KafkaListener(
             topics = "like-events-topic",
@@ -34,7 +35,7 @@ public class LikeEventConsumer {
             log.info("Consuming like event: {}", likeEvent);
             String productId = likeEvent.getProductId();
             Product product = productRepository.findByParentAsin(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
-            likeEventProducer.sendProductEvent(ProductMapper.INSTANCE.toProductEvent(product));
+            likeEventProducer.sendProductEvent(productMapper.toProductEvent(product));
             ack.acknowledge();
         } catch (ResourceNotFoundException e) {
             ack.acknowledge();

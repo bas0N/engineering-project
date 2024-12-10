@@ -13,7 +13,7 @@ public class BasketProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void requestProductDetails(String productId) {
+    public void sendProductDetailsEvent(String productId) {
         log.info("Requesting product details for product: {}", productId);
         kafkaTemplate.send(REQUEST_TOPIC, productId);
     }

@@ -23,7 +23,7 @@ public class ProductResponse {
     private String title; //to
     private String price;
     private Double averageRating; //to
-    private UserResponse owner;
+    //private UserResponse owner;
     private List<String> features;
     private List<String> description;
     private Map<String, String> details;

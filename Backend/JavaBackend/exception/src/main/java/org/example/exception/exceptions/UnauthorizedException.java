@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Map;
 
 @Getter
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 public class UnauthorizedException extends RuntimeException {
     private final String errorCode;
     private final Map<String, Object> additionalDetails;
@@ -29,5 +28,7 @@ public class UnauthorizedException extends RuntimeException {
         this.errorCode = errorCode;
         this.additionalDetails = additionalDetails;
     }
+
+
 
 }

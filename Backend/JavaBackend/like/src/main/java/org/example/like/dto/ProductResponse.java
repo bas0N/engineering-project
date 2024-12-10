@@ -23,4 +23,5 @@ public class ProductResponse {
     private Double averageRating;
 
     private List<ImageResponse> images;
+    private Boolean isActive;
 }

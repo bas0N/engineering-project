@@ -15,4 +15,5 @@ public class UserDetailInfoEvent {
     private String firstName;
     private String lastName;
     private String phone;
+    private boolean isActive;
 }

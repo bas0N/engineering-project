@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.product.dto.Request.AddProductRequest;
 import org.example.product.dto.Request.UpdateProductRequest;
 import org.example.product.dto.Response.ImageUploadResponse;
+import org.example.product.dto.Response.ProductDetailResponse;
 import org.example.product.dto.Response.ProductResponse;
 import org.example.product.entity.Product;
 import org.example.product.repository.ProductRepository;
@@ -25,7 +26,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    @GetMapping(path = "/search")
     public ResponseEntity<Page<ProductResponse>> getProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
@@ -42,55 +43,56 @@ public class ProductController {
         return productService.getProducts(page, limit, sort, mainCategory, title, minPrice, maxPrice, minRating, maxRating, categories, store);
     }
 
-    @RequestMapping(path = "/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable String productId, HttpServletRequest request) {
+    @GetMapping(path = "/{productId}")
+    public ResponseEntity<ProductDetailResponse> getProduct(@PathVariable String productId, HttpServletRequest request) {
         return productService.getProductById(productId, request);
     }
 
+    @GetMapping(path = "/my-products")
+    public ResponseEntity<Page<ProductResponse>> getMyProducts(HttpServletRequest request, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
+        return productService.getMyProducts(request, page, limit);
+    }
+
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
-        ProductResponse product = productService.createProduct(addProductRequest, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    public ResponseEntity<ProductDetailResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest, HttpServletRequest request) {
+        return productService.createProduct(addProductRequest, request);
     }
 
-    @RequestMapping(path = "/{productId}", method = RequestMethod.PATCH)
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String productId,
-                                                           @Valid @RequestBody UpdateProductRequest updateProductRequest,
-                                                           HttpServletRequest request) {
-       return ResponseEntity.ok(productService.updateProduct(productId, updateProductRequest, request));
+    @PatchMapping(path = "/{productId}")
+    public ResponseEntity<ProductDetailResponse> updateProduct(@PathVariable String productId,
+                                           @Valid @RequestBody UpdateProductRequest updateProductRequest,
+                                           HttpServletRequest request) {
+        return productService.updateProduct(productId, updateProductRequest, request);
     }
 
-    @RequestMapping(path = "/{productId}/image", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadImage(@PathVariable String productId,
-                                                           @RequestParam("hi_res") MultipartFile hi_res,
-                                                           @RequestParam("large") MultipartFile large,
-                                                           @RequestParam("thumb") MultipartFile thumb,
-                                                           @RequestParam("variant") String variant,
-                                                           HttpServletRequest request) {
+    @PostMapping(path = "/{productId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ImageUploadResponse> uploadImage(@PathVariable String productId,
+                                         @RequestParam("hi_res") MultipartFile hi_res,
+                                         @RequestParam("large") MultipartFile large,
+                                         @RequestParam("thumb") MultipartFile thumb,
+                                         @RequestParam("variant") String variant,
+                                         HttpServletRequest request) {
         return productService.addImageToProduct(productId, hi_res, large, thumb, variant, request);
     }
 
-    @RequestMapping(path = "/{productId}/image", method = RequestMethod.PATCH)
-    public ResponseEntity<?> updateImage(@PathVariable String productId,
-                                                           @RequestParam("hi_res") MultipartFile hi_res,
-                                                           @RequestParam("large") MultipartFile large,
-                                                           @RequestParam("thumb") MultipartFile thumb,
-                                                           @RequestParam("variant") String variant,
-                                                           @RequestParam("order") int order,
-                                                           HttpServletRequest request) {
+    @PatchMapping(path = "/{productId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ImageUploadResponse> updateImage(@PathVariable String productId,
+                                         @RequestParam("hi_res") MultipartFile hi_res,
+                                         @RequestParam("large") MultipartFile large,
+                                         @RequestParam("thumb") MultipartFile thumb,
+                                         @RequestParam("variant") String variant,
+                                         @RequestParam("order") int order,
+                                         HttpServletRequest request) {
         return productService.updateImage(productId, hi_res, large, thumb, variant, order, request);
     }
 
-    @RequestMapping(path = "/{productId}/image", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteImage(@PathVariable String productId, @RequestParam("order") int order, HttpServletRequest request) {
-        productService.deleteImage(productId, order, request);
-        return ResponseEntity.ok("Image deleted successfully");
+    @DeleteMapping(path = "/{productId}/image")
+    public ResponseEntity<String> deleteImage(@PathVariable String productId, @RequestParam("order") int order, HttpServletRequest request) {
+        return productService.deleteImage(productId, order, request);
     }
 
-
-    @RequestMapping(path = "/{productId}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable String productId, HttpServletRequest request) {
-        productService.deleteProduct(productId, request);
-        return ResponseEntity.ok("Product deleted successfully");
+        return productService.deleteProduct(productId, request);
     }
 }

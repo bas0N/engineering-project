@@ -1,4 +1,4 @@
-import { Text } from "@fluentui/react-components";
+import { Spinner, Text } from "@fluentui/react-components";
 import styled from "styled-components";
 
 export const BasketWrapper = styled.section`
@@ -27,4 +27,8 @@ export const BasketContainer = styled.div`
         flex-direction: row;
         gap: 10px;
     }
+`;
+
+export const LoadingSpinner = styled(Spinner)`
+    flex: 1;
 `;

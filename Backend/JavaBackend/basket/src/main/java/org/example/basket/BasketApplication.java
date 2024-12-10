@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.example.basket", "org.example.jwtcommon.jwt"})
+@ComponentScan(basePackages = {"org.example.basket", "org.example.exception", "org.example.commonutils"})
 public class BasketApplication {
 
     public static void main(String[] args) {
