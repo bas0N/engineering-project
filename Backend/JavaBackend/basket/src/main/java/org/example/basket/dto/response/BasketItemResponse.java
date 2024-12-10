@@ -16,4 +16,5 @@ public class BasketItemResponse {
     private double price;
     private double totalPrice;
     private String imageUrl;
+    private String basketId;
 }

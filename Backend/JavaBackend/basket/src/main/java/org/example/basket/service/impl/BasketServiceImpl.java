@@ -109,7 +109,8 @@ public class BasketServiceImpl implements BasketService {
                     item.get().getQuantity(),
                     product.getPrice(),
                     product.getPrice() * item.get().getQuantity(),
-                    product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null
+                    product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                    basket.getUuid()
             );
         } catch (ResourceNotFoundException e) {
             log.error("Product not found with ID: {}", basketItemRequest.getProduct(), e);
@@ -225,6 +226,7 @@ public class BasketServiceImpl implements BasketService {
         listBasketItemDTO.setSummaryQuantity(0L);
 
         try {
+            listBasketItemDTO.setBasketId(basket.getUuid());
             basketItemRepository.findBasketItemsByBasket(basket).forEach(item -> {
                 try {
                     BasketProductEvent product = productService.getProductById(item.getProduct());
@@ -374,7 +376,7 @@ public class BasketServiceImpl implements BasketService {
                                 product.getId(),
                                 product.getName(),
                                 item.getQuantity(),
-                                product.getImageUrls().getFirst(),
+                                product.getImageUrls() == null ? null : product.getImageUrls().getFirst(),
                                 product.getPrice(),
                                 product.getPrice() * item.getQuantity()
                         ));
