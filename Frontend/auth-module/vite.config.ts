@@ -13,7 +13,6 @@ export default defineConfig({
         './SignIn': './src/pages/signin/index.tsx',
         './SignUp': './src/pages/signup/index.tsx',
         './AuthProvider': './src/contexts/authContext.tsx'
-
       },
       shared: ['react', 'react-dom', 'react-router-dom', 'react-i18next', '@fluentui/react-components']
     })

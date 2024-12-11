@@ -37,6 +37,7 @@ public class Order {
     private String phone;
     private String email;
     private String client;
+    private double summaryPrice;
 
     private String city;
     private String street;

@@ -208,63 +208,64 @@ class DataProcessor:
         # Retrieve all configuration documents
         config_docs:List[ConfigDocument] = self.db_integration.get_all_config_docs()
         for config in config_docs:
-            if config['status'] == InitialisationStatusEnum.DONE.value:
-                continue
-            elif config['status'] == InitialisationStatusEnum.IN_PROGRESS.value:
-            # Continue processing from where it was left off
-                last_batch_processed = config.get('last_batch_processed', 0)
-                batch_size = config.get('batch_size', self.DEFAULT_BATCH_SIZE)
-                collection_name = config['collection_name']
-
-            # Fetch data in batches and process
-                batch_count = config['last_batch_processed']
-                while True:
-                    data_batch = self.db_integration.get_data_batch(collection_name, last_batch_processed, batch_size)
-                    if not data_batch:
-                        break
-
-                    self.add_list_of_dicts(data_batch)
-                    last_batch_processed += 1
-                    batch_count += 1
-                    print(f"Processed batch {batch_count} out of {config['total']/config['page_size']} with {len(data_batch)} items.")
-
-                    # Update the config document with the new last_batch_processed value
-                    self.db_integration.update_config_doc({'_id': config['_id']}, {'last_batch_processed': last_batch_processed})
-
-                # Mark the config as DONE
-                self.db_integration.update_config_doc({'_id': config['_id']}, {'status':  InitialisationStatusEnum.DONE.value})
-
-            elif config['status'] == InitialisationStatusEnum.TO_DO.value:
-                collection_name = config['collection_name']
-
-                # Check if the collection exists
-                if not self.db_integration.collection_exists(collection_name):
-                    raise ValueError(f"Collection {collection_name} does not exist.")
-
-                # Update the status to IN_PROGRESS
-                self.db_integration.update_config_doc({'_id': config['_id']}, {'status': InitialisationStatusEnum.IN_PROGRESS.value, 'last_batch_processed': 0})
+            if config['collection_name'] == 'meta_Health_and_Personal_Care':
+                if config['status'] == InitialisationStatusEnum.DONE.value:
+                    continue
+                elif config['status'] == InitialisationStatusEnum.IN_PROGRESS.value:
+                # Continue processing from where it was left off
+                    last_batch_processed = config.get('last_batch_processed', 0)
+                    batch_size = config.get('batch_size', self.DEFAULT_BATCH_SIZE)
+                    collection_name = config['collection_name']
 
                 # Fetch data in batches and process
-                last_batch_processed = 0
-                batch_size = config.get('batch_size', self.DEFAULT_BATCH_SIZE)
-                batch_count = 0
+                    batch_count = config['last_batch_processed']
+                    while True:
+                        data_batch = self.db_integration.get_data_batch(collection_name, last_batch_processed, batch_size)
+                        if not data_batch:
+                            break
 
-                while True:
-                    data_batch = self.db_integration.get_data_batch(collection_name, last_batch_processed, batch_size)
-                    if not data_batch:
-                        break
+                        self.add_list_of_dicts(data_batch)
+                        last_batch_processed += 1
+                        batch_count += 1
+                        print(f"Processed batch {batch_count} out of {config['total']/config['page_size']} with {len(data_batch)} items.")
 
-                    self.add_list_of_dicts(data_batch)
-                    last_batch_processed += 1
-                    batch_count += 1
-                    print(f"Processed batch {batch_count} out of {config['total']/config['page_size']} with {len(data_batch)} items.")
-                    # Update the config document with the new last_batch_processed value
-                    self.db_integration.update_config_doc({'_id': config['_id']}, {'last_batch_processed': last_batch_processed})
+                        # Update the config document with the new last_batch_processed value
+                        self.db_integration.update_config_doc({'_id': config['_id']}, {'last_batch_processed': last_batch_processed})
 
-                # Mark the config as DONE
-                self.db_integration.update_config_doc({'_id': config['_id']}, {'status':  InitialisationStatusEnum.DONE.value })
-            else:
-                print(f"Unknown status: {config['status']}")
+                    # Mark the config as DONE
+                    self.db_integration.update_config_doc({'_id': config['_id']}, {'status':  InitialisationStatusEnum.DONE.value})
+
+                elif config['status'] == InitialisationStatusEnum.TO_DO.value:
+                    collection_name = config['collection_name']
+
+                    # Check if the collection exists
+                    if not self.db_integration.collection_exists(collection_name):
+                        raise ValueError(f"Collection {collection_name} does not exist.")
+
+                    # Update the status to IN_PROGRESS
+                    self.db_integration.update_config_doc({'_id': config['_id']}, {'status': InitialisationStatusEnum.IN_PROGRESS.value, 'last_batch_processed': 0})
+
+                    # Fetch data in batches and process
+                    last_batch_processed = 0
+                    batch_size = config.get('batch_size', self.DEFAULT_BATCH_SIZE)
+                    batch_count = 0
+
+                    while True:
+                        data_batch = self.db_integration.get_data_batch(collection_name, last_batch_processed, batch_size)
+                        if not data_batch:
+                            break
+
+                        self.add_list_of_dicts(data_batch)
+                        last_batch_processed += 1
+                        batch_count += 1
+                        print(f"Processed batch {batch_count} out of {config['total']/config['page_size']} with {len(data_batch)} items.")
+                        # Update the config document with the new last_batch_processed value
+                        self.db_integration.update_config_doc({'_id': config['_id']}, {'last_batch_processed': last_batch_processed})
+
+                    # Mark the config as DONE
+                    self.db_integration.update_config_doc({'_id': config['_id']}, {'status':  InitialisationStatusEnum.DONE.value })
+                else:
+                    print(f"Unknown status: {config['status']}")
 
         print("Config documents fetched:", config_docs)
 

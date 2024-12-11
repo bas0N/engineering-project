@@ -2,7 +2,6 @@ package org.example.order.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.commondto.BasketItemEvent;
 import org.example.commondto.ListBasketItemEvent;
 import org.example.exception.exceptions.ApiRequestException;
 import org.example.order.dto.ListBasketItemDto;
@@ -11,17 +10,17 @@ import org.example.order.kafka.basket.BasketItemsConsumer;
 import org.example.order.kafka.basket.BasketItemsProducer;
 import org.example.order.kafka.basketRemove.BasketRemoveProducer;
 import org.example.order.mapper.ListBasketItemsMapper;
+import org.example.order.service.BasketService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BasketService {
+public class BasketServiceImpl implements BasketService {
     private final BasketItemsProducer basketItemsEventProducer;
     private  final BasketItemsConsumer basketItemsEventConsumer;
     private final BasketRemoveProducer basketRemoveProducer;

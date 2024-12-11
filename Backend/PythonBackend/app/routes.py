@@ -3,7 +3,7 @@ from . import listeners
 
 main_routes = Blueprint('main_routes', __name__)
 
-@main_routes.route('/products', methods=['POST'])
+@main_routes.route('/recc-system-1', methods=['POST'])
 def add_product():
     # Get query parameters
     product_id = request.args.get('product_id')
@@ -48,7 +48,7 @@ def add_product():
         return response
 
 
-@main_routes.route('/products', methods=['GET'])
+@main_routes.route('/recc-system-1', methods=['GET'])
 def get_products():
     # Get query parameters
     product_id = request.args.get('product_id')

@@ -12,7 +12,8 @@ import { Tile } from "../../tiles/tile/Tile";
 import axios from "axios";
 
 interface RecommendationsProps {
-    productId: string;
+    searchId: string;
+    type: 'product' | 'user'
 }
 
 type ItemTypeRecommendations = {} & Pick<ItemType, 'id' | 'price' | 'title' | 'images' | 'ratingNumber' | 'averageRating'>;
@@ -27,8 +28,9 @@ type RawData = {
 }
 
 export const Recommendations = ({
-    productId
-}:RecommendationsProps) => {
+    searchId,
+    type
+}: RecommendationsProps) => {
 
     const {t} = useTranslation();
     const [products, setProducts] = useState<ItemTypeRecommendations[]|null>(null);
@@ -36,7 +38,10 @@ export const Recommendations = ({
 
     useEffect(() => {
         const getData = async() => {
-            const result = await axios.get(`${import.meta.env.VITE_API_RECOMMENDATIONS}products?product_id=${productId}&number_of_products=4`,{
+            const recomSystem = type === 'product' ? import.meta.env.VITE_API_RECOMMENDATIONS : import.meta.env.VITE_API_RECOMMENDATIONS_PEOPLE;
+            const system = type === 'product' ? 1 : 2;
+            const param = type === 'product' ? 'product_id' : 'user_id';
+            const result = await axios.get(`${recomSystem}recc-system-${system}?${param}=${searchId}&number_of_products=4`,{
                 headers:{
                     'Authorization': `Bearer ${token}`
                 }
@@ -61,11 +66,13 @@ export const Recommendations = ({
             setProducts(data);
         };
         getData();
-    }, [productId, token]);
+    }, [searchId, token, type]);
 
     return (
         <RecommendationsContainer>
-            <Text as='h4' size={600}>{t('product.recommendations')}</Text>
+            <Text as='h4' size={600}>
+                {type === 'product' ? t('product.recommendations') : t('product.recommendationsUser')}
+            </Text>
             <RecommendationsWrapper>
                 {products === null ? 
                     <Text as='h4' size={400}>{t('product.noRecommendations')}</Text>

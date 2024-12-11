@@ -1,31 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1733783808786" clover="3.2.0">
-  <project timestamp="1733783808786" name="All files">
-    <metrics statements="19" coveredstatements="19" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3" elements="26" coveredelements="26" complexity="0" loc="19" ncloc="19" packages="1" files="2" classes="2"/>
-    <file name="BasketItems.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketItems/BasketItems.styled.tsx">
-      <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <line num="1" count="1" type="stmt"/>
-      <line num="2" count="1" type="stmt"/>
-      <line num="4" count="1" type="stmt"/>
-      <line num="20" count="1" type="stmt"/>
-      <line num="36" count="1" type="stmt"/>
-      <line num="52" count="1" type="stmt"/>
-      <line num="60" count="1" type="stmt"/>
-      <line num="80" count="1" type="stmt"/>
-      <line num="89" count="1" type="stmt"/>
-      <line num="97" count="1" type="stmt"/>
-    </file>
-    <file name="BasketItems.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketItems/BasketItems.tsx">
-      <metrics statements="9" coveredstatements="9" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
-      <line num="1" count="1" type="stmt"/>
-      <line num="2" count="1" type="stmt"/>
-      <line num="3" count="1" type="stmt"/>
-      <line num="13" count="1" type="stmt"/>
-      <line num="28" count="1" type="stmt"/>
-      <line num="33" count="3" type="stmt"/>
-      <line num="35" count="3" type="stmt"/>
-      <line num="37" count="6" type="stmt"/>
-      <line num="64" count="1" type="stmt"/>
-    </file>
+<coverage generated="1733830979757" clover="3.2.0">
+  <project timestamp="1733830979757" name="All files">
+    <metrics statements="71" coveredstatements="66" conditionals="12" coveredconditionals="8" methods="9" coveredmethods="7" elements="92" coveredelements="81" complexity="0" loc="71" ncloc="71" packages="3" files="6" classes="6"/>
+    <package name="src">
+      <metrics statements="39" coveredstatements="34" conditionals="8" coveredconditionals="4" methods="5" coveredmethods="3"/>
+      <file name="App.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/App.styled.tsx">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+      </file>
+      <file name="App.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/App.tsx">
+        <metrics statements="33" coveredstatements="28" conditionals="8" coveredconditionals="4" methods="5" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="11" count="6" type="stmt"/>
+        <line num="12" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="5" type="stmt"/>
+        <line num="14" count="5" type="stmt"/>
+        <line num="15" count="5" type="stmt"/>
+        <line num="16" count="5" type="stmt"/>
+        <line num="17" count="5" type="stmt"/>
+        <line num="19" count="5" type="stmt"/>
+        <line num="20" count="4" type="stmt"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="39" count="5" type="stmt"/>
+        <line num="40" count="4" type="stmt"/>
+        <line num="43" count="5" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="48" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="62" count="5" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.components.BasketItems">
+      <metrics statements="20" coveredstatements="20" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
+      <file name="BasketItems.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketItems/BasketItems.styled.tsx">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
+        <line num="97" count="1" type="stmt"/>
+      </file>
+      <file name="BasketItems.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketItems/BasketItems.tsx">
+        <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
+        <line num="38" count="6" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.components.BasketSummary">
+      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="BasketSummary.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketSummary/BasketSummary.styled.tsx">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+      </file>
+      <file name="BasketSummary.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/components/BasketSummary/BasketSummary.tsx">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>

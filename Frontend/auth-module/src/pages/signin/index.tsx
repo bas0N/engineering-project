@@ -1,11 +1,11 @@
 import { Button, CardHeader, Link, Text } from '@fluentui/react-components'
 import { AuthCard, AuthCardFooter, AuthCardHeader, AuthCardPreview, AuthInput } from '../../App.styled'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/authContext';
 import { Navigate } from 'react-router-dom';
+import '../../i18n/i18n'
 
-import '../../i18n/i18n.tsx';
 import axios from 'axios';
 
 export const SignInPanel = () => {
@@ -59,14 +59,14 @@ export const SignInPanel = () => {
               aria-label={t('authCard.emailLabel')}
               type='email' 
               value={email}
-              onChange={(e) => setEmail(e.currentTarget.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.currentTarget.value)}
             />
             <AuthInput 
               placeholder={`${t('authCard.password')}...`}
               aria-label={t('authCard.passwordLabel')}
               type='password' 
               value={passwd}
-              onChange={(e) => setPasswd(e.currentTarget.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPasswd(e.currentTarget.value)}
             />
             {
               loginFailed && <Text size={400} align='center' style={{color: 'red'}}>

@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest --env=jsdom"
+    "test": "VITE_BLOCK_I18NEXT=true jest --env=jsdom --coverage"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.55.1",
@@ -37,6 +37,7 @@
     "globals": "^15.9.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.2.5",
+    "ts-jest-mock-import-meta": "^1.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.7.0",
