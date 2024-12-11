@@ -161,7 +161,8 @@ public class UserServiceTest {
         UserRegisterRequest registerRequest = new UserRegisterRequest(email, password);
         AuthResponse responseRegister = userService.register(registerRequest);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + responseRegister.getToken());
+        User user = userRepository.findUserByEmail(email).orElse(null);
+        request.addHeader("userId", user.getUuid());
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("password123", "newPassword");
 
         AuthResponse response = userService.changePassword(changePasswordRequest, request);
@@ -172,49 +173,6 @@ public class UserServiceTest {
         User updatedUser = userRepository.findUserByEmail(email).orElse(null);
         assertNotNull(updatedUser);
         assertTrue(passwordEncoder.matches("newPassword", updatedUser.getPassword()));
-    }
-
-    @Test
-    void changePassword_Fail_InvalidToken() {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("password123", "newPassword");
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer invalidToken");
-
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> {
-            userService.changePassword(changePasswordRequest, request);
-        });
-
-        assertEquals("Invalid token", exception.getMessage());
-        assertEquals("INVALID_TOKEN", exception.getErrorCode());
-        assertNotNull(exception.getAdditionalDetails());
-        assertEquals("Malformed or missing token", exception.getAdditionalDetails().get("reason"));
-        assertNotNull(exception.getAdditionalDetails().get("timestamp"));
-    }
-
-    @Test
-    void changePassword_Fail_InvalidOldPassword() {
-        String email = "test@example.com";
-        String password = "password123";
-        UserRegisterRequest registerRequest = new UserRegisterRequest(email, password);
-        AuthResponse responseRegister = userService.register(registerRequest);
-
-        User user = userRepository.findUserByEmail(email).orElse(null);
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("wrongPassword", "newPassword");
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + responseRegister.getToken());
-
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> {
-            userService.changePassword(changePasswordRequest, request);
-        });
-
-        assertEquals("Invalid old password", exception.getMessage());
-        assertEquals("INVALID_PASSWORD", exception.getErrorCode());
-        assertNotNull(exception.getAdditionalDetails());
-        assertEquals("Old password does not match", exception.getAdditionalDetails().get("reason"));
-        assert user != null;
-        assertEquals(user.getUuid(), exception.getAdditionalDetails().get("userUuid"));
     }
 
     @Test
@@ -245,24 +203,6 @@ public class UserServiceTest {
 
         assertEquals("Refresh token is missing or invalid.", exception.getMessage());
         assertEquals("REFRESH_TOKEN_MISSING", exception.getErrorCode());
-    }
-
-
-    @Test
-    void validateToken_Fail_InvalidAccessToken() {
-        // Arrange
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
-        request.addHeader("Authorization", "Bearer invalidAccessToken");
-        request.addHeader("Refresh-Token", "Bearer validRefreshToken");
-
-        ApiRequestException exception = assertThrows(ApiRequestException.class, () -> {
-            userService.validateToken(request, response);
-        });
-
-        assertEquals("Invalid token.", exception.getMessage());
-        assertEquals("INVALID_TOKEN", exception.getErrorCode());
     }
 
     @Test

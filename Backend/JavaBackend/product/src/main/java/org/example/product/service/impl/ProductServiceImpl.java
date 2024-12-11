@@ -178,12 +178,12 @@ public class ProductServiceImpl implements ProductService {
                 );
             }
 
-            Map<String, String> detailsAsStringMap = addProductRequest.getDetails().entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            entry -> entry.getKey().name(),
-                            Map.Entry::getValue
-                    ));
+//            Map<String, String> detailsAsStringMap = addProductRequest.getDetails().entrySet()
+//                    .stream()
+//                    .collect(Collectors.toMap(
+//                            entry -> entry.getKey().name(),
+//                            Map.Entry::getValue
+//                    ));
 
             Product product = productMapper.toProduct(addProductRequest, generateUuid(), userId);
 
