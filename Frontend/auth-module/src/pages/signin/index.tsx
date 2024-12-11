@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/authContext';
 import { Navigate } from 'react-router-dom';
+import '../../i18n/i18n'
 
 import axios from 'axios';
 
