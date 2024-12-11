@@ -12,8 +12,7 @@ import { ImagesCarousel } from "../../components/product/ImagesCarousel/ImagesCa
 import { DetailsAndFeatures } from "../../components/product/DetailsAndFeatures/DetailsAndFeatures";
 import { ProductPresentation } from "../../components/product/ProductPresentation/ProductPresentation";
 import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation";
-import '../../i18n/i18n.tsx';
-import { Recommendations } from "../../components/product/Recommendations/Recommendations.tsx";
+import { Recommendations } from "../../components/product/Recommendations/Recommendations";
 import { ReviewForm } from '../../components/product/ReviewForm/ReviewForm';
 import { ReviewDisplay } from '../../components/product/ReviewDisplay/ReviewDisplay';
 
@@ -34,7 +33,6 @@ const Product = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(result.data);
             setItem(result.data);
 
         } catch (error) {
@@ -47,8 +45,6 @@ const Product = () => {
     }, [getItemData]);
 
     //if(params.productId === undefined) return <></>
-
-
 
     const closeReviewForm = async() => {
         setIsReviewAdded(false);

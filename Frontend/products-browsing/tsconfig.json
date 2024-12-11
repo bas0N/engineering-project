@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vite/client", "jest", "@testing-library/jest-dom"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "moduleResolution": "node",
   },
   "allowImportingTsExtensions": true,
   "files": [],

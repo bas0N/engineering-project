@@ -1,13 +1,12 @@
 import { useParams } from "react-router-dom";
-import { Sidebar } from "../../components/tiles/sidebar/Sidebar.tsx";
+import { Sidebar } from "../../components/tiles/sidebar/Sidebar";
 import { TilesWrapper, TilesContainer, TilesFiltersOpeningWrapper } from "./Tiles.styled";
-import { Tile } from "../../components/tiles/tile/Tile.tsx";
+import { Tile } from "../../components/tiles/tile/Tile";
 import { useEffect, useState } from "react";
 import { Button, Text } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
-import '../../i18n/i18n.tsx';
 import axios from "axios";
-import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation.tsx";
+import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation";
 
 const Tiles = () => {
 
@@ -27,7 +26,6 @@ const Tiles = () => {
     useEffect(() => {
         const getData = async() => {
             try {
-                console.log(selectedCategories);
                 const result = await axios.get(`${import.meta.env.VITE_API_URL}product/search`, {
                     params: {
                         title: query,
@@ -39,11 +37,9 @@ const Tiles = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log(result);
                 
                 const newCategories = result.data.content
                 .map((item: ItemType) => [item.mainCategory, ...item.categories]);
-                console.log(newCategories)
                 const flattenedCategories:string[] = [].concat(...newCategories);
                 const distinctCategories = flattenedCategories.filter((value, index, array) => array.indexOf(value) === index);
                 
