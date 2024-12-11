@@ -20,6 +20,7 @@ const config: JestConfigWithTsJest = {
                 env: {
                   VITE_PREVIEW_MODE: true,
                   VITE_API_URL: 'http://localhost:3001',
+                  VITE_BLOCK_I18NEXT: true
                 },
               },
             },

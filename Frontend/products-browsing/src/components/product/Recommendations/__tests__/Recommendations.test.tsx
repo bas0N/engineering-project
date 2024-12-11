@@ -57,17 +57,17 @@ describe('Recommendations Component', () => {
   });
 
   it('has no a11y violations', async() => {
-      const {container} = render(<Recommendations productId={MOCK_PRODUCT_ID} />);
+      const {container} = render(<Recommendations searchId={MOCK_PRODUCT_ID} type='product' />);
       expect(await axe(container)).toHaveNoViolations();
   })
 
   it('renders without crashing', () => {
-    render(<Recommendations productId={MOCK_PRODUCT_ID}/>);
+    render(<Recommendations searchId={MOCK_PRODUCT_ID} type='product'/>);
     expect(screen.getByText('product.recommendations')).toBeInTheDocument();
   });
 
   it('renders the correct number of recommendation tiles', async () => {
-    render(<Recommendations productId={MOCK_PRODUCT_ID}/>);
+    render(<Recommendations searchId={MOCK_PRODUCT_ID} type='product'/>);
     await waitFor(() => {
       const tiles = screen.getAllByTestId('mock-tile');
       expect(tiles).toHaveLength(2); 
@@ -75,7 +75,7 @@ describe('Recommendations Component', () => {
   });
 
   it('renders product titles correctly', async() => {
-    render(<Recommendations productId={MOCK_PRODUCT_ID}/>);
+    render(<Recommendations searchId={MOCK_PRODUCT_ID} type='product'/>);
     await waitFor(() => {
       const titleElements = screen.getAllByText('loremIpsum');
       expect(titleElements.length).toBe(2);

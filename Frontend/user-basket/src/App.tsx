@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { Toast, ToastTitle, Text, useToastController } from '@fluentui/react-components';
+import './i18n/i18n'
 
 export default function Basket() {
 

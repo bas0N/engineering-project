@@ -1,7 +1,7 @@
 import { Toaster } from "@fluentui/react-components";
 import { ReactNode, useCallback, useEffect } from "react"
 import { useNavigate } from "react-router";
-
+import './i18n/i18n.tsx';
 interface WrapperProps {
     children: JSX.Element[] | ReactNode[];
 }
