@@ -15,6 +15,7 @@ import { ItemType } from "../../components/product/ProductPresentation/ProductPr
 import { Recommendations } from "../../components/product/Recommendations/Recommendations";
 import { ReviewForm } from '../../components/product/ReviewForm/ReviewForm';
 import { ReviewDisplay } from '../../components/product/ReviewDisplay/ReviewDisplay';
+import '../../i18n/i18n'
 
 const Product = () => {
 
@@ -92,7 +93,14 @@ const Product = () => {
                         token={token as string}
                         reloadTriggerer={reviewDisplayReloadTriggerer}
                     />
-                    <Recommendations productId={params.productId as string} />
+                    <Recommendations 
+                        searchId={params.productId as string}
+                        type='product'
+                    />
+                    <Recommendations 
+                        searchId={params.productId as string}
+                        type='user'
+                    />
                 </ProductWrapper>
             }
         </>
