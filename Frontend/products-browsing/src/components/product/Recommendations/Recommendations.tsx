@@ -70,7 +70,9 @@ export const Recommendations = ({
 
     return (
         <RecommendationsContainer>
-            <Text as='h4' size={600}>{t('product.recommendations')}</Text>
+            <Text as='h4' size={600}>
+                {type === 'product' ? t('product.recommendations') : t('product.recommendationsUser')}
+            </Text>
             <RecommendationsWrapper>
                 {products === null ? 
                     <Text as='h4' size={400}>{t('product.noRecommendations')}</Text>
