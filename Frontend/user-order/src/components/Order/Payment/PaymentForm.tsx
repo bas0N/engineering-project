@@ -1,6 +1,7 @@
 import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import {Button, Text} from "@fluentui/react-components";
 import {useState} from "react";
+import {usePaymentFormStyles} from "./PaymentForm.styled.tsx";
 
 interface PaymentFormProps {
     clientSecret: string;
@@ -13,6 +14,7 @@ export function PaymentForm({ clientSecret, onPaymentSuccess, onError, payLabel 
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);
+    const styles = usePaymentFormStyles();
 
     const handlePayment = async () => {
         if (!stripe || !elements) return;
@@ -33,7 +35,7 @@ export function PaymentForm({ clientSecret, onPaymentSuccess, onError, payLabel 
     }
 
     return (
-        <div>
+        <div className={styles.container}>
             <Text>Enter your card details:</Text>
             <CardElement />
             <Button appearance="primary" disabled={processing} onClick={handlePayment}>

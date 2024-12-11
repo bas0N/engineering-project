@@ -1,5 +1,5 @@
 export type DeliverMethod = {
-    id: string;
+    uuid: string;
     name: string;
     price: number;
 };

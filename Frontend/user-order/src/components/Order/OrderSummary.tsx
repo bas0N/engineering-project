@@ -1,4 +1,5 @@
 import {Text} from "@fluentui/react-components";
+import {useOrderSummaryStyles} from "./OrderSummary.styled.tsx";
 interface OrderSummaryProps {
     totalPrice: number;
     summaryLabel: string;
@@ -6,9 +7,11 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ totalPrice, summaryLabel, totalLabel }: OrderSummaryProps) {
+    const styles = useOrderSummaryStyles();
+
     return (
-        <div style={{marginTop:'20px'}}>
-            <Text>{summaryLabel}</Text>
+        <div className={styles.container}>
+            <Text className={styles.label}>{summaryLabel}</Text>
             <Text>{totalLabel}: {totalPrice} PLN</Text>
         </div>
     );

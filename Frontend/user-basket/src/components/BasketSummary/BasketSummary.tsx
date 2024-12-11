@@ -40,7 +40,7 @@ export const BasketSummary = ({
             </BasketSummaryItem>
             <BasketSummaryDivider />
             <BasketSummaryBtn onClick = {handleBuyClick}>
-                {t('basket.summary.buy')}
+                Go to checkout
             </BasketSummaryBtn>
         </BasketSummaryWrapper>
     );
