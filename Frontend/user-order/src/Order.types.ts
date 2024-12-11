@@ -22,3 +22,12 @@ export interface BasketItem {
     summaryPrice: number;
     isActive: boolean;
 }
+
+export interface ItemResponse {
+    uuid : string;
+    name : string;
+    imageUrl : string;
+    quantity : number;
+    priceUnit : number;
+    priceSummary : number;
+}

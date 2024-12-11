@@ -10,7 +10,12 @@ import {PaymentForm} from './Payment/PaymentForm.tsx';
 import {BasketItemsList} from "../Items/BasketItemList.tsx";
 import {Elements} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
+import { useNavigate } from 'react-router-dom';
 
+// interface CreateOrderResponse {
+//     clientSecret: string;
+//     orderId: string;
+// }
 export default function Order() {
 
     const [deliverMethods, setDeliverMethods] = useState<DeliverMethod[]>([]);
@@ -30,7 +35,9 @@ export default function Order() {
     const [basketPrice, setBasketPrice] = useState<number>(0);
     const [basketId, setBasketId] = useState<string | null>(null);
     const [basketItems, setBasketItems] = useState<BasketItem[] | null>(null);
+    const [orderId, setOrderId] = useState<string | null>(null);
     const stripePromise = loadStripe("pk_test_51QOewrFtvRjEnnd4SFW0dfoeQYg6zXdAsqLl0EDBhCsbccvoWRlbXWpSKYIe0NgbYfUv5UCDSmob7yGPG7jJ60qs00vtb1gSXK");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -87,7 +94,9 @@ export default function Order() {
             });
             console.log(result.data);
             const {clientSecret} = result.data;
+            const orderId = result.data.orderId;
             setClientSecret(clientSecret);
+            setOrderId(orderId);
             setCreatingOrder(false);
         } catch (e: any) {
             setError('Failed to create order');
@@ -97,6 +106,29 @@ export default function Order() {
 
     const handlePaymentSuccess = () => {
         setPaymentSuccess(true);
+        console.log('Payment successful', orderId);
+        if(orderId){
+            notifyBackend(orderId, 'COMPLETED');
+        }
+        navigate('/order-history');
+    };
+
+    const notifyBackend = async (orderId: string, status: string) => {
+        try {
+            const token = localStorage.getItem('authToken');
+            const updateStatusRequest = {
+                status: status,
+                orderId: orderId
+            };
+            console.log('Updating order status:', updateStatusRequest);
+            await axios.post(`${import.meta.env.VITE_API_URL}order/notify`, updateStatusRequest, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            console.log('Order status updated successfully');
+        } catch (error) {
+            console.error('Failed to update order status:', error);
+            setError('Failed to update order status');
+        }
     };
 
     if (loading) {

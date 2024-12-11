@@ -21,6 +21,7 @@ const UserBasket = React.lazy(() => import('userBasket/UserBasket'));
 const Tiles = React.lazy(() => import('productsBrowsing/Tiles'));
 const Product = React.lazy(() => import('productsBrowsing/Product'));
 const Order = React.lazy(() => import('userOrder/UserOrder'));
+const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
 
 const routes: RouteObject[] = [
   {
@@ -56,9 +57,13 @@ const routes: RouteObject[] = [
     element: <Order />
   },
   {
+    path: '/order-history/',
+    element: <OrderHistory />
+  },
+  {
     path: '*',
     element: <Page404 />
-  }
+  },
 ];
 
 const router = createBrowserRouter(routes.map((route) => ({
