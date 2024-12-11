@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.basket.dto.ListBasketItemDto;
 import org.example.basket.dto.request.AddBasketItemRequest;
 import org.example.basket.dto.request.DeleteItemRequest;
+import org.example.basket.dto.response.BasketItemResponse;
 import org.example.basket.service.BasketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class BasketController {
     private final BasketService basketService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> addProductToBasket(@RequestBody @Valid AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<BasketItemResponse> addProductToBasket(@RequestBody @Valid AddBasketItemRequest basketItemRequest, HttpServletRequest request, HttpServletResponse response) {
         return basketService.addProductToBasket(basketItemRequest, request, response);
     }
 

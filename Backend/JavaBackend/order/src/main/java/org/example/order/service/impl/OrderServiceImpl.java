@@ -99,9 +99,8 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.setUuid(UUID.randomUUID().toString());
                 finalOrder.getOrderItems().add(orderItem);
             });
-
+            finalOrder.setSummaryPrice(basketItems.getSummaryPrice()+deliverRepository.findByUuid(order.getDeliverId()).orElseThrow().getPrice());
             orderRepository.saveAndFlush(finalOrder);
-
             Order savedOrder = orderRepository.findByUuidWithItems(finalOrder.getUuid())
                     .orElseThrow(() -> new RuntimeException("Order not found after saving"));
             return orderMapper.toOrderResponse(savedOrder);

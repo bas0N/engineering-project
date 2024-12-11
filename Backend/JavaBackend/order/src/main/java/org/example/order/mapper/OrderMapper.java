@@ -12,8 +12,9 @@ import org.mapstruct.factory.Mappers;
 public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
+    @Mapping(target = "orderId", source = "order.uuid")
     @Mapping(target = "clientSecret", ignore = true)
-    @Mapping(target = "summaryPrice", ignore = true)
+    @Mapping(target = "summaryPrice", source = "order.summaryPrice")
     @Mapping(target = "items", source = "orderItems")
     @Mapping(target = "customerDetails.firstName", source = "firstName")
     @Mapping(target = "customerDetails.lastName", source = "lastName")
