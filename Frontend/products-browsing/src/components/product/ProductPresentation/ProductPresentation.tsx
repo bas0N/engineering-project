@@ -126,6 +126,9 @@ export const ProductPresentation = ({
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if(token !== null){
+                window.dispatchEvent(new CustomEvent('reloadBasketNumber'));
+            }
             dispatchToast(<Toast>
                     <ToastTitle>{t('product.addedToBasket')}</ToastTitle>
                 </Toast>, 
