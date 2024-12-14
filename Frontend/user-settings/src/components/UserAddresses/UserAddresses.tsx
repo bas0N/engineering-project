@@ -131,6 +131,7 @@ export const UserAddresses = ({
                                     <Button 
                                         appearance='transparent'
                                         onClick={() => deleteAddress(address.id)}
+                                        data-testid='deleteButton'
                                     >
                                         <DeleteRegular />
                                     </Button>

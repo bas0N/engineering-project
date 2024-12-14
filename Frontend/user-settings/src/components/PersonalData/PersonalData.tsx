@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Button, Text } from "@fluentui/react-components";
 import { PersonalDataWrapper, PersonalDataInputs, PersonalDataInput } from "./PersonalData.styled";
@@ -46,19 +46,19 @@ export const PersonalData = ({
                         aria-label={t('userSettings.firstName')} 
                         placeholder={t('userSettings.firstName')} 
                         value={localPersonalData.firstName}
-                        onChange={(e) => handleChangeOfData(e.currentTarget.value, 'firstName')}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChangeOfData(e.currentTarget.value, 'firstName')}
                     />
                     <PersonalDataInput type='text' 
                         aria-label={t('userSettings.lastName')} 
                         placeholder={t('userSettings.lastName')} 
                         value={localPersonalData.lastName}
-                        onChange={(e) => handleChangeOfData(e.currentTarget.value, 'lastName')}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChangeOfData(e.currentTarget.value, 'lastName')}
                     />
                     <PersonalDataInput type='text' 
                         aria-label={t('userSettings.phoneNumber')} 
                         placeholder={t('userSettings.phoneNumber')} 
                         value={localPersonalData.phoneNumber}
-                        onChange={(e) => handleChangeOfData(e.currentTarget.value, 'phoneNumber')}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleChangeOfData(e.currentTarget.value, 'phoneNumber')}
                     />
                 </PersonalDataInputs>
                 <Button onClick={submitChanges}>
