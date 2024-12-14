@@ -30,7 +30,7 @@ public class BasketController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getItems(HttpServletRequest request) {
+    public ResponseEntity<ListBasketItemDto> getItems(HttpServletRequest request) {
         return basketService.getItems(request);
     }
 }

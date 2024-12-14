@@ -2,6 +2,7 @@ package org.example.basket.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.basket.dto.ListBasketItemDto;
 import org.example.basket.dto.request.AddBasketItemRequest;
 import org.example.basket.dto.request.DeleteItemRequest;
 import org.example.basket.dto.response.BasketItemResponse;
@@ -13,7 +14,7 @@ public interface BasketService {
 
     ResponseEntity<?> deleteProductFromBasket(DeleteItemRequest deleteItemRequest, HttpServletRequest request);
 
-    ResponseEntity<?> getItems(HttpServletRequest request);
+    ResponseEntity<ListBasketItemDto> getItems(HttpServletRequest request);
 
     void removeBasketById(String basketId);
 
