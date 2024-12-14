@@ -63,6 +63,7 @@ export const Recommendations = ({
                 averageRating: elem.average_rating,
                 ratingNumber: elem.rating_number
             }) as ItemTypeRecommendations);
+            console.log(data, recomsRaw);
             setProducts(data);
         };
         getData();
@@ -75,8 +76,10 @@ export const Recommendations = ({
             </Text>
             <RecommendationsWrapper>
                 {products === null ? 
+                    <Text as='h4' size={400}>{t('product.recommendationsFailure')}</Text>
+                : products.length === 0 ? (
                     <Text as='h4' size={400}>{t('product.noRecommendations')}</Text>
-                : products?.map((product, ind) => <RecommendationTile>
+                ) : products?.map((product, ind) => <RecommendationTile>
                     <Tile 
                         height={60}
                         key={`product-${product.id}-${ind}`}
