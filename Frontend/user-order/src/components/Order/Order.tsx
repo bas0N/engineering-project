@@ -38,14 +38,15 @@ export default function Order() {
     const [orderId, setOrderId] = useState<string | null>(null);
     const stripePromise = loadStripe("pk_test_51QOewrFtvRjEnnd4SFW0dfoeQYg6zXdAsqLl0EDBhCsbccvoWRlbXWpSKYIe0NgbYfUv5UCDSmob7yGPG7jJ60qs00vtb1gSXK");
     const navigate = useNavigate();
+    const token = localStorage.getItem('authToken');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = localStorage.getItem('authToken');
                 const deliverResult = await axios.get(`${import.meta.env.VITE_API_URL}order/deliver`, {
-                    headers: {'Authorization': `Bearer ${token}`}
+                    headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                 })
+                console.log('deliverResults: ', deliverResult)
                 setDeliverMethods(deliverResult.data as DeliverMethod[]);
 
                 const basketResult = await axios.get(`${import.meta.env.VITE_API_URL}basket`, {
@@ -57,13 +58,13 @@ export default function Order() {
                 setBasketItems(basketResult.data.basketProducts);
 
                 setLoading(false);
-            } catch (e) {
+            } catch {
                 setError('Failed to fetch data');
                 setLoading(false);
             }
         };
         fetchData();
-    }, []);
+    }, [token]);
 
     const handleCreateOrder = async () => {
         if (!selectedDeliverId) {
@@ -98,7 +99,7 @@ export default function Order() {
             setClientSecret(clientSecret);
             setOrderId(orderId);
             setCreatingOrder(false);
-        } catch (e: any) {
+        } catch {
             setError('Failed to create order');
             setCreatingOrder(false);
         }
@@ -130,6 +131,7 @@ export default function Order() {
             setError('Failed to update order status');
         }
     };
+    console.log(!clientSecret, basketItems)
 
     if (loading) {
         return <Spinner label={'Loading...'}/>;
@@ -138,6 +140,7 @@ export default function Order() {
     if (paymentSuccess) {
         return <Text>Payment successful</Text>;
     }
+
 
     return (
         <div style={{maxWidth: '500px', margin: '0 auto'}}>

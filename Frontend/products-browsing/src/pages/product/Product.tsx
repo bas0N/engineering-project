@@ -94,11 +94,11 @@ const Product = () => {
                         reloadTriggerer={reviewDisplayReloadTriggerer}
                     />
                     <Recommendations 
-                        searchId={params.productId as string}
+                        searchId={'B01GF7ERNC'}
                         type='product'
                     />
                     <Recommendations 
-                        searchId={params.productId as string}
+                        searchId={'AE25NQAZI3725GZIL5FS52ZIKWKQ'}
                         type='user'
                     />
                 </ProductWrapper>

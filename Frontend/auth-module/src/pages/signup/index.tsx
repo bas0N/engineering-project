@@ -5,6 +5,7 @@ import { useTranslation } from '../../../node_modules/react-i18next';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
 import axios from 'axios';
+import '../../i18n/i18n'
 
 export const SignUpPanel = () => {
 
