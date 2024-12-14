@@ -16,7 +16,8 @@
     },
     "navbar": {
       "logoutButton": "Logout",
-      "signInButton": "Sign in"
+      "signInButton": "Sign in",
+      "settingsButton": "Settings"
     },
     "page404": {
       "title": "Something went wrong!",
@@ -70,6 +71,7 @@
       "header": "User settings",
       "firstName": "First name...",
       "lastName": "Last name...",
+      "phoneNumber": "Phone number...",
       "email": "Email...",
       "personalDataHeader": "Personal data",
       "userAddressesHeader": "Your addresses",
@@ -81,7 +83,14 @@
           "countryInput": "Country...",
           "postalCodeInput": "Postal code...",
           "submitAddingNewAddress": "Add address"
-      }
+      },
+      "emailLabel": "Email: ",
+      "loading": "Loading...",
+      "error": "Something went wrong. Try again",
+      "savingFailed": "Could not save your changes",
+      "submitChangesToPersonalData": "Submit changes",
+      "savedChanges": "Changes saved!",
+      "noAddressesPresent": "No addresses added yet"
     },
     "basket": {
         "basketHeader": "Basket",

@@ -23,7 +23,7 @@ export const BasketButtonBadge = styled(Badge).attrs({appearance: 'ghost', size:
     color: inherit;
 `;
 
-export const LogoutButton = styled(Button).attrs({appearance: 'transparent'})`
+export const NavbarButton = styled(Button).attrs({appearance: 'transparent'})`
     color: white;
     padding: 10px 20px;
     text-decoration: none;
