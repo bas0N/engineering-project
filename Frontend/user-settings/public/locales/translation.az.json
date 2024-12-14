@@ -3,6 +3,7 @@
     "header": "User settings",
     "firstName": "First name...",
     "lastName": "Last name...",
+    "phoneNumber": "Phone number...",
     "email": "Email...",
     "personalDataHeader": "Personal data",
     "userAddressesHeader": "Your addresses",
@@ -14,6 +15,13 @@
       "country": "Country...",
       "postalCode": "Postal code...",
       "submitAddingNewAddress": "Add address"
-    }
+    },
+    "emailLabel": "Email: ",
+    "loading": "Loading...",
+    "error": "Something went wrong. Try again",
+    "savingFailed": "Could not save your changes",
+    "submitChangesToPersonalData": "Submit changes",
+    "savedChanges": "Changes saved!",
+    "noAddressesPresent": "No addresses added yet"
   }
 }

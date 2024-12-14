@@ -1,6 +1,6 @@
 import { Link } from '@fluentui/react-components';
 import { Cart24Regular } from '@fluentui/react-icons';
-import { NavbarContainer, BasketButton, BasketButtonBadge, LogoutButton } from "./Navbar.styled"
+import { NavbarContainer, BasketButton, BasketButtonBadge, NavbarButton } from "./Navbar.styled"
 import { Search } from "./search/Search"
 import { useAuth } from 'authComponents/AuthProvider';
 import { useTranslation } from '../../../node_modules/react-i18next';
@@ -57,12 +57,20 @@ export const Navbar = () => {
                     </BasketButtonBadge>
                 </BasketButton>
             </Link>
-            {token !== null ? (<LogoutButton onClick={handleLogout} appearance='subtle'>
-                {t('navbar.logoutButton')}
-            </LogoutButton>) : (<Link href='/signin'>
-                <LogoutButton appearance='subtle'>
+            {token !== null ? (
+                <>
+                    <Link href='/settings'>
+                        <NavbarButton appearance='subtle'>
+                            {t('navbar.settingsButton')}
+                        </NavbarButton>
+                    </Link>
+                    <NavbarButton onClick={handleLogout} appearance='subtle'>
+                        {t('navbar.logoutButton')}
+                    </NavbarButton>
+                </>) : (<Link href='/signin'>
+                <NavbarButton appearance='subtle'>
                     {t('navbar.signInButton')}
-                </LogoutButton>
+                </NavbarButton>
             </Link>)}
         </NavbarContainer>
     )
