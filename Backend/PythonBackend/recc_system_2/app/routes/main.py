@@ -17,3 +17,8 @@ def recommend():
     recommendations = fetch_top_n_recommendations(engine, user_id, n)
     final_output = fetch_product_details_for_recommendations(recommendations)
     return jsonify(final_output), 200
+
+
+
+def register_routes(app):
+    app.register_blueprint(bp)
