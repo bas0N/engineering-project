@@ -24,9 +24,8 @@ public class UpdateProductRequest {
 
     private String mainCategory;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be positive")
-    @Digits(integer = 10, fraction = 2, message = "Price format is invalid")
-    private String price;
+    @Positive(message = "Price must be bigger than 0")
+    private Double price;
 
     private String store;
 }

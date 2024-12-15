@@ -97,7 +97,7 @@ public class ProductServiceTest {
                 List.of(new Image("thumbUrl", "largeUrl", "variantUrl", "hiResUrl")),
                 "Health and Personal Care",
                 "parent123",
-                "19.99",
+                19.99,
                 150,
                 "BestStore",
                 "Amazing Health Product",
@@ -191,7 +191,7 @@ public class ProductServiceTest {
         String userId = "user123";
         UpdateProductRequest updateProductRequest = new UpdateProductRequest();
         updateProductRequest.setTitle("Updated Title");
-        updateProductRequest.setPrice("99.99");
+        updateProductRequest.setPrice(99.99);
         updateProductRequest.setMainCategory("Updated Category");
         updateProductRequest.setCategories(List.of("NewCategory1", "NewCategory2"));
         updateProductRequest.setDescription(List.of("New description 1", "New description 2"));
@@ -207,7 +207,7 @@ public class ProductServiceTest {
                 null,
                 "MainCategory",
                 productId,
-                "49.99",
+                99.99,
                 0,
                 "Store1",
                 "Old Title",

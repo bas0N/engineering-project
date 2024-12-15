@@ -31,7 +31,7 @@ public class BasketEventConsumer {
             BasketProductEvent productEvent = new BasketProductEvent(
                     product.getParentAsin(),
                     product.getTitle()==null ? "" : product.getTitle(),
-                    product.getPrice()==null ? 0.0 : Double.parseDouble(product.getPrice()),
+                    product.getPrice()==null ? 0.0 : product.getPrice(),
                     product.getImages()==null ? null : product.getImages().stream().map(Image::getThumb).toList(),
                     product.getIsActive()
             );

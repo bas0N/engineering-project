@@ -48,7 +48,7 @@ public class Product {
     private String parentAsin;
 
     @Field("price")
-    private String price;
+    private Double price;
 
     @Field("rating_number")
     private Integer ratingNumber;
