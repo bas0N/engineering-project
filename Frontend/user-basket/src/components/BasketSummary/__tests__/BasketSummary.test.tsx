@@ -1,9 +1,14 @@
 import { axe, toHaveNoViolations } from "jest-axe";
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BasketSummary } from "../BasketSummary";
 
 expect.extend(toHaveNoViolations);
+
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"), 
+    useNavigate: jest.fn()
+}));
 
 const MOCK_ORDER_VALUE = 800;
 
