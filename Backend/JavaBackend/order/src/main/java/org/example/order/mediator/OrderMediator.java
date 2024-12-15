@@ -5,14 +5,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.commonutils.Utils;
 import org.example.exception.exceptions.ApiRequestException;
+import org.example.order.dto.request.UpdateStatusRequest;
 import org.example.order.dto.response.ItemResponse;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.response.OrderResponse;
+import org.example.order.entity.Deliver;
 import org.example.order.entity.Order;
 import org.example.order.entity.OrderItems;
 import org.example.order.enums.Status;
 import org.example.order.mapper.ItemMapper;
 import org.example.order.mapper.OrderMapper;
+import org.example.order.repository.DeliverRepository;
 import org.example.order.repository.ItemRepository;
 import org.example.order.repository.OrderRepository;
 import org.example.order.service.OrderService;
@@ -39,6 +42,7 @@ public class OrderMediator {
     @Value("${stripe.endpoint.secret}")
     private String endpointSecret;
     private final ItemRepository itemRepository;
+    private final DeliverRepository deliverRepository;
 
     public ResponseEntity<?> createOrder(OrderRequest orderRequest, HttpServletRequest request, HttpServletResponse response) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -120,12 +124,18 @@ public class OrderMediator {
                     itemsList.forEach(item -> summary.set(summary.get() + item.getPriceSummary()));
 
                     OrderResponse orderResponse = OrderMapper.INSTANCE.toOrderResponse(order);
-                    orderResponse.setSummaryPrice(summary.get());
+                    Double deliveryPrice = deliverRepository.findByUuid(order.getDeliver().getUuid()).map(Deliver::getPrice).orElse(0d);
+                    orderResponse.setSummaryPrice(summary.get()+deliveryPrice);
 
                     return orderResponse;
                 })
                 .toList();
-
         return ResponseEntity.ok(orderResponseList);
+    }
+
+    public ResponseEntity<?> updateStatus(UpdateStatusRequest updateStatusRequest, HttpServletRequest request) {
+        Order order = orderRepository.findByUuid(updateStatusRequest.getOrderId()).orElseThrow(() -> new ApiRequestException("Order not found with uuid: " + updateStatusRequest.getOrderId()));
+        orderService.updateOrderStatus(order.getUuid(), updateStatusRequest.getStatus());
+        return ResponseEntity.ok().build();
     }
 }

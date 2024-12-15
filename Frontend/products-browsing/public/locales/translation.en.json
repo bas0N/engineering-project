@@ -7,13 +7,17 @@
         "featuresHeader": "Features",
         "loadingFailed": "Could not load this item. Try again",
         "noRatings": "No ratings available",
-        "recommendations": "Others browsed through",
+        "recommendations": "Similar products",
+        "recommendationsUser": "Others browsed through",
         "noRecommendations": "No recommendations available",
+        "recommendationsFailure": "Failed to retrieve recommendations",
         "addReview": "Add review",
         "addReviewHeader": "Review adding",
         "shareOpinionHeader": "Would you like to share some details?",
         "opinionPlaceholder": "Elaborate on your opinion...",
         "opinionTitle": "Put your opinion's title here...",
+        "failedToLoad": "Failed to load the liking info",
+        "closeButtonLabel": "Close review form",
         "reviews": {
             "anonymusUser": "Anonymus user",
             "reviewsTitle": "Product reviews",
@@ -28,7 +32,8 @@
             "price": "Price range",
             "minPrice": "Min price...",
             "maxPrice": "Max price...",
-            "categoriesDropdownPlaceholder": "Select categories..."
+            "categoriesDropdownPlaceholder": "Select categories...",
+            "closingButton": "Closing button"
         },
         "sidebarOpeningButton": "Open filters",
         "selectProductAmount": "Select amount of product"

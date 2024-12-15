@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { Toast, ToastTitle, Text, useToastController } from '@fluentui/react-components';
+import './i18n/i18n'
 
 export default function Basket() {
 
   const {t} = useTranslation();
-  const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'localToaster';
+  const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'mainToaster';
   const token = localStorage.getItem('authToken');
   const [basketItems, setBasketItems] = useState<BasketItemType[]|null>(null);
   const [basketPrice, setBasketPrice] = useState(0);

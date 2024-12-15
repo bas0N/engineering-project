@@ -25,5 +25,6 @@ public class OrderResponse {
     private List<ItemResponse> items;
     private double summaryPrice;
     private String basketId;
+    private String orderId;
     private String ClientSecret;
 }

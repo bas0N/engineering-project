@@ -20,6 +20,6 @@ public class UserPersonalDataRequest {
     @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
 
-    @Size(min = 11, max = 11, message = "Phone number must be 9 characters")
+    @Size(min = 7, max = 15, message = "Phone number must be between 7 and 15 characters")
     private String phoneNumber;
 }

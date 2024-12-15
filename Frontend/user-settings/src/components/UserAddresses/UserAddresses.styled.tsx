@@ -1,3 +1,4 @@
+import { Text } from '@fluentui/react-components';
 import styled from "styled-components";
 
 export const UserAddressesAddingWrapper = styled.div`
@@ -52,4 +53,9 @@ export const AddressOptions = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 8px;
+`;
+
+export const NoAddresses = styled(Text).attrs({align: 'center', size: 500})`
+    width: calc(100% - 20px);
+    padding: 10px;
 `;

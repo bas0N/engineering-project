@@ -16,7 +16,8 @@
     },
     "navbar": {
       "logoutButton": "Logout",
-      "signInButton": "Sign in"
+      "signInButton": "Sign in",
+      "settingsButton": "Settings"
     },
     "page404": {
       "title": "Something went wrong!",
@@ -35,13 +36,17 @@
       "featuresHeader": "Features",
       "loadingFailed": "Could not load this item. Try again",
       "noRatings": "No ratings available",
-      "recommendations": "Others browsed through",
+      "recommendations": "Similar products",
+      "recommendationsUser": "Others browsed through",
       "noRecommendations": "No recommendations available",
       "addReview": "Add review",
       "addReviewHeader": "Review adding",
       "shareOpinionHeader": "Would you like to share some details?",
       "opinionPlaceholder": "Elaborate on your opinion...",
       "opinionTitle": "Put your opinion's title here...",
+      "failedToLoad": "Failed to load the liking info",
+      "closeButtonLabel": "Close review form",
+      "recommendationsFailure": "Failed to retrieve recommendations",
       "reviews": {
           "anonymusUser": "Anonymus user",
           "reviewsTitle": "Product reviews",
@@ -66,6 +71,7 @@
       "header": "User settings",
       "firstName": "First name...",
       "lastName": "Last name...",
+      "phoneNumber": "Phone number...",
       "email": "Email...",
       "personalDataHeader": "Personal data",
       "userAddressesHeader": "Your addresses",
@@ -77,7 +83,14 @@
           "countryInput": "Country...",
           "postalCodeInput": "Postal code...",
           "submitAddingNewAddress": "Add address"
-      }
+      },
+      "emailLabel": "Email: ",
+      "loading": "Loading...",
+      "error": "Something went wrong. Try again",
+      "savingFailed": "Could not save your changes",
+      "submitChangesToPersonalData": "Submit changes",
+      "savedChanges": "Changes saved!",
+      "noAddressesPresent": "No addresses added yet"
     },
     "basket": {
         "basketHeader": "Basket",

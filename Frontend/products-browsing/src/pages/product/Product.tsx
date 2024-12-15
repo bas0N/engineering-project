@@ -12,10 +12,10 @@ import { ImagesCarousel } from "../../components/product/ImagesCarousel/ImagesCa
 import { DetailsAndFeatures } from "../../components/product/DetailsAndFeatures/DetailsAndFeatures";
 import { ProductPresentation } from "../../components/product/ProductPresentation/ProductPresentation";
 import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation";
-import '../../i18n/i18n.tsx';
-import { Recommendations } from "../../components/product/Recommendations/Recommendations.tsx";
+import { Recommendations } from "../../components/product/Recommendations/Recommendations";
 import { ReviewForm } from '../../components/product/ReviewForm/ReviewForm';
 import { ReviewDisplay } from '../../components/product/ReviewDisplay/ReviewDisplay';
+import '../../i18n/i18n'
 
 const Product = () => {
 
@@ -34,7 +34,6 @@ const Product = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(result.data);
             setItem(result.data);
 
         } catch (error) {
@@ -47,8 +46,6 @@ const Product = () => {
     }, [getItemData]);
 
     //if(params.productId === undefined) return <></>
-
-
 
     const closeReviewForm = async() => {
         setIsReviewAdded(false);
@@ -96,7 +93,14 @@ const Product = () => {
                         token={token as string}
                         reloadTriggerer={reviewDisplayReloadTriggerer}
                     />
-                    <Recommendations productId={params.productId as string} />
+                    <Recommendations 
+                        searchId={'B01GF7ERNC'}
+                        type='product'
+                    />
+                    <Recommendations 
+                        searchId={'AE25NQAZI3725GZIL5FS52ZIKWKQ'}
+                        type='user'
+                    />
                 </ProductWrapper>
             }
         </>

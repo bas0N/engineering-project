@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
+import org.example.order.dto.request.UpdateStatusRequest;
 import org.example.order.mediator.OrderMediator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +18,28 @@ public class OrderController {
     private final OrderMediator orderMediator;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequest order, HttpServletRequest request, HttpServletResponse response){
-        return orderMediator.createOrder(order,request,response);
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequest order, HttpServletRequest request, HttpServletResponse response) {
+        return orderMediator.createOrder(order, request, response);
     }
 
-    @RequestMapping(method = RequestMethod.POST,value = "/webhooks/stripe")
-    public ResponseEntity<?> notifyOrder(HttpServletRequest request){
+    @RequestMapping(method = RequestMethod.POST, value = "/webhooks/stripe")
+    public ResponseEntity<?> notifyOrder(HttpServletRequest request) {
         return orderMediator.handleNotify(request);
     }
 
-    @RequestMapping(path = "/{orderId}",method = RequestMethod.GET)
-    public ResponseEntity<?> getOrderById(@PathVariable String orderId, HttpServletRequest request){
+    @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getOrderById(@PathVariable String orderId, HttpServletRequest request) {
         return orderMediator.getOrderById(orderId, request);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getOrdersByClient(HttpServletRequest request){
+    public ResponseEntity<?> getOrdersByClient(HttpServletRequest request) {
         return orderMediator.getOrdersByClient(request);
+    }
+
+    @RequestMapping(path = "/notify", method = RequestMethod.POST)
+    public ResponseEntity<?> notify(@RequestBody UpdateStatusRequest updateStatusRequest, HttpServletRequest request) {
+        return orderMediator.updateStatus(updateStatusRequest, request);
     }
 
 }

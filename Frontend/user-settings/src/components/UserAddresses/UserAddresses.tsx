@@ -4,7 +4,8 @@ import { Button, Input, Text } from '@fluentui/react-components';
 import { AddressContent, AddressOptions,
     AddressesWrapper, 
     UserAddressesAddingWrapper, 
-    AddressContainer 
+    AddressContainer,
+    NoAddresses
 } from './UserAddresses.styled';
 import { DeleteRegular } from '@fluentui/react-icons';
 
@@ -115,24 +116,31 @@ export const UserAddresses = ({
                     {t('userSettings.addNewAddress')}
                 </Button>)
             }
-            <AddressesWrapper>
-                {
-                    addresses.map((address, ind) => <AddressContainer key={`address-${ind}`}>
-                        <AddressContent>
-                            <Text as='h3'>{address.street}, {address.city}, {address.state}</Text>
-                            <Text as='h3'>{address.postalCode}, {address.country}</Text>
-                        </AddressContent>
-                        <AddressOptions>
-                            <Button 
-                                appearance='transparent'
-                                onClick={() => deleteAddress(address.id)}
-                            >
-                                <DeleteRegular />
-                            </Button>
-                        </AddressOptions>
-                    </AddressContainer>)
-                }
-            </AddressesWrapper>
+            {
+                addresses.length === 0 ? (
+                    <NoAddresses>{t('userSettings.noAddressesPresent')}</NoAddresses>
+                ) : (
+                    <AddressesWrapper>
+                        {
+                            addresses.map((address, ind) => <AddressContainer key={`address-${ind}`}>
+                                <AddressContent>
+                                    <Text as='h3'>{address.street}, {address.city}, {address.state}</Text>
+                                    <Text as='h3'>{address.postalCode}, {address.country}</Text>
+                                </AddressContent>
+                                <AddressOptions>
+                                    <Button 
+                                        appearance='transparent'
+                                        onClick={() => deleteAddress(address.id)}
+                                        data-testid='deleteButton'
+                                    >
+                                        <DeleteRegular />
+                                    </Button>
+                                </AddressOptions>
+                            </AddressContainer>)
+                        }
+                    </AddressesWrapper>
+                )
+            }
         </>
     )
 }

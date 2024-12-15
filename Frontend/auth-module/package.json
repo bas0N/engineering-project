@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "VITE_PREVIEW_MODE=true vite preview",
-    "test": "jest --env=jsdom --coverage"
+    "preview:windows": "set VITE_PREVIEW_MODE=true && vite preview",
+    "test": "VITE_BLOCK_I18NEXT=true jest --env=jsdom --coverage"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.55.1",

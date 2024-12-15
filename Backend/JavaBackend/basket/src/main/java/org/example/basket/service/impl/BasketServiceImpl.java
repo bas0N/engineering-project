@@ -193,7 +193,7 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public ResponseEntity<?> getItems(HttpServletRequest request) {
+    public ResponseEntity<ListBasketItemDto> getItems(HttpServletRequest request) {
         try {
             Basket basket = getBasket(request);
             ListBasketItemDto listBasketItemDTO = buildBasketItemDto(basket);
