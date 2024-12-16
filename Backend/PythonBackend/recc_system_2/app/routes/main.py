@@ -6,7 +6,7 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/recc-system-2', methods=['GET'])
 def recommend():
-    user_id = request.args.get('user_id') #request.headers.get('userId')  # Get user_id from headers
+    user_id = request.args.get('user_id') or request.headers.get('userId')  # Get user_id from params or headers
     n = request.args.get('number_of_products', default=10, type=int)
 
     if not user_id:
