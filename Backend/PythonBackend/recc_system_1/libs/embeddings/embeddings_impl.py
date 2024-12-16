@@ -26,22 +26,34 @@ class EmbeddingImpl(Embedding):
             np.ndarray: A numpy array representing the weighted concatenated vector.
         """
         vector = []
+        used_fields = []  # Collect fields used in the embedding
+        field_shapes = {}  # Collect vector shapes for each field
 
         for column, weight in self.weights.items():
             if column in data:
                 value = data[column]
+                used_fields.append(column)  # Record the field being used
 
                 # Process text columns
                 if isinstance(value, str):
                     embedding = self.embedding_model(value)
                     weighted_embedding = weight * np.array(embedding)
                     vector.append(weighted_embedding)
+                    field_shapes[column] = weighted_embedding.shape  # Record shape
 
                 # Process numeric columns
                 elif isinstance(value, (int, float)):
                     weighted_value = weight * value  # Assumes value is already normalized
                     vector.append([weighted_value])
+                    field_shapes[column] = (1,)  # Numeric value shape
 
         # Concatenate all weighted components into a single vector
         concatenated_vector = np.concatenate(vector)
+
+        # Print the fields used in the embedding and their shapes
+        print(f"Fields used in embedding: {used_fields}")
+        print(f"Vector shapes for each field: {field_shapes}")
+        print(f"Final concatenated vector shape: {concatenated_vector.shape}")
+
         return concatenated_vector
+

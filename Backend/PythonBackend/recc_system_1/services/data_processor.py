@@ -139,6 +139,7 @@ class DataProcessor:
 
             # Step 3: Generate embedding
             embedding = self.embedding_generator.generate_embedding(normalized_data)
+            print("embedding size: ",len(embedding),"embedding id: ",data[ProductColumnsToEmbed.ID.value])
             if embedding is None:
                 print(f"Skipping entry with ID {data[ProductColumnsToEmbed.ID.value]}: Embedding generation returned None")
                 continue

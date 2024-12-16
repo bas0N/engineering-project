@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from app.libs.data_sanitizer import NullValueHandler,ShortTextFilter
+from recc_system_1.libs.data_sanitizer import NullValueHandler,ShortTextFilter
 
 # # sanitization config
 # null_handler = NullValueHandler()
