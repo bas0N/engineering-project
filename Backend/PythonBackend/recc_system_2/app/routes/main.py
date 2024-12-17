@@ -8,15 +8,18 @@ bp = Blueprint('main', __name__)
 def recommend():
     user_id = request.args.get('user_id') or request.headers.get('userId')  # Get user_id from params or headers
     n = request.args.get('number_of_products', default=10, type=int)
-
+    print("user_id", user_id, n)
     if not user_id:
         return jsonify({"error": "Forbidden: userId header is required"}), 403
-
-    engine = get_mysql_engine()
-    print("user_id", user_id, n)
-    recommendations = fetch_top_n_recommendations(engine, user_id, n)
-    final_output = fetch_product_details_for_recommendations(recommendations)
-    return jsonify(final_output), 200
+    try:
+        engine = get_mysql_engine()
+        print("user_id", user_id, n)
+        recommendations = fetch_top_n_recommendations(engine, user_id, n)
+        final_output = fetch_product_details_for_recommendations(recommendations)
+        return jsonify(final_output), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 
