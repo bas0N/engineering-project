@@ -1,5 +1,5 @@
 import {Text} from "@fluentui/react-components";
-import {useOrderSummaryStyles} from "./OrderSummary.styled.tsx";
+import {useOrderSummaryStyles} from "./OrderSummary.styled";
 interface OrderSummaryProps {
     totalPrice: number;
     summaryLabel: string;

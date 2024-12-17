@@ -2,16 +2,16 @@
 FROM python:3.11-slim
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /recc_system_1
 
 # Copy requirements.txt into the container
-COPY requirements.txt /app/
+COPY requirements.txt /recc_system_1/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-COPY . /app
+COPY . /recc_system_1
 
 # Expose the port your Flask app runs on
 EXPOSE 5000

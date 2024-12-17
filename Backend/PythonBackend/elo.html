@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CORS Test</title>
+  </head>
+  <body>
+    <h1>CORS Test</h1>
+    <script>
+      fetch(
+        "http://34.116.129.14:8888/recc-system-1?product_id=B01GF7ERNC&number_of_products=10",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYzFmZTE2ZTctYjI2My00MzQ2LThhYzctNWVlZjQ5NGUwMjZkIiwiZW1haWwiOiJleGFtcGxlQGV4YW1wbGUuY29tIiwic3ViIjoiZXhhbXBsZUBleGFtcGxlLmNvbSIsImlhdCI6MTczNDM4Mjc5MCwiZXhwIjoxNzM0NDY5MTkwfQ.barU2OF87xkQH6rgca29_TnuINqE-RHuAOxcuzTU-nw",
+          },
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => console.log("Response Data:", data))
+        .catch((error) => console.error("Error:", error));
+    </script>
+  </body>
+</html>

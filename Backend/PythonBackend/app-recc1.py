@@ -1,4 +1,4 @@
-from app import create_app
+from recc_system_1 import create_app
 
 app = create_app()
 
