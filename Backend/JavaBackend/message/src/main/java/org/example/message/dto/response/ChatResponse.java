@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatResponse {
+    String receiverId;
+    String email;
     String username;
     String lastMessage;
     String lastMessageTime;

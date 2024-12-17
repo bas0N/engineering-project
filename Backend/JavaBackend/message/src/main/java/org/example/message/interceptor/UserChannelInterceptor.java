@@ -21,16 +21,11 @@ public class UserChannelInterceptor implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String jwtToken = accessor.getFirstNativeHeader("Authorization");
-            log.debug("Otrzymano token JWT: {}", jwtToken);
 
-//            if (jwtToken != null && utils.validateToken(jwtToken)) {
-//                String userId = utils.getCurrentUserId(jwtToken);
-//                accessor.setUser(new WebSocketPrincipal(userId));
-//                log.info("Użytkownik uwierzytelniony: {}", userId);
-//            } else {
-//                log.warn("Nieprawidłowy token JWT");
-//                throw new IllegalArgumentException("Nieprawidłowy token JWT");
-//            }
+            if (jwtToken != null && !jwtToken.isBlank()) {
+                String userId = utils.extractUserIdFromToken(jwtToken);
+                accessor.setUser(new WebSocketPrincipal(userId));
+            }
         }
         return message;
     }

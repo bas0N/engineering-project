@@ -40,9 +40,17 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
+            String path = exchange.getRequest().getURI().getPath();
+            if (path.startsWith("/ws/")) {
+                log.info("Detected WebSocket request. Skipping AuthenticationFilter for path: {}", path);
+                return chain.filter(exchange).doOnSuccess(aVoid -> {
+                    log.info("Przekierowanie zakończone sukcesem");
+                });
+            }
             log.info("Processing request for path: {}", exchange.getRequest().getURI());
             log.info("--START GatewayFilter");
             if (validator.isSecure.test(exchange.getRequest())) {
+
                 String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
                 String refreshHeader = exchange.getRequest().getHeaders().getFirst("Refresh-Token");
                 if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
