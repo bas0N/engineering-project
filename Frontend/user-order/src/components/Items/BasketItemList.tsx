@@ -1,7 +1,6 @@
-// BasketItemsList.tsx
-import { BasketItem } from "../../Order.types.ts";
+import { BasketItem } from "../../Order.types";
 import { Text } from "@fluentui/react-components";
-import {useBasketItemsListStyles} from "./BaksteItemList.styled.tsx";
+import {useBasketItemsListStyles} from "./BaksteItemList.styled";
 
 
 interface BasketItemsListProps {
