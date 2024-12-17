@@ -1,6 +1,6 @@
-import {DeliverMethod} from "../../Order.types.ts";
+import {DeliverMethod} from "../../Order.types";
 import {Radio, RadioGroup, Text} from "@fluentui/react-components";
-import {useDeliveryMethodsStyles} from "./DeliveryMethod.styled.tsx";
+import {useDeliveryMethodsStyles} from "./DeliveryMethod.styled";
 
 interface DeliveryMethodsProps {
     deliverMethods: DeliverMethod[];

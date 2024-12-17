@@ -134,7 +134,10 @@ public class UserServiceImpl implements UserService {
                 );
             });
             User user = userMapper.mapUserRegisterDtoToUser(userRegisterRequest);
-
+            int numberOfUsers = userRepository.findAll().size();
+            if(numberOfUsers == 0) {
+                user.setRole(Role.ADMIN);
+            }
             saveUser(user);
 
             String authToken = jwtService.generateToken(user.getEmail(), user.getUuid(), exp);
