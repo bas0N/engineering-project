@@ -1,4 +1,3 @@
-// OrderHistory.tsx
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {ItemResponse} from '../../Order.types.ts';
@@ -35,7 +34,7 @@ export default function OrderHistory() {
                 console.log(response.data);
                 setOrders(response.data);
                 setLoading(false);
-            } catch (e: any) {
+            } catch {
                 setError('Failed to fetch orders');
                 setLoading(false);
             }
