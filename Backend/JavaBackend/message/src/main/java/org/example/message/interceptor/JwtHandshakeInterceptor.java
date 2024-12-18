@@ -17,24 +17,32 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     private final Utils utils;
 
     @Override
-    public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response, @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
+    public boolean beforeHandshake(@NonNull ServerHttpRequest request,
+                                   @NonNull ServerHttpResponse response,
+                                   @NonNull WebSocketHandler wsHandler,
+                                   @NonNull Map<String, Object> attributes) {
         log.debug("Intercepting handshake: Headers = {}", request.getHeaders());
-        String jwtToken = utils.extractTokenFromRequest(request);
-        log.debug("Extracted JWT Token: {}", jwtToken);
-//        if (jwtToken != null && utils.validateToken(jwtToken)) {
-//            String userId = utils.getCurrentUserId(jwtToken);
-//            attributes.put("userId", userId);
-//            return true;
-//        }
-        return false;
+        String jwtToken = request.getURI().getQuery().split("token=")[1];
+        if (jwtToken == null) {
+            log.warn("No JWT token found in request headers - handshake refused");
+            return false;
+        }
+        String userId = utils.extractUserIdFromToken(jwtToken);
+        attributes.put("userId", userId);
+        return true;
     }
 
     @Override
-    public void afterHandshake(@NonNull ServerHttpRequest request,@NonNull ServerHttpResponse response,@NonNull WebSocketHandler wsHandler, Exception exception) {
+    public void afterHandshake(@NonNull ServerHttpRequest request,
+                               @NonNull ServerHttpResponse response,
+                               @NonNull WebSocketHandler wsHandler,
+                               Exception exception) {
         if (exception != null) {
             log.error("WebSocket handshake failed", exception);
         } else {
-            String clientIp = request.getRemoteAddress().toString();
+            String clientIp = request.getRemoteAddress() != null
+                    ? request.getRemoteAddress().toString()
+                    : "UNKNOWN_IP";
             log.info("WebSocket handshake successful for client IP: {}", clientIp);
         }
     }

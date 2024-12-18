@@ -1,5 +1,6 @@
 package org.example.message.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.message.dto.request.MessageRequest;
 import org.example.message.dto.response.ChatResponse;
 import org.example.message.dto.response.MessageResponse;
@@ -10,13 +11,15 @@ import java.util.List;
 
 public interface MessageService {
 
-    void deleteMessage(String messageId, String currentUserId);
+    void deleteMessage(String messageId,  HttpServletRequest request);
 
-    MessageResponse createMessage(MessageRequest messageRequest, String name);
+    MessageResponse createMessage(MessageRequest messageRequest, String userId);
 
-    MessagesResponse getMessages(String contactId, String name);
+    MessagesResponse getMessages(String contactId, HttpServletRequest request);
 
-    Page<ChatResponse> getChats(String name, int page, int size);
+    List<ChatResponse> getChats( HttpServletRequest request);
 
-    void markMessagesAsRead(List<String> messageIds, String name);
+    void markMessagesAsRead(List<String> messageIds, HttpServletRequest request);
+
+    int countUnreadMessages(HttpServletRequest request);
 }

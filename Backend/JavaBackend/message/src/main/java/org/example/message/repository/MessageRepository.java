@@ -27,35 +27,36 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m WHERE m.uuid IN :messageIds AND m.receiverId = :currentUserId")
     List<Message> findAllByUuidInAndReceiverId(List<String> messageIds, String currentUserId);
 
-    @Query(value = """
-            SELECT
-                CASE
-                    WHEN m.senderId = :userId THEN u_receiver.firstName || ' ' || u_receiver.lastName
-                    ELSE u_sender.firstName || ' ' || u_sender.lastName
-                END AS username,
-                m.content AS lastMessage,
-                MAX(m.dateAdded) AS lastMessageTime,
-                MAX(m.isRead) AS isRead,
-                COUNT(CASE WHEN m.receiverId = :userId AND m.isRead = false THEN 1 END) AS unreadCount
-            FROM Message m
-            JOIN User u_sender ON m.senderId = u_sender.uuid
-            JOIN User u_receiver ON m.receiverId = u_receiver.uuid
-            WHERE m.senderId = :userId OR m.receiverId = :userId
-            GROUP BY
-                CASE 
-                    WHEN m.senderId = :userId THEN m.receiverId
-                    ELSE m.senderId
-                END
-            ORDER BY lastMessageTime DESC
-            """,
-            countQuery = """
-                    SELECT COUNT(DISTINCT CASE 
-                            WHEN m.senderId = :userId THEN m.receiverId
-                            ELSE m.senderId
-                        END)
-                    FROM Message m
-                    WHERE m.senderId = :userId OR m.receiverId = :userId
-                    """,
-            nativeQuery = true)
-    Page<ChatResponse> findChats(@Param("userId") String userId, Pageable pageable);
+    @Query("""
+        SELECT DISTINCT 
+          CASE WHEN m.senderId = :userId THEN m.receiverId ELSE m.senderId END
+        FROM Message m
+        WHERE m.senderId = :userId OR m.receiverId = :userId
+    """)
+    List<String> findChatPartners(@Param("userId") String userId);
+
+    @Query("""
+        SELECT m
+        FROM Message m
+        WHERE (m.senderId = :userId AND m.receiverId = :partnerId)
+           OR (m.senderId = :partnerId AND m.receiverId = :userId)
+        ORDER BY m.dateAdded DESC
+    """)
+    List<Message> findLastMessage(@Param("userId") String userId,
+                                  @Param("partnerId") String partnerId,
+                                  Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(m)
+        FROM Message m
+        WHERE (m.senderId = :userId OR m.receiverId = :userId)
+          AND (m.senderId = :partnerId OR m.receiverId = :partnerId)
+          AND m.receiverId = :userId
+          AND m.isRead = false
+    """)
+    long countUnreadMessages(@Param("userId") String userId, @Param("partnerId") String partnerId);
+
+
+    @Query("SELECT COUNT(m) FROM Message m WHERE m.receiverId = :name AND m.isRead = false")
+    int countAllByReceiverIdAndReadFalse(String name);
 }

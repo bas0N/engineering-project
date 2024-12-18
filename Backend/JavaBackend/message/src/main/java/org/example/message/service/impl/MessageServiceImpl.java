@@ -1,7 +1,9 @@
 package org.example.message.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
+import org.example.commonutils.Utils;
 import org.example.message.dto.request.MessageRequest;
 import org.example.message.dto.response.ChatResponse;
 import org.example.message.dto.response.MessageResponse;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +29,12 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final Utils utils;
 
 
     @Override
-    public MessagesResponse getMessages(String contactId, String currentUserId) {
+    public MessagesResponse getMessages(String contactId, HttpServletRequest request) {
+        String currentUserId = utils.extractUserIdFromRequest(request);
         List<Message> messages = messageRepository.findMessagesBetweenUsers(currentUserId, contactId);
         List<Message> unreadMessages = messages.stream()
                 .filter(message -> message.getReceiverId().equals(currentUserId) && !message.isRead())
@@ -49,13 +54,53 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Page<ChatResponse> getChats(String name, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "lastMessageTime"));
-        return messageRepository.findChats(name, pageable);
+    public List<ChatResponse> getChats(HttpServletRequest request) {
+        String userId = utils.extractUserIdFromRequest(request);
+
+        // 1. Pobierz listę partnerów
+        List<String> partners = messageRepository.findChatPartners(userId);
+
+        List<ChatResponse> result = new ArrayList<>();
+        for (String partnerId : partners) {
+            // 2. Pobierz ostatnią wiadomość w czacie userId <-> partnerId
+            List<Message> lastMsgList = messageRepository.findLastMessage(
+                    userId, partnerId, PageRequest.of(0, 1)
+            );
+            if (lastMsgList.isEmpty()) {
+                // Brak wiadomości? Teoretycznie nie powinno się zdarzyć, skoro partnerId jest na liście
+                continue;
+            }
+            Message lastMessageEntity = lastMsgList.get(0);
+
+            // 3. Policz nieprzeczytane
+            long unreadCount = messageRepository.countUnreadMessages(userId, partnerId);
+
+            // 4. Zbuduj ChatResponse
+            ChatResponse chatResp = new ChatResponse();
+            chatResp.setReceiverId(partnerId);
+            chatResp.setLastMessage(lastMessageEntity.getContent());
+            chatResp.setLastMessageTime(lastMessageEntity.getDateAdded().toString());
+            chatResp.setRead(lastMessageEntity.isRead());
+            chatResp.setUnreadCount((int) unreadCount);
+
+            // 5. Opcjonalnie pobierz info o userze z userService
+            UserDetailInfoEvent userDetails = userService.getUserInfo(partnerId);
+            if (userDetails != null) {
+                chatResp.setEmail(userDetails.getEmail());
+                chatResp.setUsername(userDetails.getFirstName() + " " + userDetails.getLastName());
+            }
+
+            result.add(chatResp);
+        }
+
+        // posortuj w pamięci malejąco po lastMessageTime (o ile chcesz)
+        result.sort((a, b) -> b.getLastMessageTime().compareTo(a.getLastMessageTime()));
+        return result;
     }
 
     @Override
-    public void markMessagesAsRead(List<String> messageIds, String currentUserId) {
+    public void markMessagesAsRead(List<String> messageIds, HttpServletRequest request) {
+        String currentUserId = utils.extractUserIdFromRequest(request);
         List<Message> messages = messageRepository.findAllByUuidInAndReceiverId(messageIds, currentUserId);
         if (messages.isEmpty()) {
             throw new RuntimeException("No messages found or you are not authorized to mark them as read");
@@ -73,6 +118,12 @@ public class MessageServiceImpl implements MessageService {
 //        });
     }
 
+    @Override
+    public int countUnreadMessages(HttpServletRequest request) {
+        String name = utils.extractUserIdFromRequest(request);
+        return messageRepository.countAllByReceiverIdAndReadFalse(name);
+    }
+
 
     @Override
     public MessageResponse createMessage(MessageRequest messageRequest, String senderId) {
@@ -82,7 +133,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessage(String messageId, String currentUserId) {
+    public void deleteMessage(String messageId, HttpServletRequest request) {
+        String currentUserId = utils.extractUserIdFromRequest(request);
         Message message = messageRepository.findByUuid(messageId)
                 .orElseThrow(() -> new RuntimeException("Message not found"));
         if (!message.getSenderId().equals(currentUserId)) {
