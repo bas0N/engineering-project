@@ -15,16 +15,24 @@ const ChatDetailPage: React.FC = () => {
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [newMessage, setNewMessage] = useState('');
     const [unreadCount, setUnreadCount] = useState<number>(0);
-
     const [senderInfo, setSenderInfo] = useState<UserDetailsResponse | null>(null);
     const [receiverInfo, setReceiverInfo] = useState<UserDetailsResponse | null>(null);
-
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const chatServiceRef = useRef<ChatService | null>(null);
 
     /**
      * 1. useEffect do pobrania currentUserId z backendu.
      *    Robimy to raz – po załadowaniu komponentu.
      */
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
     useEffect(() => {
         const fetchUserId = async () => {
             if (!token) return;
@@ -48,22 +56,20 @@ const ChatDetailPage: React.FC = () => {
      *    Uruchamiamy dopiero, gdy mamy currentUserId oraz receiverId.
      */
     useEffect(() => {
-        // Sprawdzamy, czy posiadamy już currentUserId oraz receiverId
+
         if (!token || !receiverId || !currentUserId) {
             return;
         }
 
         console.log('currentUserId:', currentUserId, 'receiverId:', receiverId);
 
-        // Ładujemy istniejące wiadomości z REST:
         loadMessages(token, receiverId);
 
-        // Inicjalizujemy ChatService (STOMP)
         console.log('Activating chat service...');
         chatServiceRef.current = new ChatService({
             token,
             onMessage: (msg: MessageResponse) => {
-                // Dodajemy wiadomość do stanu, jeśli dotyczy aktualnej konwersacji
+                console.log('Received message:', msg);
                 if (
                     (msg.senderId === receiverId && msg.receiverId === currentUserId) ||
                     (msg.senderId === currentUserId && msg.receiverId === receiverId)
@@ -76,7 +82,6 @@ const ChatDetailPage: React.FC = () => {
         chatServiceRef.current.activate();
         console.log('Chat service activated');
 
-        // Pobieramy globalny unreadCount
         fetchGlobalUnreadCount(token);
 
         return () => {
@@ -85,9 +90,7 @@ const ChatDetailPage: React.FC = () => {
         };
     }, [receiverId, currentUserId]);
 
-    /**
-     * Pobiera historię wiadomości z backendu, ustawia senderInfo i receiverInfo
-     */
+
     const loadMessages = async (token: string, contactId: string) => {
         try {
             const resp = await axios.get<MessagesResponse>(
@@ -140,9 +143,11 @@ const ChatDetailPage: React.FC = () => {
         }
         console.log('Sending message:', newMessage);
 
-        chatServiceRef.current.sendMessage(newMessage.trim(), receiverId);
-        setNewMessage('');
-        // Nie musimy ręcznie dodawać do stanu – bo STOMP i tak wyśle do nas onMessage
+        if (chatServiceRef.current instanceof ChatService) {
+            chatServiceRef.current.sendMessage(newMessage.trim(), receiverId);
+        }
+
+        loadMessages(token || '', receiverId);
     };
 
     /**
@@ -152,22 +157,30 @@ const ChatDetailPage: React.FC = () => {
         if (userId === currentUserId) {
             return "You";
         }
-        // Zwróć uwagę, że w oryginalnym kodzie było: receiverInfo.userId –
-        // upewnij się, że w UserDetailsResponse używasz 'uuid' czy 'id'.
-        if (receiverInfo && userId === receiverInfo.id) {
-            return receiverInfo.username || receiverInfo.email || "Unknown user";
+
+        console.log('senderInfo:', senderInfo, 'receiverInfo:', receiverInfo);
+
+        // Sprawdzenie receiverInfo
+        if (receiverInfo && userId === receiverInfo.userId) {
+            const name = receiverInfo.username?.trim();
+            return (name && name !== "null null") ? name : receiverInfo.email || "Unknown user";
         }
-        if (senderInfo && userId === senderInfo.id) {
-            return senderInfo.username || senderInfo.email || "Unknown user";
+
+        // Sprawdzenie senderInfo
+        if (senderInfo && userId === senderInfo.userId) {
+            const name = senderInfo.username?.trim();
+            return (name && name !== "null null") ? name : senderInfo.email || "Unknown user";
         }
+
         return "Unknown user";
     };
+
 
     return (
         <ChatContainer>
             <Stack style={{ padding: 16 }}>
                 <Text variant="large">
-                    Chat with {receiverInfo?.username || receiverInfo?.email || receiverId}
+                    Chat with {getDisplayName(receiverId || '')}
                 </Text>
                 <Text variant="small">Global unread count: {unreadCount}</Text>
 
@@ -179,13 +192,14 @@ const ChatDetailPage: React.FC = () => {
                         return (
                             <MessageBubble key={msg.uuid} isOwn={isOwn}>
                                 <strong>{displayName}</strong>: {msg.content}
-                                <div style={{ fontSize: '0.8em', marginTop: 4 }}>
+                                <div style={{fontSize: '0.8em', marginTop: 4}}>
                                     {msg.dateAdded}
                                     {!msg.isRead && ' (unread)'}
                                 </div>
                             </MessageBubble>
                         );
                     })}
+                    <div ref={messagesEndRef}/>
                 </MessagesWrapper>
 
                 <ChatInputWrapper>

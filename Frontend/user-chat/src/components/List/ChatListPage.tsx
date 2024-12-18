@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Stack, Text } from '@fluentui/react';
-import { ChatItemContainer, ChatItemHeader, ChatItemSubtext, ListWrapper } from './ChatListPage.styled';
+import {ChatItemContainer, ChatItemHeader, ChatItemSubtext, ListWrapper, UnreadDot} from './ChatListPage.styled';
 import { ChatResponse } from '../../Chat.types';
 import { ChatService } from '../../service/ChatService';
 
@@ -44,30 +44,40 @@ const ChatListPage = () => {
             <Text variant="xLarge" style={{ margin: 16 }}>Conversations</Text>
             {loading && <Text>Loading...</Text>}
 
-            {!loading && (
-                <div style={{ marginLeft: 16, marginBottom: 16 }}>
-                    <Text variant="mediumPlus">
-                        Total unread messages: {unreadCount}
-                    </Text>
-                </div>
-            )}
+            {/*{!loading && (*/}
+            {/*    <div style={{ marginLeft: 16, marginBottom: 16 }}>*/}
+            {/*        <Text variant="mediumPlus">*/}
+            {/*            Total unread messages: {unreadCount}*/}
+            {/*        </Text>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
             <ListWrapper>
-                {!loading && chats.map((chat, index) => (
-                    <ChatItemContainer
-                        key={index}
-                        isRead={chat.isRead}
-                        onClick={() => handleChatClick(chat)}
-                    >
-                        <ChatItemHeader>{chat.username}</ChatItemHeader>
-                        <ChatItemSubtext>{chat.lastMessage}</ChatItemSubtext>
-                        <ChatItemSubtext>
-                            {chat.lastMessageTime}
-                            {chat.unreadCount > 0 && ` • New Messages: ${chat.unreadCount}`}
-                        </ChatItemSubtext>
-                    </ChatItemContainer>
-                ))}
+                {!loading &&
+                    chats.map((chat, index) => (
+                        <ChatItemContainer
+                            key={index}
+                            isRead={chat.isRead}
+                            onClick={() => handleChatClick(chat)}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <ChatItemHeader isRead={chat.isRead}>
+                                    {chat.username && chat.username.trim() !== "null null"
+                                        ? chat.username
+                                        : "Unknown user"}
+                                </ChatItemHeader>
+
+                                {!chat.isRead && <UnreadDot />} {/* Red dot for unread */}
+                            </div>
+                            <ChatItemSubtext>{chat.lastMessage}</ChatItemSubtext>
+                            <ChatItemSubtext>
+                                {chat.lastMessageTime}
+                                {chat.unreadCount > 0 && ` • New Messages: ${chat.unreadCount}`}
+                            </ChatItemSubtext>
+                        </ChatItemContainer>
+                    ))}
             </ListWrapper>
+
         </Stack>
     );
 };

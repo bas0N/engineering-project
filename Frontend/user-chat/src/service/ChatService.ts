@@ -16,6 +16,9 @@ export class ChatService {
     constructor(private options: ChatServiceOptions) {
         const stompConfig: StompConfig = {
             webSocketFactory: () => new WebSocket(`${import.meta.env.VITE_CHAT_URL}?token=${this.options.token}`),
+            connectHeaders: {
+                Authorization: `Bearer ${this.options.token}`
+            },
             debug: str => console.log('STOMP:', str),
             onConnect: () => {
                 console.log('Connected via STOMP');
@@ -46,15 +49,27 @@ export class ChatService {
 
     private subscribeToMessages() {
         console.log('Subscribing to /user/queue/messages...');
-        this.subscription = this.client.subscribe('/user/queue/messages', (message: IMessage) => {
-            if (message.body) {
-                const parsed = JSON.parse(message.body);
-                this.options.onMessage(parsed);
+        //const destinationPath = `/user/3b59eea8-0097-44c1-aeef-e7772bc3e843/queue/messages`;
+        this.subscription = this.client.subscribe(
+            '/user/queue/messages',
+            (message: IMessage) => {
+                console.log('Received message on /user/queue/messages:', message.body);
+                if (message.body) {
+                    const parsed = JSON.parse(message.body);
+                    this.options.onMessage(parsed);
+                }
+            },
+            {
+                Authorization: `Bearer ${this.options.token}`
             }
-        });
+        );
     }
 
     public sendMessage(content: string, receiverId: string) {
+        if (!this.options.token) {
+            console.warn('Token is missing. Message will not be sent.');
+            return;
+        }
         const msg: SendMessageRequest = {
             content,
             receiverId,

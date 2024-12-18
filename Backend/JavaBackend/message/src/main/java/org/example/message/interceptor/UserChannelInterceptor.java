@@ -18,13 +18,22 @@ public class UserChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+        log.info("Intercepting message: {}", accessor.getCommand());
+        if (StompCommand.CONNECT.equals(accessor.getCommand()) || StompCommand.SEND.equals(accessor.getCommand()) || StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             String jwtToken = accessor.getFirstNativeHeader("Authorization");
 
-            if (jwtToken != null && !jwtToken.isBlank()) {
+            if (jwtToken != null && !jwtToken.isBlank() && jwtToken.startsWith("Bearer ")) {
+                jwtToken = jwtToken.substring(7);
+                log.info("Extracted JWT Token: {}", jwtToken);
                 String userId = utils.extractUserIdFromToken(jwtToken);
-                accessor.setUser(new WebSocketPrincipal(userId));
+                if (userId != null) {
+                    accessor.setUser(new WebSocketPrincipal(userId));
+                    log.info("WebSocket Principal set for UserId: {}", userId);
+                } else {
+                    log.warn("UserId is null after extracting from token. Possible invalid token.");
+                }
+            } else {
+                log.warn("JWT Token is missing, invalid, or does not start with 'Bearer '");
             }
         }
         return message;

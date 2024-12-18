@@ -29,9 +29,6 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         }
         String userId = utils.extractUserIdFromToken(jwtToken);
         attributes.put("userId", userId);
-
-        log.debug("Extracted JWT Token: {}", jwtToken);
-        attributes.put("userId", userId);
         return true;
     }
 
