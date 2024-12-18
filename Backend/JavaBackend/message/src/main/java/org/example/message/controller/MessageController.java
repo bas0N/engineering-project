@@ -2,6 +2,7 @@ package org.example.message.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.commonutils.Utils;
 import org.example.message.dto.request.MessageRequest;
 import org.example.message.dto.response.ChatResponse;
 import org.example.message.dto.response.MessageResponse;
@@ -25,12 +26,28 @@ import java.util.Objects;
 public class MessageController {
     private final MessageService messageService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final Utils utils;
+
     @MessageMapping("/sendMessage")
     public void sendMessage(@Payload MessageRequest messageRequest, org.springframework.messaging.Message<?> stompMessage) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(stompMessage);
-        String userId = (String) Objects.requireNonNull(accessor.getSessionAttributes()).get("userId");
-        if (userId == null || userId.isBlank()) {
-            throw new RuntimeException("You are not authorized to send message");
+
+        String authHeader = accessor.getFirstNativeHeader("Authorization");
+        if (authHeader == null || authHeader.isBlank()) {
+            throw new RuntimeException("Authorization token is missing in STOMP headers");
+        }
+
+        if (!authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Authorization header is missing Bearer prefix");
+        }
+
+        String jwtToken = authHeader.substring(7);
+
+        String userId;
+        try {
+            userId = utils.extractUserIdFromToken(jwtToken);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid JWT token: " + e.getMessage());
         }
         MessageResponse response = messageService.createMessage(messageRequest, userId);
         messagingTemplate.convertAndSendToUser(

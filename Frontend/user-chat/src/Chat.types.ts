@@ -32,3 +32,22 @@ export interface UserDetailsResponse {
     username: string;
     email: string;
 }
+
+export interface UserDetailsResponse {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    addresses: AddressResponse[];
+    imageUrl: string;
+}
+
+export interface AddressResponse {
+    uuid: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+}

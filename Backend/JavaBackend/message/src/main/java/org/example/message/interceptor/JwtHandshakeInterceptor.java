@@ -23,16 +23,14 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
                                    @NonNull Map<String, Object> attributes) {
         log.debug("Intercepting handshake: Headers = {}", request.getHeaders());
         String jwtToken = request.getURI().getQuery().split("token=")[1];
-        if (jwtToken != null) {
-            String userId = utils.extractUserIdFromToken(jwtToken);
-            attributes.put("userId", userId);
-        }
         if (jwtToken == null) {
             log.warn("No JWT token found in request headers - handshake refused");
             return false;
         }
-        log.debug("Extracted JWT Token: {}", jwtToken);
         String userId = utils.extractUserIdFromToken(jwtToken);
+        attributes.put("userId", userId);
+
+        log.debug("Extracted JWT Token: {}", jwtToken);
         attributes.put("userId", userId);
         return true;
     }

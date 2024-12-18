@@ -36,7 +36,7 @@ const ChatListPage = () => {
     }, []);
 
     const handleChatClick = (chat: ChatResponse) => {
-        navigate(`/chat-detail/${chat.receiverId}`);
+        navigate(`/chat/${chat.receiverId}`);
     };
 
     return (

@@ -46,7 +46,7 @@ export class ChatService {
 
     private subscribeToMessages() {
         console.log('Subscribing to /user/queue/messages...');
-        this.subscription = this.client.subscribe('user/queue/messages', (message: IMessage) => {
+        this.subscription = this.client.subscribe('/user/queue/messages', (message: IMessage) => {
             if (message.body) {
                 const parsed = JSON.parse(message.body);
                 this.options.onMessage(parsed);
@@ -60,8 +60,11 @@ export class ChatService {
             receiverId,
         }
         this.client.publish({
-            destination: 'app/sendMessage',
+            destination: '/app/sendMessage',
             body: JSON.stringify(msg),
+            headers: {
+                Authorization: this.options.token ? `Bearer ${this.options.token}` : '',
+            }
         });
     }
 
