@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PrimaryButton, TextField, Text, Stack } from "@fluentui/react";
+import { Button, Text, Textarea, TextareaOnChangeData } from "@fluentui/react-components";
 import { ChatInputWrapper, MessagesWrapper, MessageBubble, ChatContainer } from "./ChatDetailPage.styled";
 import axios from "axios";
 import { ChatService } from "../../../service/ChatService";
 import { MessagesResponse, MessageResponse, UserDetailsResponse } from "../../../Chat.types";
 
-const ChatDetailPage: React.FC = () => {
+const ChatDetailPage = () => {
     const { receiverId } = useParams();
     const token = localStorage.getItem('authToken');
 
@@ -51,6 +51,35 @@ const ChatDetailPage: React.FC = () => {
         fetchUserId();
     }, [token]);
 
+
+    const loadMessages = useCallback(async (token: string, contactId: string) => {
+        try {
+            const resp = await axios.get<MessagesResponse>(
+                `${import.meta.env.VITE_API_URL}message/${contactId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            setMessages(resp.data.messages);
+            setSenderInfo(resp.data.sender);
+            setReceiverInfo(resp.data.receiver);
+
+            // Oznacz jako przeczytane (opcjonalnie)
+            const unreadIds = resp.data.messages
+                .filter(m => !m.isRead && m.receiverId === currentUserId)
+                .map(m => m.uuid);
+
+            if (unreadIds.length > 0) {
+                await axios.post(
+                    `${import.meta.env.VITE_API_URL}message/markAsRead`,
+                    unreadIds,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+            }
+        } catch (err) {
+            console.error('Error loading messages', err);
+        }
+    }, [currentUserId]);
+
     /**
      * 2. useEffect do głównej logiki chatu (STOMP + loadMessages + unreadCount).
      *    Uruchamiamy dopiero, gdy mamy currentUserId oraz receiverId.
@@ -88,36 +117,8 @@ const ChatDetailPage: React.FC = () => {
             console.log('Deactivating chat service...');
             chatServiceRef.current?.deactivate();
         };
-    }, [receiverId, currentUserId]);
+    }, [receiverId, currentUserId, token, loadMessages]);
 
-
-    const loadMessages = async (token: string, contactId: string) => {
-        try {
-            const resp = await axios.get<MessagesResponse>(
-                `${import.meta.env.VITE_API_URL}message/${contactId}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            setMessages(resp.data.messages);
-            setSenderInfo(resp.data.sender);
-            setReceiverInfo(resp.data.receiver);
-
-            // Oznacz jako przeczytane (opcjonalnie)
-            const unreadIds = resp.data.messages
-                .filter(m => !m.isRead && m.receiverId === currentUserId)
-                .map(m => m.uuid);
-
-            if (unreadIds.length > 0) {
-                await axios.post(
-                    `${import.meta.env.VITE_API_URL}message/markAsRead`,
-                    unreadIds,
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-            }
-        } catch (err) {
-            console.error('Error loading messages', err);
-        }
-    };
 
     /**
      * Pobiera globalną liczbę nieprzeczytanych wiadomości
@@ -178,7 +179,7 @@ const ChatDetailPage: React.FC = () => {
 
     return (
         <ChatContainer>
-            <Stack style={{ padding: 16 }}>
+            <section style={{ display: 'flex', flexDirection: 'column', padding: 16 }}>
                 <Text variant="large">
                     Chat with {getDisplayName(receiverId || '')}
                 </Text>
@@ -203,18 +204,16 @@ const ChatDetailPage: React.FC = () => {
                 </MessagesWrapper>
 
                 <ChatInputWrapper>
-                    <TextField
+                    <Textarea
                         value={newMessage}
-                        onChange={(_, val) => setNewMessage(val || '')}
+                        onChange={(_ev: ChangeEvent<HTMLTextAreaElement>, val: TextareaOnChangeData) => setNewMessage(val.value || '')}
                         placeholder="Enter message..."
-                        styles={{
-                            fieldGroup: { backgroundColor: '#fff' },
-                            root: { flex: 1, marginRight: 8 },
-                        }}
                     />
-                    <PrimaryButton text="Send" onClick={handleSendMessage} />
+                    <Button onClick={handleSendMessage}>
+                        Send
+                    </Button>
                 </ChatInputWrapper>
-            </Stack>
+            </section>
         </ChatContainer>
     );
 };

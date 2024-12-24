@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Text } from '@fluentui/react';
-import {ChatItemContainer, ChatItemHeader, ChatItemSubtext, ListWrapper, UnreadDot} from './ChatListPage.styled';
+import { Text } from '@fluentui/react-components';
+import { ChatItemContainer, ChatItemHeader, ChatItemSubtext, ListWrapper, UnreadDot } from './ChatListPage.styled';
 import { ChatResponse } from '../../Chat.types';
 import { ChatService } from '../../service/ChatService';
 
@@ -24,7 +24,7 @@ const ChatListPage = () => {
                 setChats(chatsData);
 
                 const count = await ChatService.fetchUnreadCount(token);
-                setUnreadCount(count);
+                setUnreadCount(count);  
 
             } catch (err) {
                 console.error('Error loading chats', err);
@@ -35,12 +35,14 @@ const ChatListPage = () => {
         loadData();
     }, []);
 
+    console.log(unreadCount);
+
     const handleChatClick = (chat: ChatResponse) => {
         navigate(`/chat/${chat.receiverId}`);
     };
 
     return (
-        <Stack>
+        <section style={{ display: 'flex', flexDirection: 'column' }}>
             <Text variant="xLarge" style={{ margin: 16 }}>Conversations</Text>
             {loading && <Text>Loading...</Text>}
 
@@ -78,7 +80,7 @@ const ChatListPage = () => {
                     ))}
             </ListWrapper>
 
-        </Stack>
+        </section>
     );
 };
 

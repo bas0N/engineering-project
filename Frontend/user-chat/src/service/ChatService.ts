@@ -1,9 +1,10 @@
 import {Client, IMessage, StompConfig, StompSubscription} from '@stomp/stompjs';
-import {ChatResponse, SendMessageRequest} from "../Chat.types.ts";
+import {ChatResponse, SendMessageRequest} from "../Chat.types";
 import axios from "axios";
 
 interface ChatServiceOptions {
     token: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onMessage: (msg: any) => void;
     onConnect?: () => void;
     onDisconnect?: () => void;
