@@ -22,8 +22,6 @@ const Tiles = React.lazy(() => import('productsBrowsing/Tiles'));
 const Product = React.lazy(() => import('productsBrowsing/Product'));
 const Order = React.lazy(() => import('userOrder/UserOrder'));
 const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
-const UserChatList = React.lazy(() => import('userChat/UserChatList'));
-const UserChatDetailPage = React.lazy(() => import('userChat/UserChatDetailPage'));
 
 const routes: RouteObject[] = [
   {
@@ -61,14 +59,6 @@ const routes: RouteObject[] = [
   {
     path: '/order-history/',
     element: <OrderHistory />
-  },
-  {
-    path: '/chat/',
-    element: <UserChatList />
-  },
-  {
-    path: '/chat/:receiverId',
-    element: <UserChatDetailPage />
   },
   {
     path: '*',
