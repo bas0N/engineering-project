@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { 
     createTableColumn,  
     DataGridHeader,
@@ -14,35 +14,14 @@ import {
     TableRowId,
     DataGridProps,
     Tooltip,
-    Button
 } from '@fluentui/react-components';
 import { 
   UsersDisplayInappropriateInfo,
-  UsersFilterButtonsWrapper,
-  UsersFilterInput,
   UsersListDataGrid, 
-  UsersListControlsWrapper, 
 } from "./UsersList.styled";
 
-type User = {
-    id: number;
-    uuid: string;
-    email: string;
-    imageUrl: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    role: string;
-    displayScore: number;
-};
-
-const nullableStringsComparator = (a: User, b: User, property: keyof User) => 
-  a[property as keyof User] !== null && b [property as keyof User] !== null 
-  ? (a[property as keyof User] as string).localeCompare(b[property as keyof User] as string)  : 
-    a[property as keyof User] === null && b.firstName !== null 
-    ? -1 : a[property as keyof User] !== null && b.firstName === null 
-    ? 1 : 0;
-
-const modifyTableText = (text: string, maxLength: number) => text.length > maxLength ? text.substring(0, maxLength)+'...' : text;
+import { User, nullableStringsComparator, modifyTableText } from './UsersList.helper';
+import { Filters } from "./components/filters/Filters";
 
 const columns:TableColumnDefinition<User>[] = [
     createTableColumn<User>({
@@ -124,7 +103,7 @@ export const UsersList = () => {
               'Authorization': `Bearer ${token}`
             }
           });
-          setUsers(result.data.content.map((user: Omit<User, 'displayed'>) => ({
+          setUsers(result.data.content.map((user: Omit<User, 'displayScore'>) => ({
             ...user,
             displayScore: 1
           })));
@@ -168,18 +147,17 @@ export const UsersList = () => {
 
   const deleteMarkedUsers = async() => {
     if (users !== null){
-      try {
-        selectedRows.forEach(async (row) => {
-          const result = await axios.delete(`${import.meta.env.VITE_API_URL}auth/admin/delete-user/${(users.find((user) => user.id === row) as User)?.uuid}`, {
+      selectedRows.forEach(async (row) => {
+        try {
+          await axios.delete(`${import.meta.env.VITE_API_URL}auth/admin/delete-user/${(users.find((user) => user.id === row) as User)?.uuid}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           })
-          console.log(result);
-        });
-      } catch (error) {
-        console.log(error);
-      }
+        } catch (error) {
+          console.log(error);
+        }
+      });
     }
   };
 
@@ -187,27 +165,18 @@ export const UsersList = () => {
     {
         error ? (<Text align='center' size={600}>Something went wrong. Try later</Text>) : 
         users === null ? (<Spinner label='Loading...' /> ) : (<>
-            <UsersListControlsWrapper>
-              <UsersFilterInput 
-                placeholder="Enter filter value..."
-                value={filter}
-                onChange={(ev: ChangeEvent<HTMLInputElement>) => handleFilterChange(ev.currentTarget.value)}
-              />
-              <UsersFilterButtonsWrapper>
-                <Button 
-                  onClick={() => deleteMarkedUsers()}
-                  disabled={selectedRows.size === 0}
-                >
-                  Delete users
-                </Button>
-              </UsersFilterButtonsWrapper>
-            </UsersListControlsWrapper>
+            <Filters 
+              filter={filter}
+              handleFilterChange={handleFilterChange}
+              deleteMarkedUsers={deleteMarkedUsers}
+              deletingDisabled={selectedRows.size === 0}
+            />
             <UsersListDataGrid
               items={users.filter((user) => user.displayScore > 0)}
               columns={columns}
               sortable
               selectionMode="multiselect"
-              getRowId={(item) => item.id}
+              getRowId={(item: User) => item.id}
               selectedItems={selectedRows}
               onSelectionChange={onSelectionChange}
               focusMode="composite"
@@ -239,7 +208,7 @@ export const UsersList = () => {
               </DataGridBody>
             </UsersListDataGrid>
             <UsersDisplayInappropriateInfo>
-                You need to have the device having the screen's with of at least 768px to be capable of handling the admin panel
+              You need to have the device having the screen's with of at least 768px to be capable of handling the admin panel
             </UsersDisplayInappropriateInfo>
           </>
         )
