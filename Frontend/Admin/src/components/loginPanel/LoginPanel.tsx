@@ -9,7 +9,6 @@ export const LoginPanel = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
 
-
     const submitLoggingIn = async() => {
         try {
             setError(false);
@@ -23,7 +22,6 @@ export const LoginPanel = () => {
                     'Content-Type': 'application/json'
                 }
             })
-            console.log(result);
             localStorage.setItem('token', result.data.token);
         } catch {
             setError(true);
@@ -46,7 +44,7 @@ export const LoginPanel = () => {
                     onChange={(e) => setPassword(e.currentTarget.value)}
                 />
                 {error && <Text>Login error</Text>}
-                <Button onClick={() => submitLoggingIn()}>
+                <Button disabled={email.length === 0 || password.length === 0} onClick={() => submitLoggingIn()}>
                     Sign in
                 </Button>
             </AdminLoginPanel>
