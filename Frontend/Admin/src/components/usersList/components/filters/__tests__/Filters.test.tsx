@@ -7,6 +7,8 @@ expect.extend(toHaveNoViolations);
 
 const MOCK_HANDLE_FILTER_CHANGE = jest.fn();
 const MOCK_DELETE_MARKED_USERS = jest.fn();
+const MOCK_CHANGE_USERS_ROLES = jest.fn();
+const MOCK_SHOW_USERS_DETAILS = jest.fn();
 const MOCK_FILTER_VALUE = 'loremIpsum';
 
 describe('Users filters', () => {
@@ -20,7 +22,9 @@ describe('Users filters', () => {
             filter={MOCK_FILTER_VALUE} 
             handleFilterChange={MOCK_HANDLE_FILTER_CHANGE} 
             deleteMarkedUsers={MOCK_DELETE_MARKED_USERS} 
-            deletingDisabled={false} 
+            changeUsersRoles={MOCK_CHANGE_USERS_ROLES}
+            triggerDetailsShowing={MOCK_SHOW_USERS_DETAILS}
+            buttonsDisabled={false} 
         />);
         expect(await axe(container)).toHaveNoViolations();
     });
@@ -30,7 +34,9 @@ describe('Users filters', () => {
             filter={''} 
             handleFilterChange={MOCK_HANDLE_FILTER_CHANGE} 
             deleteMarkedUsers={MOCK_DELETE_MARKED_USERS} 
-            deletingDisabled={false} 
+            changeUsersRoles={MOCK_CHANGE_USERS_ROLES}
+            triggerDetailsShowing={MOCK_SHOW_USERS_DETAILS}
+            buttonsDisabled={false} 
         />);
 
         const filterInput = getByPlaceholderText('Enter filter value...') as HTMLInputElement;
@@ -40,31 +46,55 @@ describe('Users filters', () => {
         expect(MOCK_HANDLE_FILTER_CHANGE).toHaveBeenCalledWith(MOCK_FILTER_VALUE);
     });
 
-    it('Should be able to call the deleteMarkedUsers callback in case the button is enabled', () => {
+    it('Should be able to use buttons in case they are enabled', () => {
         const {getByText} = render(<Filters
             filter={''} 
             handleFilterChange={MOCK_HANDLE_FILTER_CHANGE} 
             deleteMarkedUsers={MOCK_DELETE_MARKED_USERS} 
-            deletingDisabled={false} 
+            changeUsersRoles={MOCK_CHANGE_USERS_ROLES}
+            triggerDetailsShowing={MOCK_SHOW_USERS_DETAILS}
+            buttonsDisabled={false} 
         />);
 
         const deletingButton = getByText('Delete users') as HTMLButtonElement;
         expect(deletingButton).toBeEnabled();
         fireEvent.click(deletingButton);
         expect(MOCK_DELETE_MARKED_USERS).toHaveBeenCalled();
+
+        const changeRolesButton = getByText('Change roles') as HTMLButtonElement;
+        expect(changeRolesButton).toBeEnabled();
+        fireEvent.click(changeRolesButton);
+        expect(MOCK_CHANGE_USERS_ROLES).toHaveBeenCalled();
+
+        const triggerShowingButton = getByText('Show details') as HTMLButtonElement;
+        expect(triggerShowingButton).toBeEnabled();
+        fireEvent.click(triggerShowingButton);
+        expect(MOCK_SHOW_USERS_DETAILS).toHaveBeenCalled();
     });
 
-    it('Should not be able to call the deleteMarkedUsers callback if the button is disabled', () => {
+    it('Should not be able to use buttons in case they are disabled', () => {
         const {getByText} = render(<Filters
             filter={''} 
             handleFilterChange={MOCK_HANDLE_FILTER_CHANGE} 
             deleteMarkedUsers={MOCK_DELETE_MARKED_USERS} 
-            deletingDisabled={true} 
+            changeUsersRoles={MOCK_CHANGE_USERS_ROLES}
+            triggerDetailsShowing={MOCK_SHOW_USERS_DETAILS}
+            buttonsDisabled={true} 
         />);
 
         const deletingButton = getByText('Delete users') as HTMLButtonElement;
         expect(deletingButton).toBeDisabled();
         fireEvent.click(deletingButton);
         expect(MOCK_DELETE_MARKED_USERS).not.toHaveBeenCalled();
+
+        const changeRolesButton = getByText('Change roles') as HTMLButtonElement;
+        expect(changeRolesButton).toBeEnabled();
+        fireEvent.click(changeRolesButton);
+        expect(MOCK_CHANGE_USERS_ROLES).not.toHaveBeenCalled();
+
+        const triggerShowingButton = getByText('Show details') as HTMLButtonElement;
+        expect(triggerShowingButton).toBeEnabled();
+        fireEvent.click(triggerShowingButton);
+        expect(MOCK_SHOW_USERS_DETAILS).not.toHaveBeenCalled();
     });
 })

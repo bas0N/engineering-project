@@ -1,3 +1,4 @@
+import { Button } from '@fluentui/react-components';
 import { AppWrapper, AdminHeader } from './App.styled';
 import { LoginPanel } from './components/loginPanel/LoginPanel';
 import { UsersList } from './components/usersList/UsersList';
@@ -12,7 +13,12 @@ function App() {
       {
         token === null ?
           <LoginPanel />
-        : (<UsersList />)
+        : (<>
+          <UsersList />
+          <Button onClick={() => localStorage.removeItem('token')}>
+            Logout
+          </Button>
+        </>)
       }
     </AppWrapper>
   )

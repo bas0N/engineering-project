@@ -6,14 +6,18 @@ export interface FiltersProps {
     filter: string;
     handleFilterChange: (newFilter: string) => void;
     deleteMarkedUsers: () => void;
-    deletingDisabled: boolean;
+    changeUsersRoles: () => void;
+    triggerDetailsShowing: () => void;
+    buttonsDisabled: boolean;
 }
 
 export const Filters = ({
     filter,
     handleFilterChange,
     deleteMarkedUsers,
-    deletingDisabled
+    changeUsersRoles,
+    triggerDetailsShowing,
+    buttonsDisabled
 } : FiltersProps) => (
     <UsersListControlsWrapper>
         <UsersFilterInput 
@@ -24,9 +28,21 @@ export const Filters = ({
         <UsersFilterButtonsWrapper>
             <Button 
                 onClick={() => deleteMarkedUsers()}
-                disabled={deletingDisabled}
+                disabled={buttonsDisabled}
             >
                 Delete users
+            </Button>
+            <Button 
+                onClick={() => triggerDetailsShowing()}
+                disabled={buttonsDisabled}
+            >
+                Show details
+            </Button>
+            <Button 
+                onClick={() => changeUsersRoles()}
+                disabled={buttonsDisabled}
+            >
+                Change roles
             </Button>
         </UsersFilterButtonsWrapper>
     </UsersListControlsWrapper>

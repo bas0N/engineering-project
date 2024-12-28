@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { 
+import {
     createTableColumn,  
     DataGridHeader,
     DataGridRow,
@@ -17,11 +17,12 @@ import {
 } from '@fluentui/react-components';
 import { 
   UsersDisplayInappropriateInfo,
-  UsersListDataGrid, 
+  UsersListDataGrid,
 } from "./UsersList.styled";
 
 import { User, nullableStringsComparator, modifyTableText } from './UsersList.helper';
 import { Filters } from "./components/filters/Filters";
+import { Roles } from "./components/roles/Roles";
 
 const columns:TableColumnDefinition<User>[] = [
     createTableColumn<User>({
@@ -84,6 +85,8 @@ export const UsersList = () => {
   const [error, setError] = useState(false);
   const [users, setUsers] = useState<User[] | null>(null);
   const [filter, setFilter] = useState('');
+  const [rolesChangingPanelOpened, setRolesChangingPanelOpened] = useState(false);
+  const [usersDetailsOpened, setUsersDetailsOpened] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState(
     new Set<TableRowId>()
@@ -161,15 +164,33 @@ export const UsersList = () => {
     }
   };
 
+  const triggerUsersRoles = () => {
+    setRolesChangingPanelOpened(false);
+    setUsersDetailsOpened(true);
+  };
+
+  const changeUsersRoles = () => {
+    setRolesChangingPanelOpened(true);
+    setUsersDetailsOpened(false);
+  };
+
   return (<>
     {
         error ? (<Text align='center' size={600}>Something went wrong. Try later</Text>) : 
         users === null ? (<Spinner label='Loading...' /> ) : (<>
+            {
+              rolesChangingPanelOpened && (<Roles 
+                closeRolesPanel={() => setRolesChangingPanelOpened(false)} 
+                users={users.filter((user) => selectedRows.has(user.id))}
+              />)
+            }
             <Filters 
               filter={filter}
               handleFilterChange={handleFilterChange}
               deleteMarkedUsers={deleteMarkedUsers}
-              deletingDisabled={selectedRows.size === 0}
+              changeUsersRoles={changeUsersRoles}
+              triggerDetailsShowing={triggerUsersRoles}
+              buttonsDisabled={selectedRows.size === 0}
             />
             <UsersListDataGrid
               items={users.filter((user) => user.displayScore > 0)}
