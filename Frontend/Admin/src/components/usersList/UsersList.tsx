@@ -23,6 +23,7 @@ import {
 import { User, nullableStringsComparator, modifyTableText } from './UsersList.helper';
 import { Filters } from "./components/filters/Filters";
 import { Roles } from "./components/roles/Roles";
+import { UserDetails } from './components/userDetails/UserDetails';
 
 const columns:TableColumnDefinition<User>[] = [
     createTableColumn<User>({
@@ -174,6 +175,8 @@ export const UsersList = () => {
     setUsersDetailsOpened(false);
   };
 
+  const selectedUsers = users === null ? [] : users.filter((user) => selectedRows.has(user.id));
+
   return (<>
     {
         error ? (<Text align='center' size={600}>Something went wrong. Try later</Text>) : 
@@ -181,7 +184,13 @@ export const UsersList = () => {
             {
               rolesChangingPanelOpened && (<Roles 
                 closeRolesPanel={() => setRolesChangingPanelOpened(false)} 
-                users={users.filter((user) => selectedRows.has(user.id))}
+                users={selectedUsers}
+              />)
+            }
+            {
+              usersDetailsOpened && (<UserDetails
+                closeUserDetails={() => setUsersDetailsOpened(false)} 
+                users={selectedUsers}
               />)
             }
             <Filters 

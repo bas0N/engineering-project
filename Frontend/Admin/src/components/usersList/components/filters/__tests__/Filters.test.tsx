@@ -88,12 +88,12 @@ describe('Users filters', () => {
         expect(MOCK_DELETE_MARKED_USERS).not.toHaveBeenCalled();
 
         const changeRolesButton = getByText('Change roles') as HTMLButtonElement;
-        expect(changeRolesButton).toBeEnabled();
+        expect(changeRolesButton).toBeDisabled();
         fireEvent.click(changeRolesButton);
         expect(MOCK_CHANGE_USERS_ROLES).not.toHaveBeenCalled();
 
         const triggerShowingButton = getByText('Show details') as HTMLButtonElement;
-        expect(triggerShowingButton).toBeEnabled();
+        expect(triggerShowingButton).toBeDisabled();
         fireEvent.click(triggerShowingButton);
         expect(MOCK_SHOW_USERS_DETAILS).not.toHaveBeenCalled();
     });
