@@ -20,6 +20,6 @@ describe('Basket Item List', () => {
     it('Should have no a11y violations', async() => {
         const {container, getByText} = render(<BasketItemsList items={MOCK_ITEMS} />);
         expect(await axe(container)).toHaveNoViolations();
-        expect(getByText('Items in your basket:'));
+        expect(getByText('basketItemList.title'));
     });
 })

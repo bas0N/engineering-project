@@ -4,13 +4,24 @@ import {ItemResponse} from '../../Order.types.ts';
 import {
     Spinner,
     Text,
-    Table,
     TableCell,
     TableBody,
     TableHeader,
     TableRow,
+    Divider,
 } from "@fluentui/react-components";
-import { useOrderHistoryStyles } from "./OrderHistory.styled.tsx";
+import { 
+    OrderItemsImage, 
+    OrderHistoryContainer,
+    OrderHistoryTable,
+    OrderHistoryTableRow,
+    OrderHistoryHeader,
+    OrderHistoryCard,
+    OrderHistoryCardHeader,
+    OrderHistoryFooter,
+    OrderHistoryCardContent,
+} from "./OrderHistory.styled.tsx";
+import { useTranslation } from 'react-i18next';
 
 interface Order {
     orderId: string;
@@ -21,89 +32,87 @@ interface Order {
 
 export default function OrderHistory() {
     const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const {t} = useTranslation();
+    const token = localStorage.getItem('authToken');
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const token = localStorage.getItem('authToken');
+                setError(false)
                 const response = await axios.get<Order[]>(`${import.meta.env.VITE_API_URL}order`, {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
-                console.log(response.data);
                 setOrders(response.data);
                 setLoading(false);
             } catch {
-                setError('Failed to fetch orders');
+                setError(true);
                 setLoading(false);
             }
         };
         fetchOrders();
-    }, []);
-    const styles = useOrderHistoryStyles();
+    }, [token]);
 
     if (loading) {
-        return <Spinner label="Loading orders..."/>;
+        return <Spinner label={t('orderHistory.loading')}/>;
     }
 
     if (error) {
-        return <Text style={{color: "red"}}>{error}</Text>;
+        return <Text style={{color: "red"}}>{t('orderHistory.loadingError')}</Text>;
     }
 
     return (
-        <div className={styles.container}>
-            <Text className={styles.heading}>Order History</Text>
+        <OrderHistoryContainer>
+            <OrderHistoryHeader>{t('orderHistory.title')}</OrderHistoryHeader>
             {orders.length === 0 ? (
-                <Text>No orders found.</Text>
+                <Text>{t('orderHistory.noOrders')}</Text>
             ) : (
                 orders.map((order) => (
-                    <div className={styles.card} key={order.orderId}>
-                        <div className={styles.cardHeader}>
-                            <Text weight="semibold">Order ID: {order.orderId}</Text>
-                        </div>
-                        <div className={styles.cardContent}>
-                            <Text>
-                                <strong>Status:</strong> {order.status}
+                    <OrderHistoryCard key={order.orderId}>
+                        <OrderHistoryCardHeader>{t('orderHistory.orderId')}: {order.orderId}</OrderHistoryCardHeader>
+                        <Divider />
+                        <OrderHistoryCardContent>
+                            <Text weight='bold'>
+                                {t('orderHistory.status')}: {order.status}
                             </Text>
-                            <Table aria-label="Order Items" className={styles.table}>
+                            <OrderHistoryTable aria-label="Order Items">
                                 <TableHeader>
                                     <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Image</TableCell>
-                                        <TableCell>Quantity</TableCell>
-                                        <TableCell>Price Unit</TableCell>
-                                        <TableCell>Price Summary</TableCell>
+                                        <TableCell>{t('orderHistory.name')}</TableCell>
+                                        <TableCell>{t('orderHistory.image')}</TableCell>
+                                        <TableCell>{t('orderHistory.quantity')}</TableCell>
+                                        <TableCell>{t('orderHistory.priceUnit')}</TableCell>
+                                        <TableCell>{t('orderHistory.priceSummary')}</TableCell>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {order.items.map((item, index) => (
-                                        <TableRow
+                                        <OrderHistoryTableRow
                                             key={item.uuid}
-                                            className={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}
+                                            bgColor={index % 2 === 0 ? '#1f1f1f' : '#292929'}
                                         >
                                             <TableCell>{item.name}</TableCell>
                                             <TableCell>
-                                                <img
+                                                <OrderItemsImage
                                                     src={item.imageUrl}
                                                     alt={item.name}
-                                                    className={styles.image}
                                                 />
                                             </TableCell>
                                             <TableCell>{item.quantity}</TableCell>
                                             <TableCell>{item.priceUnit} PLN</TableCell>
                                             <TableCell>{item.priceSummary} PLN</TableCell>
-                                        </TableRow>
+                                        </OrderHistoryTableRow>
                                     ))}
                                 </TableBody>
-                            </Table>
-                        </div>
-                        <div className={styles.cardFooter}>
-                            <Text>Total Price: {order.summaryPrice} PLN</Text>
-                        </div>
-                    </div>
+                            </OrderHistoryTable>
+                        </OrderHistoryCardContent>
+                        <OrderHistoryFooter>
+                            {t('orderHistory.totalPrice')}: {order.summaryPrice} PLN
+                        </OrderHistoryFooter>
+                    </OrderHistoryCard>
                 ))
             )}
-        </div>
+        </OrderHistoryContainer>
     );
 }

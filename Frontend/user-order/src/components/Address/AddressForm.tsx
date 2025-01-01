@@ -1,6 +1,7 @@
-import {AddressRequest} from "../../Order.types";
-import {Input, Label, Text} from "@fluentui/react-components";
-import {useAddressFormStyles} from "./AddressForm.styled";
+import { AddressRequest } from "../../Order.types";
+import { Input, Label, Text } from "@fluentui/react-components";
+import { AddressFormContainer } from "./AddressForm.styled";
+import { useTranslation } from "react-i18next";
 
 interface AddressFormProps {
     address: AddressRequest;
@@ -12,13 +13,21 @@ interface AddressFormProps {
     labelCountry: string;
 }
 
-export function AddressForm({ address, setAddress, labelStreet, labelCity, labelState, labelPostalCode, labelCountry }: AddressFormProps) {
-    const styles = useAddressFormStyles();
+export const AddressForm = ({ 
+    address, 
+    setAddress, 
+    labelStreet, 
+    labelCity, 
+    labelState, 
+    labelPostalCode, 
+    labelCountry 
+}: AddressFormProps) => {
+    const {t} = useTranslation();
 
     return (
-        <div className={styles.container}>
+        <AddressFormContainer>
             <Text weight="semibold" block>
-                All fields are required.
+                {t('address.everythingRequired')}
             </Text>
 
             <Label id={labelStreet} required>{labelStreet}</Label>
@@ -26,7 +35,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.street || ""}
                 onChange={(e) => setAddress({ ...address, street: e.target.value })}
-                placeholder="Enter street"
+                placeholder={t('address.streetPlaceholder')}
                 aria-labelledby={labelStreet}
             />
 
@@ -35,7 +44,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.city || ""}
                 onChange={(e) => setAddress({ ...address, city: e.target.value })}
-                placeholder="Enter city"
+                placeholder={t('address.cityPlaceholder')}
                 aria-labelledby={labelCity}
             />
 
@@ -44,7 +53,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.state || ""}
                 onChange={(e) => setAddress({ ...address, state: e.target.value })}
-                placeholder="Enter state"
+                placeholder={t('address.statePlaceholder')}
                 aria-labelledby={labelState}
             />
 
@@ -63,9 +72,9 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.country || ""}
                 onChange={(e) => setAddress({ ...address, country: e.target.value })}
-                placeholder="Enter country"
+                placeholder={t('address.countryPlaceholder')}
                 aria-labelledby={labelCountry}
             />
-        </div>
+        </AddressFormContainer>
     );
 }

@@ -1,18 +1,17 @@
-import {Text} from "@fluentui/react-components";
-import {useOrderSummaryStyles} from "./OrderSummary.styled";
+import { Text } from "@fluentui/react-components";
+import { OrderLabel, OrderSummaryContainer } from "./OrderSummary.styled";
+
 interface OrderSummaryProps {
     totalPrice: number;
     summaryLabel: string;
     totalLabel: string;
 }
 
-export function OrderSummary({ totalPrice, summaryLabel, totalLabel }: OrderSummaryProps) {
-    const styles = useOrderSummaryStyles();
-
+export const OrderSummary = ({ totalPrice, summaryLabel, totalLabel }: OrderSummaryProps) => {
     return (
-        <div className={styles.container}>
-            <Text className={styles.label}>{summaryLabel}</Text>
-            <Text>{totalLabel}: {totalPrice} PLN</Text>
-        </div>
+        <OrderSummaryContainer>
+            <Text>{summaryLabel}</Text>
+            <OrderLabel>{totalLabel}: {totalPrice} PLN</OrderLabel>
+        </OrderSummaryContainer>
     );
 }
