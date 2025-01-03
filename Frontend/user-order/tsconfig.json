@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["vite/client", "jest"],
+    "types": ["vite/client"],
     "module": "ESNext",
     "target": "ESNext",
     "strict": true,

@@ -1,4 +1,3 @@
-// App.tsx
 import Order from './components/Order/Order.tsx';
 
 function App() {

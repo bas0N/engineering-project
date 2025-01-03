@@ -6,6 +6,7 @@ const translationFilesPaths = [
     '../../auth-module/public/locales/',
     '../../user-settings/public/locales/',
     '../../user-basket/public/locales/',
+    '../../user-order/public/locales/',
     '../../products-browsing/public/locales/'
 ];
 

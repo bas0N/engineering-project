@@ -1,0 +1,40 @@
+{
+    "order": {
+        "paymentDone": "Payment successful",
+        "loading": "Loading...",
+        "header": "Your Order",
+        "creatingOrder": "Creating Order...",
+        "placeOrder": "Place Order",
+        "payNow": "Pay Now",
+        "orderHistory": {
+            "loading": "Loading orders...",
+            "title": "Order History",
+            "noOrders": "No orders found",
+            "orderId": "Order ID",
+            "name": "Name",
+            "image": "Image",
+            "quantity": "Quantity",
+            "priceUnit": "Price Unit",
+            "priceSummary": "Price Summary",
+            "totalPrice": "Total Price",
+            "status": "Status",
+            "loadingError": "Failed to fetch orders"
+        },
+        "address": {
+            "everythingRequired": "All fields are required.",
+            "statePlaceholder": "Enter state",
+            "cityPlaceholder": "Enter city",
+            "streetPlaceholder": "Enter street",
+            "countryPlaceholder": "Enter country"
+        },
+        "basketItemList": {
+            "title": "Items in your basket",
+            "quantity": "Quantity",
+            "price": "price"
+        },
+        "paymentForm": {
+            "title": "Enter your card details:",
+            "processing": "Processing..."
+        }
+    }
+}

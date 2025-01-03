@@ -1,8 +1,8 @@
 import { axe, toHaveNoViolations } from "jest-axe";
 import { render } from '@testing-library/react';
+import { OrderSummary } from "../OrderSummary"
 
 expect.extend(toHaveNoViolations);
-import { OrderSummary } from "../OrderSummary"
 
 const MOCK_TOTAL_PRICE = 0;
 const MOCK_SUMMARY_LABEL = 'summaryLabel';

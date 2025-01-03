@@ -1,20 +1,19 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Text, Button, Spinner} from '@fluentui/react-components';
-import {DeliverMethod, AddressRequest, BasketItem} from '../../Order.types.ts';
-import {AddressForm} from '../Address/AddressForm.tsx';
-import {DeliveryMethods} from '../Delivery/DeliveryMethods.tsx';
-import {OrderSummary} from './OrderSummary.tsx';
-import {PaymentForm} from './Payment/PaymentForm.tsx';
-import {BasketItemsList} from "../Items/BasketItemList.tsx";
+import {DeliverMethod, AddressRequest, BasketItem} from './Order.types';
+import {AddressForm} from '../Address/AddressForm';
+import {DeliveryMethods} from '../Delivery/DeliveryMethods';
+import {OrderSummary} from './OrderSummary/OrderSummary';
+import {PaymentForm} from './Payment/PaymentForm';
+import {BasketItemsList} from "../Items/BasketItemList";
 import {Elements} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import '../../i18n/i18n';
+import { OrderWrapper } from './Order.styled';
 
-// interface CreateOrderResponse {
-//     clientSecret: string;
-//     orderId: string;
-// }
 export default function Order() {
 
     const [deliverMethods, setDeliverMethods] = useState<DeliverMethod[]>([]);
@@ -38,6 +37,7 @@ export default function Order() {
     const stripePromise = loadStripe("pk_test_51QOewrFtvRjEnnd4SFW0dfoeQYg6zXdAsqLl0EDBhCsbccvoWRlbXWpSKYIe0NgbYfUv5UCDSmob7yGPG7jJ60qs00vtb1gSXK");
     const navigate = useNavigate();
     const token = localStorage.getItem('authToken');
+    const {t} = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,13 +45,11 @@ export default function Order() {
                 const deliverResult = await axios.get(`${import.meta.env.VITE_API_URL}order/deliver`, {
                     headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                 })
-                console.log('deliverResults: ', deliverResult)
                 setDeliverMethods(deliverResult.data as DeliverMethod[]);
 
                 const basketResult = await axios.get(`${import.meta.env.VITE_API_URL}basket`, {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
-                console.log(basketResult.data);
                 setBasketPrice(basketResult.data.summaryPrice);
                 setBasketId(basketResult.data.basketId);
                 setBasketItems(basketResult.data.basketProducts);
@@ -82,17 +80,14 @@ export default function Order() {
         setError(null);
 
         try {
-            const token = localStorage.getItem('authToken');
             const orderReq = {
                 addressRequest: address,
                 deliverId: selectedDeliverId,
                 basketId: basketId
             };
-            console.log(orderReq);
             const result = await axios.post(`${import.meta.env.VITE_API_URL}order`, orderReq, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
-            console.log(result.data);
             const {clientSecret} = result.data;
             const orderId = result.data.orderId;
             setClientSecret(clientSecret);
@@ -106,7 +101,6 @@ export default function Order() {
 
     const handlePaymentSuccess = () => {
         setPaymentSuccess(true);
-        console.log('Payment successful', orderId);
         if(orderId){
             notifyBackend(orderId, 'COMPLETED');
         }
@@ -115,35 +109,29 @@ export default function Order() {
 
     const notifyBackend = async (orderId: string, status: string) => {
         try {
-            const token = localStorage.getItem('authToken');
             const updateStatusRequest = {
                 status: status,
                 orderId: orderId
             };
-            console.log('Updating order status:', updateStatusRequest);
             await axios.post(`${import.meta.env.VITE_API_URL}order/notify`, updateStatusRequest, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
-            console.log('Order status updated successfully');
-        } catch (error) {
-            console.error('Failed to update order status:', error);
+        } catch {
             setError('Failed to update order status');
         }
     };
-    console.log(!clientSecret, basketItems)
 
     if (loading) {
-        return <Spinner label={'Loading...'}/>;
+        return <Spinner label={t('order.loading')}/>;
     }
 
     if (paymentSuccess) {
-        return <Text>Payment successful</Text>;
+        return <Text>{t('order.paymentDone')}</Text>;
     }
 
-
     return (
-        <div style={{maxWidth: '500px', margin: '0 auto'}}>
-            <Text as="h1">Your Order</Text>
+        <OrderWrapper>
+            <Text as="h1">{t('order.header')}</Text>
             {error && <Text style={{color: 'red'}}>{error}</Text>}
 
             {!clientSecret && basketItems && basketItems.length > 0 && (
@@ -174,7 +162,7 @@ export default function Order() {
                     />
 
                     <Button appearance="primary" disabled={creatingOrder} onClick={handleCreateOrder}>
-                        {creatingOrder ? 'Creating Order...' : 'Place Order'}
+                        {creatingOrder ? t('order.creatingOrder') : t('order.placeOrder')}
                     </Button>
                 </>
             )}
@@ -186,11 +174,11 @@ export default function Order() {
                         clientSecret={clientSecret}
                         onPaymentSuccess={handlePaymentSuccess}
                         onError={(msg) => setError(msg)}
-                        payLabel="Pay Now"
+                        payLabel={t('order.payNow')}
                     />
                 </Elements>
 
             )}
-        </div>
+        </OrderWrapper>
     );
 }
