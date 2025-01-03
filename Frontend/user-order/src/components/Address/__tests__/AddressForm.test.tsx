@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react"
 import { axe, toHaveNoViolations } from "jest-axe";
 import { AddressForm } from "../AddressForm";
-import { AddressRequest } from "../../../Order.types";
+import { AddressRequest } from "../../Order/Order.types";
 
 expect.extend(toHaveNoViolations);
 
@@ -27,7 +27,7 @@ describe('Address Form', () => {
             labelCountry={"Country"} 
         />);
         expect(await axe(container)).toHaveNoViolations();
-        expect(getByText('address.everythingRequired'));
+        expect(getByText('order.address.everythingRequired'));
     });
 
     it('Should be able to change the value of the address', () => {
@@ -43,7 +43,7 @@ describe('Address Form', () => {
 
         const inputPlaceholders = ['street', 'state', 'city', 'xx-xxx', 'country'];
         inputPlaceholders.forEach((inputName) => {
-            const input = getByPlaceholderText(inputName === 'xx-xxx' ? inputName : `address.${inputName}Placeholder`) as HTMLInputElement;
+            const input = getByPlaceholderText(inputName === 'xx-xxx' ? inputName : `order.address.${inputName}Placeholder`) as HTMLInputElement;
             expect(input);
             fireEvent.change(input, {target: {value: inputName === 'xx-xxx' ? '12-345' : 'newValue'}});
             expect(MOCK_SET_ADDRESS).toHaveBeenCalledWith({...MOCK_ADDRESS, [ inputName === 'xx-xxx' ? 'postalCode' : inputName]: inputName === 'xx-xxx' ? '12-345' : 'newValue'});

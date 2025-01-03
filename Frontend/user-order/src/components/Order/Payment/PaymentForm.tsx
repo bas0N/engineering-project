@@ -4,14 +4,19 @@ import {useState} from "react";
 import {PaymentFormContainer} from "./PaymentForm.styled";
 import { useTranslation } from "react-i18next";
 
-interface PaymentFormProps {
+export interface PaymentFormProps {
     clientSecret: string;
     onPaymentSuccess: () => void;
     onError: (errorMsg: string) => void;
     payLabel: string;
 }
 
-export function PaymentForm({ clientSecret, onPaymentSuccess, onError, payLabel }: PaymentFormProps) {
+export const PaymentForm = ({ 
+    clientSecret, 
+    onPaymentSuccess, 
+    onError, 
+    payLabel 
+}: PaymentFormProps) => {
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);

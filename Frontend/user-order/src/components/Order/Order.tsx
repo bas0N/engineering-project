@@ -1,17 +1,18 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Text, Button, Spinner} from '@fluentui/react-components';
-import {DeliverMethod, AddressRequest, BasketItem} from '../../Order.types.ts';
-import {AddressForm} from '../Address/AddressForm.tsx';
-import {DeliveryMethods} from '../Delivery/DeliveryMethods.tsx';
-import {OrderSummary} from './OrderSummary.tsx';
-import {PaymentForm} from './Payment/PaymentForm.tsx';
-import {BasketItemsList} from "../Items/BasketItemList.tsx";
+import {DeliverMethod, AddressRequest, BasketItem} from './Order.types';
+import {AddressForm} from '../Address/AddressForm';
+import {DeliveryMethods} from '../Delivery/DeliveryMethods';
+import {OrderSummary} from './OrderSummary/OrderSummary';
+import {PaymentForm} from './Payment/PaymentForm';
+import {BasketItemsList} from "../Items/BasketItemList";
 import {Elements} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../../i18n/i18n';
+import { OrderWrapper } from './Order.styled';
 
 export default function Order() {
 
@@ -108,7 +109,6 @@ export default function Order() {
 
     const notifyBackend = async (orderId: string, status: string) => {
         try {
-            const token = localStorage.getItem('authToken');
             const updateStatusRequest = {
                 status: status,
                 orderId: orderId
@@ -129,9 +129,8 @@ export default function Order() {
         return <Text>{t('order.paymentDone')}</Text>;
     }
 
-
     return (
-        <div style={{maxWidth: '500px', margin: '0 auto'}}>
+        <OrderWrapper>
             <Text as="h1">{t('order.header')}</Text>
             {error && <Text style={{color: 'red'}}>{error}</Text>}
 
@@ -180,6 +179,6 @@ export default function Order() {
                 </Elements>
 
             )}
-        </div>
+        </OrderWrapper>
     );
 }

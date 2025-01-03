@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react"
 import { DeliveryMethods } from "../DeliveryMethods"
 import { axe, toHaveNoViolations } from "jest-axe";
-import { DeliverMethod } from "../../../Order.types";
+import { DeliverMethod } from "../../Order/Order.types";
 
 expect.extend(toHaveNoViolations);
 

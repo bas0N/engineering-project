@@ -1,8 +1,8 @@
-import { DeliverMethod } from "../../Order.types";
+import { DeliverMethod } from "../Order/Order.types";
 import { Radio, RadioGroup } from "@fluentui/react-components";
 import { DeliveryMethodsContainer, DeliveryMethodsLabel } from "./DeliveryMethod.styled";
 
-interface DeliveryMethodsProps {
+export interface DeliveryMethodsProps {
     deliverMethods: DeliverMethod[];
     selectedDeliverId: string | null;
     onChange: (id: string) => void;

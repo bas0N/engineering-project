@@ -1,7 +1,7 @@
 import { Text } from "@fluentui/react-components";
 import { OrderLabel, OrderSummaryContainer } from "./OrderSummary.styled";
 
-interface OrderSummaryProps {
+export interface OrderSummaryProps {
     totalPrice: number;
     summaryLabel: string;
     totalLabel: string;

@@ -1,4 +1,4 @@
-import { Image, Table, TableRow, Text } from "@fluentui/react-components";
+import { Table, Text } from "@fluentui/react-components";
 import styled from "styled-components";
 
 export const OrderHistoryContainer = styled.section`
@@ -43,17 +43,6 @@ export const OrderHistoryTable = styled(Table)`
     width: 100%;
     border-collapse: collapse;
     margin: 10px 0;
-`;
-
-export const OrderHistoryTableRow = styled(TableRow)<{bgColor: string}>`
-    background: ${(props) => props.bgColor};
-`;
-
-export const OrderItemsImage = styled(Image)`
-    max-width: 80px;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 `;
 
 export const OrderHistoryFooter = styled(Text)`

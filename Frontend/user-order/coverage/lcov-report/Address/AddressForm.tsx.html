@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -135,7 +135,14 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -151,8 +158,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -207,9 +221,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {AddressRequest} from "../../Order.types";
-import {Input, Label, Text} from "@fluentui/react-components";
-import {useAddressFormStyles} from "./AddressForm.styled";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AddressRequest } from "../../Order.types";
+import { Input, Label, Text } from "@fluentui/react-components";
+import { AddressFormContainer } from "./AddressForm.styled";
 import { useTranslation } from "react-i18next";
 &nbsp;
 interface AddressFormProps {
@@ -222,14 +236,21 @@ interface AddressFormProps {
     labelCountry: string;
 }
 &nbsp;
-export function AddressForm({ address, setAddress, labelStreet, labelCity, labelState, labelPostalCode, labelCountry }: AddressFormProps) {
-    const styles = useAddressFormStyles();
+export const AddressForm = ({ 
+    address, 
+    setAddress, 
+    labelStreet, 
+    labelCity, 
+    labelState, 
+    labelPostalCode, 
+    labelCountry 
+}: AddressFormProps) =&gt; {
     const {t} = useTranslation();
 &nbsp;
     return (
-        &lt;div className={styles.container}&gt;
+        &lt;AddressFormContainer&gt;
             &lt;Text weight="semibold" block&gt;
-                {t('address.everythingRequired')}
+                {t('order.address.everythingRequired')}
             &lt;/Text&gt;
 &nbsp;
             &lt;Label id={labelStreet} required&gt;{labelStreet}&lt;/Label&gt;
@@ -237,7 +258,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.street || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
                 onChange={(e) =&gt; setAddress({ ...address, street: e.target.value })}
-                placeholder={t('address.streetPlaceholder')}
+                placeholder={t('order.address.streetPlaceholder')}
                 aria-labelledby={labelStreet}
             /&gt;
 &nbsp;
@@ -246,7 +267,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.city || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
                 onChange={(e) =&gt; setAddress({ ...address, city: e.target.value })}
-                placeholder={t('address.cityPlaceholder')}
+                placeholder={t('order.address.cityPlaceholder')}
                 aria-labelledby={labelCity}
             /&gt;
 &nbsp;
@@ -255,7 +276,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.state || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
                 onChange={(e) =&gt; setAddress({ ...address, state: e.target.value })}
-                placeholder={t('address.statePlaceholder')}
+                placeholder={t('order.address.statePlaceholder')}
                 aria-labelledby={labelState}
             /&gt;
 &nbsp;
@@ -274,10 +295,10 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
                 required
                 value={address.country || <span class="branch-1 cbranch-no" title="branch not covered" >""}</span>
                 onChange={(e) =&gt; setAddress({ ...address, country: e.target.value })}
-                placeholder={t('address.countryPlaceholder')}
+                placeholder={t('order.address.countryPlaceholder')}
                 aria-labelledby={labelCountry}
             /&gt;
-        &lt;/div&gt;
+        &lt;/AddressFormContainer&gt;
     );
 }</pre></td></tr></table></pre>
 
@@ -286,7 +307,7 @@ export function AddressForm({ address, setAddress, labelStreet, labelCity, label
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-01T16:07:14.811Z
+                at 2025-01-01T18:55:37.581Z
             </div>
         <script src="../prettify.js"></script>
         <script>

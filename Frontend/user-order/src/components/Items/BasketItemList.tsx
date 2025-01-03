@@ -1,4 +1,4 @@
-import { BasketItem } from "../../Order.types";
+import { BasketItem } from "../Order/Order.types";
 import { Text } from "@fluentui/react-components";
 import {
     BasketItemDetails,
@@ -18,14 +18,14 @@ export function BasketItemsList({ items }: BasketItemsListProps) {
 
     return (
         <BasketItemListContainer>
-            <BasketItemHeader>{t('basketItemList.title')}</BasketItemHeader>
+            <BasketItemHeader>{t('order.basketItemList.title')}</BasketItemHeader>
             {items.map(item => (
                 <BasketItemWrapper key={item.uuid}>
                     <BasketItemImage src={item.imageUrl} alt={item.name}/>
                     <BasketItemDetails>
                         <Text>{item.name}</Text>
-                        <Text>{t('basketItemList.quantity')}: {item.quantity}</Text>
-                        <Text>{t('basketItemList.price')}: {item.summaryPrice} PLN</Text>
+                        <Text>{t('order.basketItemList.quantity')}: {item.quantity}</Text>
+                        <Text>{t('order.basketItemList.price')}: {item.summaryPrice} PLN</Text>
                     </BasketItemDetails>
                 </BasketItemWrapper>
             ))}

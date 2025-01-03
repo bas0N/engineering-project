@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-import {ItemResponse} from '../../Order.types.ts';
+import {ItemResponse} from '../Order.types';
 import {
     Spinner,
     Text,
@@ -10,18 +10,17 @@ import {
     TableRow,
     Divider,
 } from "@fluentui/react-components";
-import { 
-    OrderItemsImage, 
+import {
     OrderHistoryContainer,
     OrderHistoryTable,
-    OrderHistoryTableRow,
     OrderHistoryHeader,
     OrderHistoryCard,
     OrderHistoryCardHeader,
     OrderHistoryFooter,
     OrderHistoryCardContent,
-} from "./OrderHistory.styled.tsx";
+} from "./OrderHistory.styled";
 import { useTranslation } from 'react-i18next';
+import { OrderHistoryTableRow } from '../OrderHistoryTableRow/OrderHistoryTableRow';
 
 interface Order {
     orderId: string;
@@ -91,18 +90,8 @@ export default function OrderHistory() {
                                         <OrderHistoryTableRow
                                             key={item.uuid}
                                             bgColor={index % 2 === 0 ? '#1f1f1f' : '#292929'}
-                                        >
-                                            <TableCell>{item.name}</TableCell>
-                                            <TableCell>
-                                                <OrderItemsImage
-                                                    src={item.imageUrl}
-                                                    alt={item.name}
-                                                />
-                                            </TableCell>
-                                            <TableCell>{item.quantity}</TableCell>
-                                            <TableCell>{item.priceUnit} PLN</TableCell>
-                                            <TableCell>{item.priceSummary} PLN</TableCell>
-                                        </OrderHistoryTableRow>
+                                            item={item}
+                                        />
                                     ))}
                                 </TableBody>
                             </OrderHistoryTable>

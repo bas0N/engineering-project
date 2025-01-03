@@ -1,9 +1,9 @@
-import { AddressRequest } from "../../Order.types";
+import { AddressRequest } from "../Order/Order.types";
 import { Input, Label, Text } from "@fluentui/react-components";
 import { AddressFormContainer } from "./AddressForm.styled";
 import { useTranslation } from "react-i18next";
 
-interface AddressFormProps {
+export interface AddressFormProps {
     address: AddressRequest;
     setAddress: (addr: AddressRequest) => void;
     labelStreet: string;
@@ -27,7 +27,7 @@ export const AddressForm = ({
     return (
         <AddressFormContainer>
             <Text weight="semibold" block>
-                {t('address.everythingRequired')}
+                {t('order.address.everythingRequired')}
             </Text>
 
             <Label id={labelStreet} required>{labelStreet}</Label>
@@ -35,7 +35,7 @@ export const AddressForm = ({
                 required
                 value={address.street || ""}
                 onChange={(e) => setAddress({ ...address, street: e.target.value })}
-                placeholder={t('address.streetPlaceholder')}
+                placeholder={t('order.address.streetPlaceholder')}
                 aria-labelledby={labelStreet}
             />
 
@@ -44,7 +44,7 @@ export const AddressForm = ({
                 required
                 value={address.city || ""}
                 onChange={(e) => setAddress({ ...address, city: e.target.value })}
-                placeholder={t('address.cityPlaceholder')}
+                placeholder={t('order.address.cityPlaceholder')}
                 aria-labelledby={labelCity}
             />
 
@@ -53,7 +53,7 @@ export const AddressForm = ({
                 required
                 value={address.state || ""}
                 onChange={(e) => setAddress({ ...address, state: e.target.value })}
-                placeholder={t('address.statePlaceholder')}
+                placeholder={t('order.address.statePlaceholder')}
                 aria-labelledby={labelState}
             />
 
@@ -72,7 +72,7 @@ export const AddressForm = ({
                 required
                 value={address.country || ""}
                 onChange={(e) => setAddress({ ...address, country: e.target.value })}
-                placeholder={t('address.countryPlaceholder')}
+                placeholder={t('order.address.countryPlaceholder')}
                 aria-labelledby={labelCountry}
             />
         </AddressFormContainer>
