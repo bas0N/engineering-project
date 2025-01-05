@@ -1,87 +1,88 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {
+    ChatListContainer,
+    ChatItemCard,
+    ChatHeader,
+    ChatFooter,
+    ChatTitle,
+    ChatSubtitle,
+    NoChatsText,
+} from './ChatListPage.styled';
 import { Text } from '@fluentui/react-components';
-import { ChatItemContainer, ChatItemHeader, ChatItemSubtext, ListWrapper, UnreadDot } from './ChatListPage.styled';
-import { ChatResponse } from '../../Chat.types';
-import { ChatService } from '../../service/ChatService';
+import { ChatResponse } from '../../Chat.types.ts';
 
-const ChatListPage = () => {
+export const ChatListPage = () => {
     const [chats, setChats] = useState<ChatResponse[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [unreadCount, setUnreadCount] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>('');
     const navigate = useNavigate();
+    const token = localStorage.getItem('authToken');
 
     useEffect(() => {
-        const loadData = async () => {
+        const fetchChats = async () => {
+            setLoading(true);
+
+
             try {
-                setLoading(true);
-                const token = localStorage.getItem('authToken');
-                if (!token) {
-                    throw new Error('No token found');
-                }
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}message/chats`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
 
-                const chatsData = await ChatService.fetchChats(token);
-                setChats(chatsData);
-
-                const count = await ChatService.fetchUnreadCount(token);
-                setUnreadCount(count);  
-
-            } catch (err) {
-                console.error('Error loading chats', err);
+                setChats(response.data);
+            } catch (err: any) {
+                setError(err.response?.data?.message || 'Error fetching chats');
             } finally {
                 setLoading(false);
             }
         };
-        loadData();
+
+        fetchChats();
     }, []);
 
-    console.log(unreadCount);
-
-    const handleChatClick = (chat: ChatResponse) => {
-        navigate(`/chat/${chat.receiverId}`);
+    const handleChatClick = (receiverId: string) => {
+        navigate(`/chat/${receiverId}`);
     };
 
     return (
-        <section style={{ display: 'flex', flexDirection: 'column' }}>
-            <Text variant="xLarge" style={{ margin: 16 }}>Conversations</Text>
-            {loading && <Text>Loading...</Text>}
+        <ChatListContainer>
+            <Text size={600} weight="semibold" block>
+                Your Chats
+            </Text>
+            {loading && <Text>Loading chats...</Text>}
+            {error && <Text>{error}</Text>}
 
-            {/*{!loading && (*/}
-            {/*    <div style={{ marginLeft: 16, marginBottom: 16 }}>*/}
-            {/*        <Text variant="mediumPlus">*/}
-            {/*            Total unread messages: {unreadCount}*/}
-            {/*        </Text>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+            {!loading && !error && chats.length === 0 && (
+                <NoChatsText>No chats found.</NoChatsText>
+            )}
 
-            <ListWrapper>
-                {!loading &&
-                    chats.map((chat, index) => (
-                        <ChatItemContainer
-                            key={index}
-                            isRead={chat.isRead}
-                            onClick={() => handleChatClick(chat)}
-                        >
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <ChatItemHeader isRead={chat.isRead}>
-                                    {chat.username && chat.username.trim() !== "null null"
-                                        ? chat.username
-                                        : "Unknown user"}
-                                </ChatItemHeader>
+            {chats.map((chat) => {
+                const displayName = chat.username?.trim() || chat.email || 'Unknown User';
+                const lastMsg = chat.lastMessage || 'No message yet';
 
-                                {!chat.isRead && <UnreadDot />} {/* Red dot for unread */}
-                            </div>
-                            <ChatItemSubtext>{chat.lastMessage}</ChatItemSubtext>
-                            <ChatItemSubtext>
-                                {chat.lastMessageTime}
-                                {chat.unreadCount > 0 && ` • New Messages: ${chat.unreadCount}`}
-                            </ChatItemSubtext>
-                        </ChatItemContainer>
-                    ))}
-            </ListWrapper>
-
-        </section>
+                return (
+                    <ChatItemCard
+                        key={chat.receiverId}
+                        onClick={() => handleChatClick(chat.receiverId)}
+                    >
+                        <ChatHeader
+                            header={<ChatTitle>{displayName}</ChatTitle>}
+                            description={<ChatSubtitle>{`Unread: ${chat.unreadCount}`}</ChatSubtitle>}
+                        />
+                        <ChatFooter>
+                            <Text size={300} block>
+                                Last: {lastMsg.substring(0, 50)}
+                            </Text>
+                            <Text size={200} block>
+                                {new Date(chat.lastMessageTime).toLocaleString()}
+                            </Text>
+                        </ChatFooter>
+                    </ChatItemCard>
+                );
+            })}
+        </ChatListContainer>
     );
 };
-
-export default ChatListPage;

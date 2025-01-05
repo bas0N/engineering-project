@@ -1,5 +1,4 @@
-import ChatListPage from "./components/List/ChatListPage.tsx";
-
+import {ChatListPage} from "./components/List/ChatListPage.tsx";
 
 function App() {
     return <ChatListPage />;

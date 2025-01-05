@@ -11,7 +11,7 @@ export default defineConfig({
       filename: 'remoteUserChatEntry.js',
       exposes: {
         './UserChatList': './src/App.tsx',
-        './UserChatDetailPage': './src/components/List/ChatDetail/ChatDetailPage.tsx'
+        './UserChatDetailPage': './src/components/Detail/ChatDetailPage.tsx'
       },
       shared: ['react', 'react-dom', 'react-router-dom', 'react-i18next', '@fluentui/react-components']
     })

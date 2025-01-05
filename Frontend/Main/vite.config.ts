@@ -15,6 +15,7 @@ export default defineConfig({
         userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js',
         productsBrowsing: 'http://localhost:4176/assets/remoteProductsBrowsingEntry.js',
         userOrder: 'http://localhost:4177/assets/remoteUserOrderEntry.js',
+        userChat: 'http://localhost:4178/assets/remoteUserChatEntry.js'
       },
       shared: ['react', 'react-dom', 'react-router-dom', '@fluentui/react-components', 'react-i18next']
     })
