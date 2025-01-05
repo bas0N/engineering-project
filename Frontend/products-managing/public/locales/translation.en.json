@@ -1,0 +1,29 @@
+{
+    "addProduct": {
+        "title": "Product adding",
+        "titlePlaceholder": "Product title...",
+        "descriptionPlaceholder": "Product description...",
+        "categories": {
+            "header": "Product categories",
+            "newCategoryPlaceholder": "Enter new category..."
+        },
+        "features": {
+            "header": "Product features",
+            "newFeaturePlaceholder": "Enter new feature...",
+            "moveUpLabel": "Move the feature up",
+            "movedownLabel": "Move the feature down",
+            "deleteLabel": "Delete feature"
+        },
+        "details": {
+            "header": "Details",
+            "detailNameProvider": "Detail name...",
+            "detailValueProvider": "Detail value...",
+            "editLabel": "Edit detail",
+            "deleteLabel": "Delete detail"
+        },
+        "storePlaceholder": "Enter store name...",
+        "pricePlaceholder": "Enter product's price...",
+        "goBack": "Go back",
+        "finalizeProductCreation": "Create product"
+    }
+}
