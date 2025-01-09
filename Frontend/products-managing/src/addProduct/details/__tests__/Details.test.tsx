@@ -6,7 +6,7 @@ import { Details } from '../Details'
 expect.extend(toHaveNoViolations);
 
 const MOCK_DETAILS:Record<string,string> = {
-    detail: 'detailValue'
+    'DEPARTMENT': 'detailValue'
 };
 
 const MOCK_SET_DETAILS = jest.fn();
@@ -26,28 +26,33 @@ describe('Details', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 
-    it('Should be able to add a new detail', () => {
-        const {getByPlaceholderText, getByLabelText} = render(<Details 
-            details={MOCK_DETAILS}
+    it('Should be able to add a new detail', async() => {
+        const {getByPlaceholderText, getByLabelText, findByRole} = render(<Details 
+            details={{} as Record<string,string>}
             setDetails={MOCK_SET_DETAILS}
         />);
 
-        const nameInput = getByPlaceholderText('addProduct.details.detailNamePlaceholder') as HTMLInputElement;
+        const nameDropdown = getByLabelText('addProduct.details.detailNamePlaceholder') as HTMLButtonElement;
         const valueInput = getByPlaceholderText('addProduct.details.detailValuePlaceholder') as HTMLInputElement;
         const addButton = getByLabelText('addProduct.details.addDetailLabel') as HTMLButtonElement;
         expect(addButton);
-        expect(nameInput);
+        expect(nameDropdown);
         expect(valueInput);
+
         fireEvent.click(addButton);
         expect(MOCK_SET_DETAILS).not.toHaveBeenCalled();
-        fireEvent.change(nameInput, {target: {value: 'detail1'}});
+
+        fireEvent.click(nameDropdown);
+        expect(await findByRole('option', {name: 'Department'}));
+        fireEvent.click(await findByRole('option', {name: 'Department'}) as HTMLOptionElement);
         fireEvent.click(addButton);
         expect(MOCK_SET_DETAILS).not.toHaveBeenCalled();
+
         fireEvent.change(valueInput, {target: {value: 'detailValue1'}});
         fireEvent.click(addButton);
         expect(MOCK_SET_DETAILS).toHaveBeenCalledWith({
             ...MOCK_DETAILS,
-            detail1: 'detailValue1'
+            'DEPARTMENT': 'detailValue1'
         })
     });
 
@@ -57,9 +62,9 @@ describe('Details', () => {
             setDetails={MOCK_SET_DETAILS}
         />);
 
-        const nameInput = getByPlaceholderText('addProduct.details.detailNamePlaceholder') as HTMLInputElement;
+        const nameDropdown = getByLabelText('addProduct.details.detailNamePlaceholder') as HTMLInputElement;
         const valueInput = getByPlaceholderText('addProduct.details.detailValuePlaceholder') as HTMLInputElement;
-        expect(nameInput);
+        expect(nameDropdown);
         expect(valueInput);
 
         const editButton = getByLabelText('addProduct.details.editLabel') as HTMLButtonElement;
@@ -67,7 +72,7 @@ describe('Details', () => {
         fireEvent.click(editButton);
 
         expect(MOCK_SET_DETAILS).toHaveBeenCalledWith({});
-        expect(nameInput.value).toEqual('detail');
+        expect(nameDropdown.value).toEqual('Department');
         expect(valueInput.value).toEqual('detailValue');
     });
 

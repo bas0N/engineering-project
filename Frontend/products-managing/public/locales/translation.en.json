@@ -16,14 +16,30 @@
         },
         "details": {
             "header": "Details",
-            "detailNameProvider": "Detail name...",
-            "detailValueProvider": "Detail value...",
+            "detailNamePlaceholder": "Select detail name...",
+            "detailValuePlaceholder": "Detail value...",
+            "addDetailLabel": "Add",
             "editLabel": "Edit detail",
             "deleteLabel": "Delete detail"
         },
+        "finalization": {
+            "title": "Title",
+            "description": "Description",
+            "categories": "Categories",
+            "details": "Details",
+            "features": "Features"
+        },
+        "store": "Selling store",
+        "price": "Product price",
+        "mainCategory": "Select main category",
         "storePlaceholder": "Enter store name...",
         "pricePlaceholder": "Enter product's price...",
         "goBack": "Go back",
-        "finalizeProductCreation": "Create product"
+        "finalizationHeader": "Finalize product creation",
+        "finalizeProductCreation": "Create product",
+        "productAdded": "Product successfully added!",
+        "userProductsNavigation": "Check my products",
+        "productInspection": "Show the product",
+        "finalizeCreation": "Finalize"
     }
 }

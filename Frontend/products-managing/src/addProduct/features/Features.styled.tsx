@@ -11,18 +11,26 @@ export const FeaturesWrapper = styled.section`
 `;
 
 export const FeaturesInput = styled(Input).attrs({appearance: 'underline'})`
-    width: calc(60% - 20px);
+    width: calc(80% - 20px);
     padding: 10px;
     margin-bottom: 20px;
+
+    @media screen and (min-width: 768px){
+        width: calc(60% - 20px);
+    }
 `;
 
 export const FeaturesContainer = styled.div`
-    width: calc(50% - 20px);
+    width: calc(80% - 20px);
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     align-items: center;
+
+    @media screen and (min-width: 768px){
+        width: calc(50% - 20px);
+    }
 `;
 
 export const FeatureWrapper = styled.div`

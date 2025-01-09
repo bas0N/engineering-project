@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { FluentProvider, webDarkTheme } from '@fluentui/react-components';
+import { FluentProvider, Toaster, webDarkTheme } from '@fluentui/react-components';
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AddProduct } from './addProduct/AddProduct.tsx';
@@ -14,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <FluentProvider theme={webDarkTheme}>
       <RouterProvider router={router}/>
+      <Toaster id='localToaster' />
     </FluentProvider>
   </StrictMode>,
 )

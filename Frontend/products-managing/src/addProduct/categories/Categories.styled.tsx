@@ -11,15 +11,23 @@ export const CategoriesWrapper = styled.div`
 `;
 
 export const CategoriesInput = styled(Input).attrs({appearance: 'underline'})`
-    width: calc(60% - 20px);
+    width: calc(80% - 20px);
     padding: 10px;
+
+    @media screen and (min-width: 768px) {
+        width: calc(60% - 20px);
+    }
 `;
 
 export const CategoriesTagsWrapper = styled.div`
-    width: calc(50% - 20px);
+    width: calc(80% - 20px);
     padding: 10px;
     display: flex;
     gap: 8px;
     align-items: center;
     justify-content: center;
+
+    @media screen and (min-width: 768px) {
+        width: calc(50% - 20px);
+    }
 `;
