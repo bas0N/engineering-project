@@ -8,7 +8,7 @@ import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CategoriesWrapper, CategoriesInput, CategoriesTagsWrapper } from './Categories.styled';
 
-interface CategoriesProps {
+export interface CategoriesProps {
     categories: string[];
     setCategories: (categories: string[]) => void;
 }

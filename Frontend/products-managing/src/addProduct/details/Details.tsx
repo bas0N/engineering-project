@@ -20,11 +20,10 @@ import {
 } from './Details.styled';
 import { ChangeEvent, useState } from 'react';
 
-interface DetailsProps {
+export interface DetailsProps {
     details: Record<string,string>;
     setDetails: (newDetails: Record<string,string>) => void;
 }
-
 
 const productDetails: string[] = [
     "MATERIAL_FEATURE",

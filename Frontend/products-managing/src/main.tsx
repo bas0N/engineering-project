@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { FluentProvider, Toaster, webDarkTheme } from '@fluentui/react-components';
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AddProduct } from './addProduct/AddProduct.tsx';
+import AddProduct from './addProduct/AddProduct.tsx';
 
 const router = createBrowserRouter([{
   path: '/product/add',

@@ -11,7 +11,7 @@ import {
 } from './Finalization.styled';
 import { processDetailName } from '../details/Details';
 
-interface FinalizationProps {
+export interface FinalizationProps {
     title: string;
     details: Record<string,string>;
     description: string;

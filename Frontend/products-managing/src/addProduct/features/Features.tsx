@@ -12,7 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
-interface FeaturesProps {
+export interface FeaturesProps {
     features: string[];
     setFeatures: (newFeatures: string[]) => void;
 }

@@ -31,7 +31,7 @@ import { Finalization } from './finalization/Finalization';
 
 import '../i18n/i18n';
 
-export const AddProduct = () => {
+const AddProduct = () => {
     const {t} = useTranslation();
 
     const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'localToaster' : 'mainToaster';
@@ -46,7 +46,7 @@ export const AddProduct = () => {
     const [price, setPrice] = useState(0);
     const [store, setStore] = useState('');
     const [finalizingProduct, setFinalizingProduct] = useState(false);
-    const [productId, setProductId] = useState('a');
+    const [productId, setProductId] = useState('');
     const {dispatchToast} = useToastController(toasterId);
     const navigate = useNavigate();
 
@@ -193,3 +193,5 @@ export const AddProduct = () => {
         }
     </AddProductWrapper>
 };
+
+export default AddProduct;
