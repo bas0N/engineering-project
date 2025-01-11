@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/my-products")
-    public ResponseEntity<Page<ProductResponse>> getMyProducts(HttpServletRequest request, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
+    public ResponseEntity<Page<ProductResponse>> getMyProducts(HttpServletRequest request, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int limit) {
         return productService.getMyProducts(request, page, limit);
     }
 
