@@ -17,6 +17,5 @@ public interface ListBasketItemsMapper {
 
     ListBasketItemDto toListBasketItemDto(ListBasketItemEvent event);
 
-
     List<BasketItemDto> toBasketItemDtos(List<BasketItemEvent> events);
 }

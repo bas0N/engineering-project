@@ -16,6 +16,7 @@ import java.util.Map;
 @Slf4j
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
+
     @Override
     public String uploadImage(File file) throws IOException {
         try {

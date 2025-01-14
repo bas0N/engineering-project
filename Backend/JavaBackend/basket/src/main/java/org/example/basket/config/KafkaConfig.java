@@ -35,7 +35,6 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, BasketProductEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        //props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "basket-service-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
@@ -53,7 +52,6 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        //configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class); // Changed to StringSerializer
@@ -77,7 +75,6 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, String> BasketRemoveConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        //props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "basket-remove-service-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
@@ -114,7 +111,6 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, ListBasketItemEvent> BasketItemsProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        //configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class); // Changed to StringSerializer

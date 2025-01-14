@@ -2,12 +2,7 @@ package org.example.product.kafka.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.example.commondto.BasketProductEvent;
 import org.example.commondto.UserDetailInfoEvent;
-import org.example.product.entity.Image;
-import org.example.product.entity.Product;
-import org.example.product.repository.ProductRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;

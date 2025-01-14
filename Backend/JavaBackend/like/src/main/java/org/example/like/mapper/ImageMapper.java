@@ -19,6 +19,4 @@ public interface ImageMapper {
     Image toImage(ImageEvent imageEvent, Product product);
 
     ImageResponse toImageResponse(Image image);
-
-    List<ImageResponse> toImageResponseList(List<Image> images);
 }

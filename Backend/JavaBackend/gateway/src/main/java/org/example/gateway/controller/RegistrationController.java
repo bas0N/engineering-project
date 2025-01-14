@@ -17,8 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegistrationController {
     private final RouteValidator routeValidator;
+
     @PostMapping
-    public ResponseEntity<Response> register(@RequestBody List<Endpoint> endpoints){
+    public ResponseEntity<Response> register(@RequestBody List<Endpoint> endpoints) {
         routeValidator.addEndpoints(endpoints);
         return ResponseEntity.ok(new Response("Successfully register new endpoints"));
     }

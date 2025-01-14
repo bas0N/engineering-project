@@ -15,7 +15,7 @@ import lombok.Setter;
 public class BasketItems {
     @Id
     @GeneratedValue(generator = "basket_items_id_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "basket_items_id_seq",sequenceName = "basket_items_id_seq",allocationSize = 1)
+    @SequenceGenerator(name = "basket_items_id_seq", sequenceName = "basket_items_id_seq", allocationSize = 1)
     private long id;
     private String uuid;
     private String product;

@@ -13,17 +13,17 @@ import java.security.Key;
 
 @Component
 public class JwtUtil {
-    public JwtUtil(@Value("${jwt.secret}") String secret){
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
         SECRET = secret;
     }
 
-    public final String SECRET ;
+    public final String SECRET;
 
-    public void validateToken(final String token){
+    public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
-    private Key getSignKey(){
+    private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64URL.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }

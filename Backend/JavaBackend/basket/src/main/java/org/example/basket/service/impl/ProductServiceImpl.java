@@ -6,18 +6,11 @@ import org.example.basket.kafka.product.BasketConsumer;
 import org.example.basket.kafka.product.BasketProducer;
 import org.example.basket.service.ProductService;
 import org.example.commondto.BasketProductEvent;
-import org.example.commondto.ProductEvent;
-import org.example.commondto.UserDetailInfoEvent;
 import org.example.exception.exceptions.ApiRequestException;
-import org.example.exception.exceptions.DatabaseAccessException;
-import org.example.exception.exceptions.UnExpectedError;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @Service
 @RequiredArgsConstructor

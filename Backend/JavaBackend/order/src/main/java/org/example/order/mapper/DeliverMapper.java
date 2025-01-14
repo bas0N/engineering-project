@@ -13,9 +13,7 @@ public interface DeliverMapper {
 
     DeliverResponse toDeliverResponse(Deliver deliver);
 
-
-
-    @Mapping(target = "id", ignore=true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "uuid", source = "uuid")
     Deliver toDeliver(DeliverRequest deliverRequest, String uuid);
 }

@@ -30,8 +30,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +49,14 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserDeActiveProducer userDeActiveProducer;
+    private final EmailService emailService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private final Utils utils;
     @Value("${jwt.exp}")
     private int exp;
     @Value("${jwt.refresh.exp}")
     private int refreshExp;
+    private final Duration tokenValidity = Duration.ofHours(24);
 
 
     private void saveUser(User user) {
@@ -101,28 +109,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loggedIn(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            validateToken(request, response);
-        } catch (ExpiredJwtException e) {
-            log.info("Token is expired.");
-            throw new UnauthorizedException(
-                    "Token is expired.",
-                    "TOKEN_EXPIRED",
-                    Map.of("reason", "Access token has expired")
-            );
-
-        } catch (IllegalArgumentException e) {
-            log.info("Token is invalid.");
-            throw new UnauthorizedException(
-                    "Invalid token.",
-                    "INVALID_TOKEN",
-                    Map.of("reason", e.getMessage())
-            );
-        }
-    }
-
-    @Override
     public AuthResponse register(UserRegisterRequest userRegisterRequest) {
         try {
             userRepository.findUserByEmail(userRegisterRequest.getEmail()).ifPresent(value -> {
@@ -135,8 +121,21 @@ public class UserServiceImpl implements UserService {
             });
             User user = userMapper.mapUserRegisterDtoToUser(userRegisterRequest);
             int numberOfUsers = userRepository.findAll().size();
-            if(numberOfUsers == 0) {
+            if (numberOfUsers <= 2) {
                 user.setRole(Role.ADMIN);
+                user.setActive(true);
+                user.setEnabled(true);
+            }
+            else{
+                user.setActive(true);
+                user.setEnabled(true);
+//                String rawToken = UUID.randomUUID().toString();
+//                String hashedToken = hashToken(rawToken);
+//
+//                user.setVerificationTokenHash(hashedToken);
+//                user.setTokenExpiration(LocalDateTime.now().plus(tokenValidity));
+//
+//                emailService.sendRegistrationEmail(user.getEmail(), user.getUsername(), rawToken);
             }
             saveUser(user);
 
@@ -354,10 +353,66 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ResponseEntity<String> verify(String rawToken) {
+        try {
+            String hashedToken = hashToken(rawToken);
+
+            User user = userRepository.findByVerificationTokenHash(hashedToken)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "User",
+                            "verificationTokenHash",
+                            hashedToken,
+                            "USER_NOT_FOUND",
+                            Map.of("token", hashedToken)
+                    ));
+
+            if (user.getTokenExpiration() == null || user.getTokenExpiration().isBefore(LocalDateTime.now())) {
+                throw new UnauthorizedException(
+                        "Verification token has expired.",
+                        "TOKEN_EXPIRED",
+                        Map.of("token", rawToken)
+                );
+            }
+
+            user.setActive(true);
+            user.setEnabled(true);
+            user.setVerificationTokenHash(null);
+            user.setTokenExpiration(null);
+
+            userRepository.saveAndFlush(user);
+
+            return ResponseEntity.ok("User verified successfully.");
+        } catch (ResourceNotFoundException e) {
+            throw new UnauthorizedException(
+                    "User not found.",
+                    "USER_NOT_FOUND",
+                    Map.of("token", e.getFieldValue())
+            );
+        } catch (Exception e) {
+            throw new UnExpectedError(
+                    "Unexpected error during user verification.",
+                    e,
+                    "USER_VERIFICATION_ERROR",
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
+
     private String extractToken(String header) {
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
         return null;
+    }
+
+    private String hashToken(String rawToken) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encodedHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Could not find SHA-256 algorithm", e);
+        }
     }
 }

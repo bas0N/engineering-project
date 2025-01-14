@@ -127,10 +127,9 @@ public class LikeServiceImpl implements LikeService {
         try {
             Optional<Product> productOpt = productRepository.findByUuid(productUuid);
             Product product = null;
-            if(productOpt.isEmpty()) {
+            if (productOpt.isEmpty()) {
                 return ResponseEntity.ok(0L);
-            }
-            else{
+            } else {
                 product = productOpt.get();
             }
             Long likeCount = likeRepository.countByProductId(product.getId());
@@ -212,6 +211,7 @@ public class LikeServiceImpl implements LikeService {
             );
         }
     }
+
     @Override
     public ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request) {
         try {

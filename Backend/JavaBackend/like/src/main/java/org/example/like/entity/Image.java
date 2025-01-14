@@ -23,16 +23,7 @@ public class Image {
     private String variant;
     private String hiRes;
 
-
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
-    public Image(String thumb, String large, String variant, String hiRes, Product product) {
-        this.thumb = thumb;
-        this.large = large;
-        this.variant = variant;
-        this.hiRes = hiRes;
-        this.product = product;
-    }
 }

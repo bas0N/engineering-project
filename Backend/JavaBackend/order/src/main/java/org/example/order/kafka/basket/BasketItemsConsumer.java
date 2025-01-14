@@ -25,7 +25,7 @@ public class BasketItemsConsumer {
     )
     public void consumeBasketItemsResponse(@Payload ListBasketItemEvent listBasketItemEvent, Acknowledgment ack) {
         try {
-           log.info("Received basket items response for basketId {}", listBasketItemEvent.getBasketId());
+            log.info("Received basket items response for basketId {}", listBasketItemEvent.getBasketId());
             CompletableFuture<ListBasketItemEvent> future = basketItemsFutures.remove(listBasketItemEvent.getBasketId());
             if (future != null) {
                 future.complete(listBasketItemEvent);

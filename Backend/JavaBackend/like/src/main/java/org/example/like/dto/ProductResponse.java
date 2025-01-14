@@ -13,15 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductResponse {
     private String uuid;
-
     private String title;
-
     private String price;
-
     private Integer ratingNumber;
-
     private Double averageRating;
-
     private List<ImageResponse> images;
     private Boolean isActive;
 }

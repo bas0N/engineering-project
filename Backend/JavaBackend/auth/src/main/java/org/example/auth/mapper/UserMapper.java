@@ -12,7 +12,8 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "active", constant = "true")
+    @Mapping(target = "verificationTokenHash", constant = "null")
+    @Mapping(target = "active", constant = "false")
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "phoneNumber", ignore = true)
     @Mapping(target = "lastName", ignore = true)
@@ -25,7 +26,7 @@ public interface UserMapper {
     @Mapping(source = "dto.password", target = "password")
     @Mapping(constant = "USER", target = "role")
     @Mapping(constant = "false", target = "lock")
-    @Mapping(constant = "true", target = "enabled")
+    @Mapping(constant = "false", target = "enabled")
     User mapUserRegisterDtoToUser(UserRegisterRequest dto);
 
     @Mapping(target = "lock", source = "isLock")

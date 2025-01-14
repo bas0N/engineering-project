@@ -125,7 +125,7 @@ public class OrderMediator {
 
                     OrderResponse orderResponse = OrderMapper.INSTANCE.toOrderResponse(order);
                     Double deliveryPrice = deliverRepository.findByUuid(order.getDeliver().getUuid()).map(Deliver::getPrice).orElse(0d);
-                    orderResponse.setSummaryPrice(summary.get()+deliveryPrice);
+                    orderResponse.setSummaryPrice(summary.get() + deliveryPrice);
 
                     return orderResponse;
                 })

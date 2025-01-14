@@ -79,7 +79,7 @@ public class BasketServiceImpl implements BasketService {
     private BasketItemResponse saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         try {
             BasketProductEvent product = productService.getProductById(basketItemRequest.getProduct());
-            if(product == null){
+            if (product == null) {
                 throw new ResourceNotFoundException(
                         "Product",
                         "ID",
@@ -88,7 +88,7 @@ public class BasketServiceImpl implements BasketService {
                         Map.of("productId", basketItemRequest.getProduct())
                 );
             }
-            if(!product.getIsActive()){
+            if (!product.getIsActive()) {
                 throw new ProductIsUnActive(product.getId());
             }
             AtomicReference<BasketItems> item = new AtomicReference<>(new BasketItems());
@@ -109,7 +109,7 @@ public class BasketServiceImpl implements BasketService {
                     item.get().getQuantity(),
                     product.getPrice(),
                     product.getPrice() * item.get().getQuantity(),
-                    product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                    product.getImageUrls() != null ? product.getImageUrls().getFirst() : null,
                     basket.getUuid()
             );
         } catch (ResourceNotFoundException e) {
@@ -246,7 +246,7 @@ public class BasketServiceImpl implements BasketService {
                             product.getId(),
                             product.getName(),
                             item.getQuantity(),
-                            product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                            product.getImageUrls() != null ? product.getImageUrls().getFirst() : null,
                             product.getPrice(),
                             product.getPrice() * item.getQuantity(),
                             product.getIsActive()

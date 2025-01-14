@@ -19,7 +19,6 @@ import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
 import org.example.auth.service.ImageService;
-import org.example.auth.service.JwtService;
 import org.example.auth.service.UserDetailsService;
 import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -216,7 +214,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             "USER_NOT_FOUND",
                             Map.of("uuid", userUuid)
                     ));
-            if(!user.isActive()){
+            if (!user.isActive()) {
                 throw new UserIsUnActiveException("User is not active");
             }
             log.info("Successfully retrieved user details for UUID: {}", userUuid);

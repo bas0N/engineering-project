@@ -3,7 +3,6 @@ package org.example.order.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.request.UpdateStatusRequest;
 import org.example.order.mediator.OrderMediator;

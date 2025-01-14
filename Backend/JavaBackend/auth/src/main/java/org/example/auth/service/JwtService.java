@@ -21,6 +21,4 @@ public interface JwtService {
 
     String getTokenFromRequest(HttpServletRequest request);
 
-    String getUuidFromRequest(HttpServletRequest request);
-
 }

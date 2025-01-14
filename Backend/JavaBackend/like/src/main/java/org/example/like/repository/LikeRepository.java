@@ -1,12 +1,11 @@
 package org.example.like.repository;
 
-import jakarta.transaction.Transactional;
-import org.apache.kafka.common.protocol.types.Field;
 import org.example.like.entity.Like;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,12 +25,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     @Query("SELECT l FROM Like l WHERE l.uuid = :uuid")
     Optional<Like> findByUuid(String uuid);
-
-    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN TRUE ELSE FALSE END FROM Like l WHERE l.uuid = :uuid")
-    Boolean existsByUuid(String uuid);
-
-    @Query("SELECT l FROM Like l WHERE l.userId = :userId AND l.product.uuid = :productId")
-    Optional<Like> findByUserIdAndProductId(String userId, String productId);
 
     @Query("SELECT CASE WHEN COUNT(l) > 0 THEN TRUE ELSE FALSE END FROM Like l WHERE l.product.id = :id")
     boolean existsByProductId(long id);

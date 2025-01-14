@@ -22,6 +22,7 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfig {
     private static final String KAFKA_BROKER = "kafka:9092";
+
     //LIKE
     @Bean(name = "likeKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, LikeEvent> kafkaListenerContainerFactory() {
@@ -126,6 +127,7 @@ public class KafkaConfig {
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
+
     @Bean
     public ConsumerFactory<String, UserDetailInfoEvent> userConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -142,6 +144,7 @@ public class KafkaConfig {
                 new StringDeserializer(),
                 new ErrorHandlingDeserializer<>(new JsonDeserializer<>(UserDetailInfoEvent.class)));
     }
+
     //User Deactivate
     @Bean
     public ConsumerFactory<String, String> userDeactivateConsumerFactory() {

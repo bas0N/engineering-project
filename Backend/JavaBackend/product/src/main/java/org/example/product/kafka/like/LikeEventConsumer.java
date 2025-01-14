@@ -3,19 +3,14 @@ package org.example.product.kafka.like;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
-import org.example.commondto.ImageEvent;
 import org.example.commondto.LikeEvent;
-import org.example.commondto.ProductEvent;
 import org.example.product.entity.Product;
 import org.example.product.mapper.ProductMapper;
 import org.example.product.repository.ProductRepository;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

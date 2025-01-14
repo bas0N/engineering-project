@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.order.dto.CustomerDetails;
 import org.example.order.dto.request.DeliverRequest;
-import org.example.order.dto.request.AddressRequest;
 import org.example.order.enums.Status;
 
 import java.util.List;

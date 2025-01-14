@@ -6,7 +6,7 @@ import org.coffeecode.entity.Role;
 import java.util.Objects;
 
 public class Endpoint {
-    private  String url;
+    private String url;
     private HttpMethod httpMethod;
     private Role role;
 

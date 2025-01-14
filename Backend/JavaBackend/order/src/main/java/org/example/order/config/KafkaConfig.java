@@ -24,6 +24,7 @@ import java.util.Map;
 public class KafkaConfig {
     //USER
     private static final String KAFKA_BROKER = "kafka:9092";
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UserDetailInfoEvent> userKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, UserDetailInfoEvent> factory =
@@ -88,6 +89,7 @@ public class KafkaConfig {
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }
+
     @Bean
     public ConsumerFactory<String, ListBasketItemEvent> basketItemsConsumerFactory() {
         Map<String, Object> props = new HashMap<>();

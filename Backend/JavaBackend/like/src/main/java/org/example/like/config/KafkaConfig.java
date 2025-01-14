@@ -23,6 +23,7 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfig {
     private static final String KAFKA_BROKER = "kafka:9092";
+
     @Bean(name = "likeKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, ProductEvent> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, ProductEvent> factory =

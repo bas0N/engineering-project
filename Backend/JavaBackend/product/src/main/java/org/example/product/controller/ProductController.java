@@ -8,11 +8,8 @@ import org.example.product.dto.Request.UpdateProductRequest;
 import org.example.product.dto.Response.ImageUploadResponse;
 import org.example.product.dto.Response.ProductDetailResponse;
 import org.example.product.dto.Response.ProductResponse;
-import org.example.product.entity.Product;
-import org.example.product.repository.ProductRepository;
 import org.example.product.service.ProductService;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,29 +57,29 @@ public class ProductController {
 
     @PatchMapping(path = "/{productId}")
     public ResponseEntity<ProductDetailResponse> updateProduct(@PathVariable String productId,
-                                           @Valid @RequestBody UpdateProductRequest updateProductRequest,
-                                           HttpServletRequest request) {
+                                                               @Valid @RequestBody UpdateProductRequest updateProductRequest,
+                                                               HttpServletRequest request) {
         return productService.updateProduct(productId, updateProductRequest, request);
     }
 
     @PostMapping(path = "/{productId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageUploadResponse> uploadImage(@PathVariable String productId,
-                                         @RequestParam("hi_res") MultipartFile hi_res,
-                                         @RequestParam("large") MultipartFile large,
-                                         @RequestParam("thumb") MultipartFile thumb,
-                                         @RequestParam("variant") String variant,
-                                         HttpServletRequest request) {
+                                                           @RequestParam("hi_res") MultipartFile hi_res,
+                                                           @RequestParam("large") MultipartFile large,
+                                                           @RequestParam("thumb") MultipartFile thumb,
+                                                           @RequestParam("variant") String variant,
+                                                           HttpServletRequest request) {
         return productService.addImageToProduct(productId, hi_res, large, thumb, variant, request);
     }
 
     @PatchMapping(path = "/{productId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageUploadResponse> updateImage(@PathVariable String productId,
-                                         @RequestParam("hi_res") MultipartFile hi_res,
-                                         @RequestParam("large") MultipartFile large,
-                                         @RequestParam("thumb") MultipartFile thumb,
-                                         @RequestParam("variant") String variant,
-                                         @RequestParam("order") int order,
-                                         HttpServletRequest request) {
+                                                           @RequestParam("hi_res") MultipartFile hi_res,
+                                                           @RequestParam("large") MultipartFile large,
+                                                           @RequestParam("thumb") MultipartFile thumb,
+                                                           @RequestParam("variant") String variant,
+                                                           @RequestParam("order") int order,
+                                                           HttpServletRequest request) {
         return productService.updateImage(productId, hi_res, large, thumb, variant, order, request);
     }
 

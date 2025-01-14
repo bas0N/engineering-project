@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END FROM Product p WHERE p.uuid = :productId")
-    boolean existsByProductId(String productId);
 
     @Query("SELECT l.product FROM Like l WHERE l.userId = :userId")
     List<Product> findLikedProductsByUserId(String userId);

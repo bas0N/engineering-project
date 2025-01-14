@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class UserRegisterDto {
-
     private String login;
     private String email;
     @JsonInclude(JsonInclude.Include.NON_NULL)

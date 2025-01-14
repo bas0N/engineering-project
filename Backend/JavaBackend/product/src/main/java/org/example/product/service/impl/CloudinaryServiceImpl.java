@@ -14,6 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
+
     public String uploadImage(File file) throws IOException {
         Map response = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
         return (String) response.get("url");

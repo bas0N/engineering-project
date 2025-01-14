@@ -1,6 +1,5 @@
 package org.example.product.service.impl;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.exceptions.*;
@@ -14,11 +13,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -30,6 +28,7 @@ public class AdminServiceImpl implements AdminService {
     private final MongoTemplate mongoTemplate;
 
     @Override
+    @Transactional
     public ResponseEntity<String> deleteProduct(String id) {
         try {
             productRepository.findByParentAsin(id)
@@ -40,6 +39,10 @@ public class AdminServiceImpl implements AdminService {
                             "PRODUCT_NOT_FOUND",
                             Map.of("productId", id)
                     ));
+            Query reviewQuery = new Query(Criteria.where("parent_asin").is(id));
+            mongoTemplate.remove(reviewQuery, Review.class);
+
+
             Query query = new Query(Criteria.where("parent_asin").is(id));
             Update update = new Update().set("isActive", false);
             mongoTemplate.updateMulti(query, update, Product.class);
@@ -68,6 +71,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<String> deleteReviewAdmin(String reviewId) {
         try {
             Review review = reviewRepository.findById(reviewId)

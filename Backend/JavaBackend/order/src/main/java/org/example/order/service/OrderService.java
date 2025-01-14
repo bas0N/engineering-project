@@ -15,8 +15,6 @@ import java.util.Optional;
 public interface OrderService {
     OrderResponse createOrder(OrderRequest order, HttpServletRequest request, HttpServletResponse response);
 
-    void completeOrder(Notify notify);
-
     String createStripePayment(OrderResponse orderResponse);
 
     void updateOrderStatus(String orderId, Status status);

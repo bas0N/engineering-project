@@ -40,13 +40,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            String path = exchange.getRequest().getURI().getPath();
-            if (path.startsWith("/ws/")) {
-                log.info("Detected WebSocket request. Skipping AuthenticationFilter for path: {}", path);
-                return chain.filter(exchange).doOnSuccess(aVoid -> {
-                    log.info("Przekierowanie zakończone sukcesem");
-                });
-            }
             log.info("Processing request for path: {}", exchange.getRequest().getURI());
             log.info("--START GatewayFilter");
             if (validator.isSecure.test(exchange.getRequest())) {
@@ -121,7 +114,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             log.info("--STOP GatewayFilter");
             log.info("Forwarding request to downstream service: {}", exchange.getRequest().getURI());
             return chain.filter(exchange).doOnSuccess(aVoid -> {
-                log.info("Przekierowanie zakończone sukcesem");
+                log.info("Redirecting finished with success");
             });
         };
     }

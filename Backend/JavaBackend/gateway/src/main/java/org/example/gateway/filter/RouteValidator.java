@@ -19,7 +19,8 @@ public class RouteValidator {
             new Endpoint("/auth/register", HttpMethod.POST, Role.GUEST),
             new Endpoint("/auth/login", HttpMethod.POST, Role.GUEST),
             new Endpoint("/auth/validate", HttpMethod.GET, Role.GUEST),
-            new Endpoint("/auth/authorize", HttpMethod.GET, Role.GUEST)
+            new Endpoint("/auth/authorize", HttpMethod.GET, Role.GUEST),
+            new Endpoint("/auth/verify", HttpMethod.GET, Role.GUEST)
     )
     );
     private final Set<Endpoint> adminEndpoints = new HashSet<>(List.of(
