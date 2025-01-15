@@ -542,15 +542,15 @@ public class ProductServiceImpl implements ProductService {
 
             Page<Product> productPage = productRepository.findByUserId(userId, pageable);
 
-            if (productPage.isEmpty()) {
-                throw new ResourceNotFoundException(
-                        "Product",
-                        "userId",
-                        userId,
-                        "PRODUCTS_NOT_FOUND",
-                        Map.of("userId", userId)
-                );
-            }
+//            if (productPage.isEmpty()) {
+//                throw new ResourceNotFoundException(
+//                        "Product",
+//                        "userId",
+//                        userId,
+//                        "PRODUCTS_NOT_FOUND",
+//                        Map.of("userId", userId)
+//                );
+//            }
 
             Page<ProductResponse> productResponsePage = productPage.map(productMapper::toProductResponse);
 

@@ -281,4 +281,21 @@ public class CustomGlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(MissingUserDetailsException.class)
+    public ResponseEntity<?> handleMissingUserDetailsException(MissingUserDetailsException ex, WebRequest request) {
+        String errorMessage = ex.getMessage();
+        String requestDescription = request.getDescription(false);
+        String errorCode = ex.getErrorCode() != null ? ex.getErrorCode() : "MISSING_USER_DETAILS";
+        Map<String, Object> additionalDetails = ex.getAdditionalDetails();
+
+        log.error("Missing user details: {}, Error Code: {}, Request Description: {}, Additional Details: {}",
+                errorMessage, errorCode, requestDescription, additionalDetails);
+
+        return buildGenericErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Missing user details. Please check your request.",
+                ex.getErrorCode() != null ? ex.getErrorCode() : "MISSING_USER_DETAILS"
+        );
+    }
+
 }
