@@ -245,7 +245,7 @@ services:
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       POSTGRES_DB: auth_db
     ports:
-      - "5432:5432"
+      - "5431:5432"
     networks:
       - microservices-network
 
