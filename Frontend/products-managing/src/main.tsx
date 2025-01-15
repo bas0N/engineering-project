@@ -4,17 +4,21 @@ import { FluentProvider, Toaster, webDarkTheme } from '@fluentui/react-component
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AddProduct from './addProduct/AddProduct.tsx';
+import ProductsList from './productsList/ProductsList.tsx';
 
 const router = createBrowserRouter([{
-  path: '/product/add',
+  path: 'assets/products/add',
   element: <AddProduct />
+}, {
+  path: 'assets/products/mine',
+  element: <ProductsList />
 }])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <FluentProvider theme={webDarkTheme}>
-      <RouterProvider router={router}/>
       <Toaster id='localToaster' />
+      <RouterProvider router={router}/>
     </FluentProvider>
   </StrictMode>,
 )

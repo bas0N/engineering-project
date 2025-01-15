@@ -41,5 +41,22 @@
         "userProductsNavigation": "Check my products",
         "productInspection": "Show the product",
         "finalizeCreation": "Finalize"
+    },
+    "productsList": {
+        "header": "Your products",
+        "loading": "Loading...",
+        "price": "Price",
+        "title": "Title",
+        "numberOfRatings": "Number of ratings",
+        "averageRating": "Average rating",
+        "store": "Store",
+        "deletionError": "Could not delete the item selected",
+        "loadingError": "Failed to load the items",
+        "deletionSuccessful": "Successfully deleted the selected item",
+        "actions": {
+            "columnHeader": "Action",
+            "checkout": "Checkout",
+            "delete": "Delete"
+        }
     }
 }

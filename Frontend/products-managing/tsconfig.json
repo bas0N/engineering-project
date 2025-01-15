@@ -7,6 +7,7 @@
     "strict": true,
     "moduleResolution": "node",
   },
+  "allowImportingTsExtensions": true,
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
