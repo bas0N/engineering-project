@@ -20,6 +20,8 @@ const UserSettings = React.lazy(() => import('userSettings/UserSettings'));
 const UserBasket = React.lazy(() => import('userBasket/UserBasket'));
 const Tiles = React.lazy(() => import('productsBrowsing/Tiles'));
 const Product = React.lazy(() => import('productsBrowsing/Product'));
+const AddProduct = React.lazy(() => import('productsManaging/AddProduct'));
+const ProductsList = React.lazy(() => import('productsManaging/ProductsList'));
 const Order = React.lazy(() => import('userOrder/UserOrder'));
 const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
 
@@ -51,6 +53,14 @@ const routes: RouteObject[] = [
   {
     path: '/basket/',
     element: <UserBasket />
+  },
+  {
+    path: '/products/add',
+    element: <AddProduct />
+  }, 
+  {
+    path: '/products/mine',
+    element: <ProductsList />
   },
   {
     path: '/order/',
