@@ -53,4 +53,9 @@ public class UserController {
         return userDetailsService.deleteImage(request);
     }
 
+    @GetMapping("my-userId")
+    public ResponseEntity<String> getMyUserId(HttpServletRequest request) {
+        return userDetailsService.getMyUserId(request);
+    }
+
 }
