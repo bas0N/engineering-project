@@ -91,6 +91,9 @@ const AddProduct = () => {
                     <Button onClick={() => navigate('/products/mine')}>
                         {t('addProduct.userProductsNavigation')}
                     </Button>
+                    <Button onClick={() => navigate(`/products/images/${productId}`)}>
+                        t{('addProduct.addImages')}
+                    </Button>
                     <Button onClick={() => navigate(`/products/mine/${productId}`)}>
                         {t('addProduct.productInspection')}
                     </Button>

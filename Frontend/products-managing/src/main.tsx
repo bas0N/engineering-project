@@ -5,6 +5,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AddProduct from './addProduct/AddProduct.tsx';
 import ProductsList from './productsList/ProductsList.tsx';
+import ProductImageManagement from './productImageManagement/ProductImageManagement.tsx';
 
 const router = createBrowserRouter([{
   path: 'assets/products/add',
@@ -12,6 +13,9 @@ const router = createBrowserRouter([{
 }, {
   path: 'assets/products/mine',
   element: <ProductsList />
+}, {
+  path: 'assets/products/images/:productId',
+  element: <ProductImageManagement />
 }])
 
 createRoot(document.getElementById('root')!).render(
