@@ -5,8 +5,33 @@ const config: JestConfigWithTsJest = {
   verbose: true,
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  moduleNameMapper: {
+    '^authComponents/AuthProvider$': '<rootDir>/src/__mocks__/AuthProviderMock.ts'
+  },
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { useESM: true }]
+    '^.+\\.tsx?$': ['ts-jest', { 
+      useESM: true,
+      diagnostics: {
+        ignoreCodes: [1343],
+      },
+      astTransformers: {
+        before: [
+          {
+            path: 'node_modules/ts-jest-mock-import-meta',
+            options: {
+              metaObjectReplacement: {
+                env: {
+                  VITE_PREVIEW_MODE: true,
+                  VITE_API_URL: 'http://localhost:3001/',
+                  VITE_BLOCK_I18NEXT: true
+                },
+              },
+            },
+          },
+        ],
+      },
+    }]
   },
   testPathIgnorePatterns: ['./dist']
 }

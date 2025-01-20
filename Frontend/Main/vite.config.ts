@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from "@originjs/vite-plugin-federation"
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -15,6 +14,7 @@ export default defineConfig({
         userBasket: 'http://localhost:4175/assets/remoteUserBasketEntry.js',
         productsBrowsing: 'http://localhost:4176/assets/remoteProductsBrowsingEntry.js',
         userOrder: 'http://localhost:4177/assets/remoteUserOrderEntry.js',
+        productsManaging: 'http://localhost:4178/assets/assets/remoteProductsManagingEntry.js'
       },
       shared: ['react', 'react-dom', 'react-router-dom', '@fluentui/react-components', 'react-i18next']
     })

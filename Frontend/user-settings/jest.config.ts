@@ -5,6 +5,9 @@ const config: JestConfigWithTsJest = {
   verbose: true,
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
+  transformIgnorePatterns: [
+    "<rootDir>/i18n/i18n.tsx"
+  ],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { 
       useESM: true,

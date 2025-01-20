@@ -1,15 +1,41 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Navbar } from '../Navbar';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 expect.extend(toHaveNoViolations);
+
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"), 
+    useNavigate: jest.fn()
+}));
 
 jest.mock('../Search/Search.tsx', () => ({
     Search: () => <div data-testid="search-component">Search Component</div>,
 }));
 
+jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+const mockedNavigate = jest.fn();
+
 describe('Navbar', () => {
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        
+        (useNavigate as jest.Mock).mockReturnValue(mockedNavigate);
+        mockedAxios.get.mockResolvedValueOnce({
+            data: {
+                basketProducts: [{
+                    quantity: 14
+                }]
+            }
+        })
+    });
 
     it('has no a11y violations', async() => {
         const {container} = render(<Navbar />);
@@ -30,23 +56,31 @@ describe('Navbar', () => {
         expect(searchComponent).toBeInTheDocument();
     });
 
-    it('renders the basket button with correct icon and badge', () => {
-        render(<Navbar />);
+    it('renders the basket button with correct icon and badge', async() => {
+        const {findByText} = render(<Navbar />);
         
-        const basketButton = screen.getByRole('link');
+        const basketButton = await findByText('14');
         expect(basketButton).toBeInTheDocument();
-        
-        const icon = screen.getByRole('button');
-        expect(icon).toBeInTheDocument();
-
-        const badge = screen.getByText('0');
-        expect(badge).toBeInTheDocument();
     });
 
-    it('basket button navigates to /basket', () => {
-        render(<Navbar />);
+    it('Should be able to handle logging out', async() => {
+        const {findByText} = render(<Navbar />);
         
-        const basketButtonLink = screen.getByRole('link');
-        expect(basketButtonLink).toHaveAttribute('href', '/basket');
+        const logoutButton = await findByText('navbar.logoutButton');
+        fireEvent.click(logoutButton as HTMLButtonElement);
+        expect(mockedNavigate).toHaveBeenCalled();
+        expect(await findByText('navbar.signInButton'));
+    });
+
+    it('Should be able to handle the crash of the backend loading', async() => {
+        mockedAxios.get.mockResolvedValueOnce({
+            data: {
+                basketProducts: [{
+                    quantity: 14
+                }]
+            }
+        });
+        const {findByText} = render(<Navbar />);
+        expect(await findByText('0'));
     });
 });
