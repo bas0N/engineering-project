@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import i18next from "i18next";
 import Backend from "i18next-http-backend";
 import { initReactI18next } from "../../node_modules/react-i18next";

@@ -28,8 +28,7 @@ export default function Basket() {
       setBasketItems(result.data.basketProducts);
       setBasketPrice(result.data.summaryPrice);
 
-    } catch (error){
-      console.log(error);
+    } catch {
       dispatchToast(<Toast>
         <ToastTitle>{t('basket.somethingWentWrong')}</ToastTitle>
       </Toast>, {position: 'top-end', intent: 'error'});

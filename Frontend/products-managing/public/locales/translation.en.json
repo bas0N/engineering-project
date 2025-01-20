@@ -1,0 +1,80 @@
+{
+    "addProduct": {
+        "title": "Product adding",
+        "titlePlaceholder": "Product title...",
+        "descriptionPlaceholder": "Product description...",
+        "categories": {
+            "header": "Product categories",
+            "newCategoryPlaceholder": "Enter new category..."
+        },
+        "features": {
+            "header": "Product features",
+            "newFeaturePlaceholder": "Enter new feature...",
+            "moveUpLabel": "Move the feature up",
+            "movedownLabel": "Move the feature down",
+            "deleteLabel": "Delete feature"
+        },
+        "details": {
+            "header": "Details",
+            "detailNamePlaceholder": "Select detail name...",
+            "detailValuePlaceholder": "Detail value...",
+            "addDetailLabel": "Add",
+            "editLabel": "Edit detail",
+            "deleteLabel": "Delete detail"
+        },
+        "finalization": {
+            "title": "Title",
+            "description": "Description",
+            "categories": "Categories",
+            "details": "Details",
+            "features": "Features"
+        },
+        "store": "Selling store",
+        "price": "Product price",
+        "mainCategory": "Select main category",
+        "storePlaceholder": "Enter store name...",
+        "pricePlaceholder": "Enter product's price...",
+        "goBack": "Go back",
+        "finalizationHeader": "Finalize product creation",
+        "finalizeProductCreation": "Create product",
+        "productAdded": "Product successfully added!",
+        "userProductsNavigation": "Check my products",
+        "productInspection": "Show the product",
+        "finalizeCreation": "Finalize"
+    },
+    "productsList": {
+        "header": "Your products",
+        "loading": "Loading...",
+        "price": "Price",
+        "title": "Title",
+        "numberOfRatings": "Number of ratings",
+        "averageRating": "Average rating",
+        "store": "Store",
+        "deletionError": "Could not delete the item selected",
+        "loadingError": "Failed to load the items",
+        "deletionSuccessful": "Successfully deleted the selected item",
+        "actions": {
+            "columnHeader": "Action",
+            "checkout": "Checkout",
+            "delete": "Delete"
+        }
+    },
+    "productsImageManagement": {
+        "notFound": "Product not found",
+        "addingImage": "Add product image",
+        "error": "Failed to load your data",
+        "addNewImage": "Add new image",
+        "addingProduct": {
+            "header": "Add your product's image",
+            "load": "Load image",
+            "loadProduct": "Image not chosen",
+            "loadingProduct": "Loading...",
+            "productLoaded": "Image loaded",
+            "upload": "Upload image",
+            "imageInput": "Image input",
+            "closeButton": "Close panel",
+            "productSuccessfullyAdded": "Image successfully added",
+            "uploadFailed": "Something went wrong"
+        }
+    }
+}

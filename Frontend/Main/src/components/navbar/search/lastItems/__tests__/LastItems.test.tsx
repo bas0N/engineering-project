@@ -11,27 +11,57 @@ jest.mock('react-router', () => ({
     useNavigate: () => mockNavigate,
 }));
 
+const MOCK_CLOSE_LAST_ITEMS = jest.fn();
+
 const MOCK_ITEMS:ItemType[] = [{
-    name: 'mock item1',
-    image: 'mock',
-    no_of_ratings: '40',
-    ratings: '4.1',
-    id: 'mockId'
+    id: 'mockId',
+    boughtTogether: null,
+    categories: [],
+    description: [],
+    details: {},
+    features: [],
+    images: [],
+    averageRating: 4.8,
+    mainCategory: null,
+    parentAsin: 'mockId',
+    price: '15.23',
+    ratingNumber: 40,
+    store: 'alpha',
+    title: 'mock item1',
+    videos: []
 },{
-    name: 'mock item2',
-    image: 'mock',
-    no_of_ratings: null,
-    ratings: '0',
-    id: 'mockId2'
+    id: 'mockId2',
+    boughtTogether: null,
+    categories: [],
+    description: [],
+    details: {},
+    features: [],
+    images: [],
+    averageRating: null,
+    mainCategory: null,
+    parentAsin: 'mockId2',
+    price: '14.99',
+    ratingNumber: null,
+    store: 'beta',
+    title: 'mock item2',
+    videos: []
 },];
 
 const TestComponent = () => (
     <MemoryRouter>
-        <LastItems items={MOCK_ITEMS} />
+        <LastItems 
+            items={MOCK_ITEMS} 
+            closeLastItems={MOCK_CLOSE_LAST_ITEMS} 
+        />
     </MemoryRouter>
 );
 
 describe('Search items', () => {
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    })
+
     it('Should have no a11y violations', async() => {
         const {container} = render(<TestComponent />);
         expect(await axe(container)).toHaveNoViolations();
@@ -67,6 +97,9 @@ describe('Search items', () => {
 
         fireEvent.click(queryAllByText('mock item2')[0] as HTMLElement);
         expect(mockNavigate).toHaveBeenCalledWith('/products/mockId2');
+
+        fireEvent.click(hoveredName);
+        expect(MOCK_CLOSE_LAST_ITEMS).toHaveBeenCalled();
     });
 
     it('displays rating for items with ratings', () => {

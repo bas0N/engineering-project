@@ -20,7 +20,7 @@ export type BasketItemType = {
     summaryPrice: number;
 };
 
-interface BasketItemsProps {
+export interface BasketItemsProps {
     items: BasketItemType[];
     deleteItemCallback: (id: string) => void;
 }
@@ -31,7 +31,6 @@ export const BasketItems = ({
 }: BasketItemsProps) => {
 
     const {t} = useTranslation();
-    console.log(items);
 
     return (<BasketItemsWrapper>
         {items.length > 0 ?

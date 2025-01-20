@@ -13,7 +13,7 @@ import { User } from "../../UsersList.helper";
 import { UserDetailsWrapper } from './UserDetails.styled';
 import { UserDetailsFrame } from "./userDetailsFrame/UserDetailsFrame";
 
-interface UserDetails {
+export interface UserDetailsProps {
     users: User[];
     closeUserDetails: () => void;
 }
@@ -21,14 +21,13 @@ interface UserDetails {
 export const UserDetails = ({
     users=[],
     closeUserDetails
-}: UserDetails) => {
+}: UserDetailsProps) => {
     const getAnnouncement: CarouselAnnouncerFunction = (
         index: number,
         totalSlides: number,
         ) => {
     return `Carousel slide ${index + 1} of ${totalSlides}`;
     };
-    console.log(users);
     return (
         <UserDetailsWrapper>
             <Carousel 

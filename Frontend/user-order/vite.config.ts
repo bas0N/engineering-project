@@ -11,7 +11,7 @@ export default defineConfig({
       filename: 'remoteUserOrderEntry.js',
       exposes: {
         './UserOrder': './src/components/Order/Order.tsx',
-        './OrderHistory': './src/components/Order/OrderHistory.tsx'
+        './OrderHistory': './src/components/Order/OrderHistory/OrderHistory.tsx'
       },
       shared: ['react', 'react-dom', 'react-router-dom', 'react-i18next', '@fluentui/react-components']
     })

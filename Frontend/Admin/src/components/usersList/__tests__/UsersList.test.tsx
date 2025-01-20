@@ -3,6 +3,8 @@ import axios from 'axios';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { User, nullableStringsComparator , modifyTableText } from "../UsersList.helper";
 import { UsersList } from '../UsersList';
+import { UserDetailsProps } from '../components/userDetails/UserDetails';
+import { FiltersProps } from '../components/filters/Filters';
 
 expect.extend(toHaveNoViolations);
 
@@ -33,15 +35,23 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../components/filters/Filters', () => ({
     ...jest.requireActual('../components/filters/Filters'),
-    Filters: ({handleFilterChange, deleteMarkedUsers}:{
-        handleFilterChange: (newFilter: string) => void;
-        deleteMarkedUsers: () => void;
-    }) => (<>
-        <button onClick={() => handleFilterChange('firstName')}>TEST FILTER CHANGE</button>
-        <button onClick={() => handleFilterChange('')}>TEST CLEAR FILTER CHANGE</button>
-        <button onClick={() => deleteMarkedUsers()}>TEST DELETE USERS</button>
+    Filters: (props: FiltersProps) => (<>
+        <button onClick={() => props.handleFilterChange('firstName')}>TEST FILTER CHANGE</button>
+        <button onClick={() => props.handleFilterChange('')}>TEST CLEAR FILTER CHANGE</button>
+        <button onClick={() => props.triggerDetailsShowing()}>TEST DETAILS SHOWING</button>
+        <button onClick={() => props.deleteMarkedUsers()}>TEST DELETE USERS</button>
     </>)
 }))
+
+jest.mock('../components/userDetails/UserDetails', () => ({
+    ...jest.requireActual('../components/userDetails/UserDetails'),
+    UserDetails: (props: UserDetailsProps) => (<>
+        <div>{JSON.stringify(props.users)}</div>
+        <button onClick={() => props.closeUserDetails()}>
+            CLOSE USER DETAILS
+        </button>
+    </>)
+}));
 
 describe('Users List', () => {
     describe('Helper functions', () => {
@@ -125,7 +135,7 @@ describe('Users List', () => {
             });
             render(<UsersList />);
             expect(mockedAxios.get).not.toHaveBeenCalled();
-        })
+        });
 
         it('Should display the users table and have no a11y violations', async() => {
             mockedAxios.get.mockResolvedValueOnce({
@@ -165,8 +175,15 @@ describe('Users List', () => {
                     content: [MOCK_USER_1, MOCK_USER_2]
                 }
             });
-            const {findByText, findAllByRole, queryByText} = render(<UsersList />);
+            const {findByText, findAllByRole, findAllByText, queryByText} = render(<UsersList />);
             expect(await findByText('USER'));
+
+            fireEvent.click((await findAllByText('User Id') as HTMLElement[])[1]);
+            fireEvent.click((await findAllByText('First Name') as HTMLElement[])[1]);
+            fireEvent.click((await findAllByText('Last Name') as HTMLElement[])[1]);
+            fireEvent.click((await findAllByText('Email') as HTMLElement[])[1]);
+            fireEvent.click((await findAllByText('Role') as HTMLElement[])[1]);
+
             const filterTestButton = ((await findAllByRole('button', {name: 'TEST FILTER CHANGE'})) as HTMLButtonElement[])[1];
             expect(filterTestButton);
 
@@ -182,6 +199,25 @@ describe('Users List', () => {
             waitFor(() => {
                 expect(queryByText('USER')).toBeTruthy();
             })
+        });
+
+
+        it('Should be able to inspect user details', async() => {
+            mockedAxios.get.mockResolvedValueOnce({
+                data: {
+                    content: [MOCK_USER_1, MOCK_USER_2]
+                }
+            });
+            const {findByText, findAllByRole, queryAllByLabelText} = render(<UsersList />);
+            expect(await findByText('USER'));
+            expect(queryAllByLabelText('Select row').length).toEqual(4);
+            const userSelection = queryAllByLabelText('Select row')[3] as HTMLElement;
+            fireEvent.click(userSelection);
+
+            fireEvent.click((await findAllByRole('button', {name: 'TEST DETAILS SHOWING'}) as HTMLButtonElement[])[1]);
+            const closeDetailsButton = await findByText('CLOSE USER DETAILS') as HTMLButtonElement;
+            expect(closeDetailsButton);
+            fireEvent.click(closeDetailsButton);
         });
 
         it('Should be able to handle the user deletion', async() => {
