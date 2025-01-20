@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+//import App from './App.tsx'
 import './index.css'
 import { FluentProvider, webDarkTheme } from '@fluentui/react-components'
 import './i18n/i18n.tsx';
@@ -28,7 +28,7 @@ const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <App />
+    element: <SignInPanel />
   },
   {
     path: '/signin',

@@ -1,7 +1,8 @@
 import { axe, toHaveNoViolations } from "jest-axe";
 import axios from 'axios';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import Basket from './App';
+import { BasketItemsProps } from "./components/BasketItems/BasketItems";
 
 expect.extend(toHaveNoViolations);
 
@@ -13,7 +14,15 @@ jest.mock('./components/BasketSummary/BasketSummary.tsx', () => ({
 }));
 
 jest.mock('./components/BasketItems/BasketItems.tsx', () => ({
-    BasketItems: () => <div>BasketItems Component</div>,
+    ...jest.requireActual('./components/BasketItems/BasketItems.tsx'),
+    BasketItems: (props: BasketItemsProps) => <>
+        <div>BasketItems Component</div>
+        <section>
+            {props.items.map((elem) => <div onClick={() => props.deleteItemCallback(elem.uuid)}>
+                {JSON.stringify(elem)}
+            </div>)}
+        </section>
+    </>,
 }));
 
 describe('Basket microfrontend', () => {
@@ -46,5 +55,55 @@ describe('Basket microfrontend', () => {
         expect(getByText('basket.basketHeader'));
         expect(findByText('VALUE: 124'));
         expect(findByText('BasketItems Component'));
+    });
+
+    it('Should be able to delete an item', async() => {
+        mockedAxios.delete.mockResolvedValueOnce({});
+        const returnData = {data: {basketProducts: [{
+            uuid: 'testId2',
+            name: 'loremIpsumDolorSitAmetConsectetur',
+            image: 'mockImage2',
+            summaryPrice: 300,
+            quantity: 4,
+        }], summaryPrice: 124}};
+        mockedAxios.get.mockResolvedValue(returnData);
+        const {findByText} = render(<Basket />);
+
+        const deletionButton = await findByText(JSON.stringify({
+            uuid: 'testId2',
+            name: 'loremIpsumDolorSitAmetConsectetur',
+            image: 'mockImage2',
+            summaryPrice: 300,
+            quantity: 4,
+        })) as HTMLButtonElement;
+        expect(deletionButton);
+
+        fireEvent.click(deletionButton);
+        expect(mockedAxios.delete).toHaveBeenCalled();
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('Should be able to handle error deletion', async() => {
+        mockedAxios.delete.mockRejectedValueOnce(new Error('network failure'));
+        const returnData = {data: {basketProducts: [{
+            uuid: 'testId2',
+            name: 'loremIpsumDolorSitAmetConsectetur',
+            image: 'mockImage2',
+            summaryPrice: 300,
+            quantity: 4,
+        }], summaryPrice: 124}};
+        mockedAxios.get.mockResolvedValue(returnData);
+        const {findByText} = render(<Basket />);
+
+        const deletionButton = await findByText(JSON.stringify({
+            uuid: 'testId2',
+            name: 'loremIpsumDolorSitAmetConsectetur',
+            image: 'mockImage2',
+            summaryPrice: 300,
+            quantity: 4,
+        })) as HTMLButtonElement;
+        expect(deletionButton);
+
+        fireEvent.click(deletionButton);
     });
 });

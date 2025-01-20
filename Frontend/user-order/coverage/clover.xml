@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1735929519141" clover="3.2.0">
-  <project timestamp="1735929519141" name="All files">
-    <metrics statements="206" coveredstatements="203" conditionals="54" coveredconditionals="44" methods="28" coveredmethods="28" elements="288" coveredelements="275" complexity="0" loc="206" ncloc="206" packages="9" files="17" classes="17"/>
-    <package name="components.Address">
+<coverage generated="1737282156613" clover="3.2.0">
+  <project timestamp="1737282156613" name="All files">
+    <metrics statements="200" coveredstatements="198" conditionals="53" coveredconditionals="44" methods="28" coveredmethods="28" elements="281" coveredelements="270" complexity="0" loc="200" ncloc="200" packages="8" files="16" classes="16"/>
+    <package name="Address">
       <metrics statements="13" coveredstatements="13" conditionals="10" coveredconditionals="5" methods="6" coveredmethods="6"/>
       <file name="AddressForm.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Address/AddressForm.styled.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -24,7 +24,7 @@
         <line num="74" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Delivery">
+    <package name="Delivery">
       <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
       <file name="DeliveryMethod.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Delivery/DeliveryMethod.styled.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -43,7 +43,7 @@
         <line num="28" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Items">
+    <package name="Items">
       <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="BaksteItemList.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Items/BaksteItemList.styled.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -66,7 +66,7 @@
         <line num="23" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Order">
+    <package name="Order">
       <metrics statements="84" coveredstatements="83" conditionals="22" coveredconditionals="22" methods="7" coveredmethods="7"/>
       <file name="Order.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Order/Order.styled.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -159,7 +159,7 @@
         <line num="176" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Order.OrderHistory">
+    <package name="Order.OrderHistory">
       <metrics statements="38" coveredstatements="38" conditionals="6" coveredconditionals="5" methods="5" coveredmethods="5"/>
       <file name="OrderHistory.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Order/OrderHistory/OrderHistory.styled.tsx">
         <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -206,7 +206,7 @@
         <line num="90" count="2" type="stmt"/>
       </file>
     </package>
-    <package name="components.Order.OrderHistoryTableRow">
+    <package name="Order.OrderHistoryTableRow">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="OrderHistoryTableRow.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Order/OrderHistoryTableRow/OrderHistoryTableRow.styled.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
@@ -224,7 +224,7 @@
         <line num="14" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Order.OrderSummary">
+    <package name="Order.OrderSummary">
       <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <file name="OrderSummary.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Order/OrderSummary/OrderSummary.styled.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -241,7 +241,7 @@
         <line num="11" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="components.Order.Payment">
+    <package name="Order.Payment">
       <metrics statements="24" coveredstatements="23" conditionals="13" coveredconditionals="10" methods="2" coveredmethods="2"/>
       <file name="PaymentForm.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/components/Order/Payment/PaymentForm.styled.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -272,18 +272,6 @@
         <line num="38" count="0" type="stmt"/>
         <line num="40" count="3" type="stmt"/>
         <line num="43" count="10" type="stmt"/>
-      </file>
-    </package>
-    <package name="i18n">
-      <metrics statements="6" coveredstatements="5" conditionals="1" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="i18n.ts" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-order/src/i18n/i18n.ts">
-        <metrics statements="6" coveredstatements="5" conditionals="1" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="5" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
       </file>
     </package>
   </project>

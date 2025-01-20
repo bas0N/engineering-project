@@ -1,9 +1,9 @@
-import { Link } from '@fluentui/react-components';
+import { Link, Toast, ToastTitle, useToastController } from '@fluentui/react-components';
 import { Cart24Regular } from '@fluentui/react-icons';
 import { NavbarContainer, BasketButton, BasketButtonBadge, NavbarButton } from "./Navbar.styled"
 import { Search } from "./search/Search"
 import { useAuth } from 'authComponents/AuthProvider';
-import { useTranslation } from '../../../node_modules/react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCallback, useState, useEffect } from 'react';
@@ -14,10 +14,11 @@ export const Navbar = () => {
     const {t} = useTranslation();
     const navigate = useNavigate();
     const [productNumber, setProductNumber] = useState(0);
+    const {dispatchToast} = useToastController('mainToaster');
 
     const handleLogout = () => {
         logout();  
-        return navigate('/signin');
+        navigate('/signin');
     };
     const getBasketData = useCallback(async() => {
         try {
@@ -27,10 +28,12 @@ export const Navbar = () => {
             }
             });
             setProductNumber(result.data.basketProducts.map((elem: {quantity: number}) => elem.quantity).reduce((partialSum: number, a: number) => partialSum + a, 0))
-        } catch (error) {
-            console.log(error);
+        } catch {
+            dispatchToast(<Toast>
+                <ToastTitle>{t('navbar.failedToLoadBasket')}</ToastTitle>
+            </Toast>, {intent: 'error', position: 'top-end'})
         }
-    }, [token]);
+    }, [dispatchToast, t, token]);
 
     useEffect(() => {
         getBasketData();
@@ -43,8 +46,6 @@ export const Navbar = () => {
             window.removeEventListener("reloadBasketNumber", getBasketData)
         }
     },[getBasketData]);
-
-
 
     return (
         <NavbarContainer>
