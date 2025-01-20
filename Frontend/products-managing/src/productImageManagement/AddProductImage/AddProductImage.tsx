@@ -21,7 +21,7 @@ import axios from 'axios';
 interface AddingImagesProps {
     productId: string;
     toasterId: string;
-    closePanel: () => void;
+    closePanel: (added?: string) => void;
 }
 
 export const AddProductImage = ({
@@ -66,7 +66,7 @@ export const AddProductImage = ({
             dispatchToast(<Toast>
                 <ToastTitle>{t('productImageManagement.addingProduct.productSuccessfullyAdded')}</ToastTitle>
             </Toast>, {position: 'top-end', intent: 'success'});
-            closePanel();
+            closePanel('reload');
             setSending(false);
         } catch {
             dispatchToast(<Toast>

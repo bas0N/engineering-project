@@ -1,11 +1,34 @@
+import { Image } from '@fluentui/react-components';
 import { styled } from "styled-components";
 
-export const ImagesAddingWrapper = styled.section`
+export const ImagesManagementWrapper = styled.section`
+    width: calc(70% - 20px);
     padding: 10px;
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background: rgba(0,0,0,.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+`;
+
+export const ImageContainer = styled.div`
+    width: calc(100% - 20px);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid #aaa;
+`;
+
+export const ImageThumb = styled(Image).attrs({shape: 'rounded'})`
+    max-width: 80px;
+    max-height: 80px;
+`;
+
+export const ImageOperations = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 `;

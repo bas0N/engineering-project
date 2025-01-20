@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { 
@@ -36,28 +36,35 @@ export const ProductImageManagement = () => {
     const [addingNewImage, setAddingNewImage] = useState(false);
     const [currentImages, setCurrentImages] = useState<ImageType[] | null>(null);
 
-    useEffect(() => {
-        const getImagesData = async() => {
-            try {
-                setLoadingError(false);
-                setCurrentImages(null);
-                await axios.get(`${import.meta.env.VITE_API_URL}product/${params.productId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                setCurrentImages(result.data.images ?? []);
-            } catch {
-                dispatchToast(<Toast>
-                    <ToastTitle>{t('productImageManagement.loadingFailure')}</ToastTitle>
-                </Toast>, {position: 'top-end', intent: 'error'});
-                setLoadingError(true);
-            }
+    const getImagesData = useCallback(async() => {
+        try {
+            setLoadingError(false);
+            setCurrentImages(null);
+            const result = await axios.get(`${import.meta.env.VITE_API_URL}product/${params.productId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            setCurrentImages(result.data.images ?? []);
+        } catch {
+            dispatchToast(<Toast>
+                <ToastTitle>{t('productImageManagement.loadingFailure')}</ToastTitle>
+            </Toast>, {position: 'top-end', intent: 'error'});
+            setLoadingError(true);
         }
-
-        getImagesData();
     }, [dispatchToast, params.productId, t, token]);
+
+    useEffect(() => {
+        getImagesData();
+    }, [getImagesData]);
+
+    const handleClosingAddingPanel = async(adding?: string) => {
+        setAddingNewImage(false);
+        if(adding){
+            await getImagesData();
+        }
+    }
 
     if(params.productId === undefined) {
         return (<ProductsImageManagementWrapper>
@@ -80,12 +87,17 @@ export const ProductImageManagement = () => {
                 {
                     currentImages === null ? (<Spinner 
                         label={t('productImageManagement.loading')}
-                    />) : (<ImagesManagement />)
+                    />) : (<ImagesManagement 
+                        toasterId={toasterId}
+                        images={currentImages as ImageType[]} 
+                        productId={params.productId as string}
+                        reloadData={getImagesData}
+                    />)
                 }
                 {
                     addingNewImage && (<AddProductImage 
                         productId={params.productId as string}
-                        closePanel={() => setAddingNewImage(false)} 
+                        closePanel={handleClosingAddingPanel} 
                         toasterId={toasterId}
                     />)
                 }
