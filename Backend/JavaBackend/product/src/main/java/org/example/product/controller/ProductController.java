@@ -83,8 +83,8 @@ public class ProductController {
         return productService.updateImage(productId, hi_res, large, thumb, variant, order, request);
     }
 
-    @DeleteMapping(path = "/{productId}/image")
-    public ResponseEntity<String> deleteImage(@PathVariable String productId, @RequestParam("order") int order, HttpServletRequest request) {
+    @DeleteMapping(path = "/{productId}/image/{order}")
+    public ResponseEntity<String> deleteImage(@PathVariable String productId, @PathVariable("order") int order, HttpServletRequest request) {
         return productService.deleteImage(productId, order, request);
     }
 
