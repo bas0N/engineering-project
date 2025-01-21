@@ -13,6 +13,7 @@ export default defineConfig({
       exposes: {
         './AddProduct': './src/addProduct/AddProduct.tsx',
         './ProductsList': './src/productsList/ProductsList.tsx',
+        './ProductsLikes': './src/productsLikes/ProductsLikes.tsx',
       },
       shared: ['react', 'react-dom', 'react-router-dom', 'styled-components', 'react-i18next', '@fluentui/react-components'],
     })
