@@ -1,19 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { Button, Divider, Spinner, Text, Tooltip } from '@fluentui/react-components';
-import { 
-    BuildingRetailShield24Regular,
-    ChevronDoubleLeft20Regular,
-    ChevronDoubleRight20Regular
-} from '@fluentui/react-icons';
-import { useCallback, useEffect, useState } from 'react';
-import { 
-    ReviewDisplayWrapper, 
-    ReviewDisplayContainer, 
-    ReviewPaginationWrapper,
-    ReviewTitleWrapper,
-    ReviewPaginationPageDisplay,
-} from './ReviewDisplay.styled';
+import {
+    Spinner,
+    Text,
+} from '@fluentui/react-components';
+import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
+import {
+    ReviewDisplayWrapper,
+} from './ReviewDisplay.styled';
+import { ReviewPagination } from './components/ReviewPagination/ReviewPagination';
+import { Review, ParticularReviewDisplay } from './components/ParticularReviewDisplay/ParticularReviewDisplay';
+import { ReviewEditDialog } from './components/ReviewEditDialog/ReviewEditDialog';
 
 interface ReviewDisplayProps {
     productId: string;
@@ -21,73 +18,62 @@ interface ReviewDisplayProps {
     reloadTriggerer: boolean;
 }
 
-type Review = {
-    id: string;
-    title: string;
-    text: string;
-    userFirstName: string | null;
-    userLastName: string | null;
-    userId: string;
-    timestamp: string;
-    helpfulVote: number;
-    verifiedPurchase: boolean;
-}
-
 export const ReviewDisplay = ({
     productId,
     token,
     reloadTriggerer
-} : ReviewDisplayProps) => {
+}: ReviewDisplayProps) => {
 
     const {t} = useTranslation();
 
-    const [reviews, setReviews] = useState<Review[]|null>(null);
+    const [reviews, setReviews] = useState<Review[] | null>(null);
+
     const [pageNumber, setPageNumber] = useState(1);
 
-    const convertDateToHumanReadableFormat = (date: string) => {
-        const newDate = new Date(date);
-        const readableForm = newDate.toLocaleString('en-US', {
-            weekday: 'long',
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric', 
-            hour: 'numeric',
-            minute: '2-digit',
-            second: '2-digit', 
-            timeZoneName: 'short' 
-        });
-        return readableForm;
-    }
+    const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
 
-    const getReviewSubheader = (review: Review) => {
-        const firstPart = review.userLastName === null || review.userFirstName === null
-            ? t('product.reviews.anonymusUser')
-            : `${review.userFirstName}-${review.userLastName}`;
-        const datePart = convertDateToHumanReadableFormat(review.timestamp);
-        return `${firstPart}, ${datePart}`;
-    }
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [editReviewId, setEditReviewId] = useState<string | null>(null);
+    const [editTitle, setEditTitle] = useState('');
+    const [editText, setEditText] = useState('');
+    const [editRating, setEditRating] = useState(1);
+
+    const fetchLoggedInUserId = useCallback(async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}auth/user/my-userId`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setLoggedInUserId(response.data);
+        } catch (error) {
+            console.error('Failed to fetch logged-in user ID', error);
+        }
+    }, [token]);
 
     const processLeftPage = () => {
-        if(pageNumber - 1 > 0 && reviews !== null){
-            setPageNumber((number) => number-=1);
+        if (pageNumber - 1 > 0 && reviews !== null) {
+            setPageNumber((number) => number - 1);
         }
     };
 
     const processRightPage = () => {
-        if(reviews !== null && reviews.length === 10){
-            setPageNumber((number) => number+=1);
+        // If the length of reviews is exactly 10, it suggests more pages
+        if (reviews !== null && reviews.length === 10) {
+            setPageNumber((number) => number + 1);
         }
-    }
+    };
 
     const leftPaginationDisabled = pageNumber === 1 || reviews === null;
     const rightPaginationDisabled = reviews === null || reviews.length < 10;
 
-    const getReviewsData = useCallback(async() => {
+    // Fetch reviews from the backend
+    const getReviewsData = useCallback(async () => {
         setReviews(null);
         try {
             const result = await axios.get(`${import.meta.env.VITE_API_URL}product/review/${productId}/reviews`, {
                 params: {
-                    page: pageNumber-1
+                    page: pageNumber - 1
                 },
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -100,8 +86,60 @@ export const ReviewDisplay = ({
     }, [pageNumber, productId, token]);
 
     useEffect(() => {
+        fetchLoggedInUserId();
+    }, [fetchLoggedInUserId]);
+
+    useEffect(() => {
         getReviewsData();
     }, [reloadTriggerer, getReviewsData]);
+
+    const handleDeleteReview = async (reviewId: string) => {
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL}product/review/${reviewId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            // Refresh the review list
+            getReviewsData();
+        } catch (error) {
+            console.error('Failed to delete review:', error);
+        }
+    };
+
+    const handleOpenEditDialog = (review: Review) => {
+        setEditReviewId(review.id);
+        setEditTitle(review.title);
+        setEditText(review.text);
+        setEditRating(review.rating);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleCloseEditDialog = () => {
+        setIsEditDialogOpen(false);
+        setEditReviewId(null);
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editReviewId) return;
+
+        try {
+            const requestBody = {
+                title: editTitle,
+                text: editText,
+                rating: editRating,
+            };
+            await axios.put(`${import.meta.env.VITE_API_URL}product/review/${editReviewId}`, requestBody, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            getReviewsData();
+            handleCloseEditDialog();
+        } catch (error) {
+            console.error('Failed to update review:', error);
+        }
+    };
 
     return (
         <ReviewDisplayWrapper>
@@ -109,53 +147,48 @@ export const ReviewDisplay = ({
                 {t('product.reviews.reviewsTitle')}
             </Text>
             {
-                reviews === null ?
+                reviews === null ? (
                     <Spinner
-                        size='large' 
+                        size='large'
                         label={t('product.reviews.loadingReviews')}
                         labelPosition="after"
                     />
-                : <>
-                    {
-                        reviews.map((review) => (
-                            <ReviewDisplayContainer key={`review-${review.id}`}>
-                                <ReviewTitleWrapper>
-                                    <Text as='h3' size={500} weight='semibold'>{review.title}</Text>
-                                    {
-                                        review.verifiedPurchase && (
-                                            <Tooltip relationship='label' content={t('product.reviews.verifiedPurchase')}>
-                                                <BuildingRetailShield24Regular /> 
-                                            </Tooltip>
-                                        )
-                                    }
-                                </ReviewTitleWrapper>
-                                <Text as='h4'>
-                                    {getReviewSubheader(review)}
-                                </Text>
-                                <Text as='p'>{review.text}</Text>
-                                <Divider />
-                            </ReviewDisplayContainer>
-                        ))
-                    }
-                    <ReviewPaginationWrapper data-testid="pagination-section">
-                        <Button
-                            icon={<ChevronDoubleLeft20Regular />}
-                            appearance='subtle'
-                            onClick={processLeftPage}
-                            disabled={leftPaginationDisabled}
+                ) : (
+                    <>
+                        {
+                            reviews.map((review) => (
+                                <ParticularReviewDisplay 
+                                    key={`review-${review.id}`} 
+                                    review={review}
+                                    loggedInUserId={loggedInUserId}
+                                    handleOpenEditDialog={handleOpenEditDialog}
+                                    handleDeleteReview={handleDeleteReview}
+                                />
+                            ))
+                        }
+                        <ReviewPagination
+                            processLeftPage={processLeftPage}
+                            processRightPage={processRightPage}
+                            pageNumber={pageNumber}
+                            leftPaginationDisabled={leftPaginationDisabled}
+                            rightPaginationDisabled={rightPaginationDisabled}
                         />
-                        <ReviewPaginationPageDisplay>
-                            {pageNumber}
-                        </ReviewPaginationPageDisplay>
-                        <Button
-                            icon={<ChevronDoubleRight20Regular />}
-                            appearance='subtle'
-                            onClick={processRightPage}
-                            disabled={rightPaginationDisabled}
-                        />
-                    </ReviewPaginationWrapper>
-                </>
+                    </>
+                )
             }
+
+            <ReviewEditDialog 
+                isEditDialogOpen={isEditDialogOpen}
+                setEditRating={setEditRating}
+                setEditText={setEditText}
+                setEditTitle={setEditTitle}
+                handleCloseEditDialog={handleCloseEditDialog}
+                handleSaveEdit={handleSaveEdit}
+                editRating={editRating}
+                editText={editText}
+                editTitle={editTitle} 
+                setIsEditDialogOpen={setIsEditDialogOpen} 
+            />
         </ReviewDisplayWrapper>
     );
-}
+};

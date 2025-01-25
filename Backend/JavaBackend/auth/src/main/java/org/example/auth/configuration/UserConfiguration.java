@@ -47,6 +47,7 @@ public class UserConfiguration {
                                     "/api/v1/auth/user/details/**",
                                     "/api/v1/auth/user/details/personal-data",
                                     "/api/v1/auth/user/details/address",
+                                    "/api/v1/auth/user/my-userId",
                                     "/api/v1/auth/user/details/image",
                                     "/api/v1/auth/admin/delete-account/**",
                                     "/api/v1/auth/admin/user-details/**",

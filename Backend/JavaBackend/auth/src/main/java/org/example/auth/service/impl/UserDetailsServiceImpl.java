@@ -235,6 +235,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
+    public ResponseEntity<String> getMyUserId(HttpServletRequest request) {
+        try {
+            String userId = utils.extractUserIdFromRequest(request);
+            return ResponseEntity.ok(userId);
+
+        } catch (UnauthorizedException e) {
+            log.error("Unauthorized access while getting user ID for request: {}", request.getRequestURI(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error while retrieving user ID for request: {}", request.getRequestURI(), e);
+            throw new UnExpectedError(
+                    "An unexpected error occurred while retrieving user ID",
+                    e,
+                    "GET_USER_ID_ERROR",
+                    Map.of("timestamp", LocalDateTime.now())
+            );
+        }
+    }
+
+    @Override
     public ResponseEntity<UserDetailsResponse> getUserDetails(HttpServletRequest request) {
         try {
             String userId = utils.extractUserIdFromRequest(request);
