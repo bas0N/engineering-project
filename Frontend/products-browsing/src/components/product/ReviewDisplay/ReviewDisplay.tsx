@@ -1,33 +1,16 @@
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
-    Button,
-    Divider,
     Spinner,
     Text,
-    Tooltip,
-    Input,
-    Dialog,
-    DialogSurface,
-    DialogTitle,
-    DialogContent,
-    DialogActions, Field
 } from '@fluentui/react-components';
-import {
-    BuildingRetailShield24Regular,
-    ChevronDoubleLeft20Regular,
-    ChevronDoubleRight20Regular,
-    Edit24Regular,
-    Delete24Regular
-} from '@fluentui/react-icons';
 import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 import {
     ReviewDisplayWrapper,
-    ReviewDisplayContainer,
-    ReviewPaginationWrapper,
-    ReviewTitleWrapper,
-    ReviewPaginationPageDisplay
 } from './ReviewDisplay.styled';
+import { ReviewPagination } from './components/ReviewPagination/ReviewPagination';
+import { Review, ParticularReviewDisplay } from './components/ParticularReviewDisplay/ParticularReviewDisplay';
+import { ReviewEditDialog } from './components/ReviewEditDialog/ReviewEditDialog';
 
 interface ReviewDisplayProps {
     productId: string;
@@ -35,24 +18,11 @@ interface ReviewDisplayProps {
     reloadTriggerer: boolean;
 }
 
-type Review = {
-    id: string;
-    title: string;
-    text: string;
-    rating: number;        // CHANGED
-    userFirstName: string | null;
-    userLastName: string | null;
-    userId: string;
-    timestamp: string;
-    helpfulVote: number;
-    verifiedPurchase: boolean;
-};
-
 export const ReviewDisplay = ({
-                                  productId,
-                                  token,
-                                  reloadTriggerer
-                              }: ReviewDisplayProps) => {
+    productId,
+    token,
+    reloadTriggerer
+}: ReviewDisplayProps) => {
 
     const {t} = useTranslation();
 
@@ -76,34 +46,10 @@ export const ReviewDisplay = ({
                 },
             });
             setLoggedInUserId(response.data);
-            console.log('Fetched Logged-in User ID:', response.data);
         } catch (error) {
             console.error('Failed to fetch logged-in user ID', error);
         }
     }, [token]);
-
-    const convertDateToHumanReadableFormat = (date: string) => {
-        const newDate = new Date(date);
-        const readableForm = newDate.toLocaleString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short'
-        });
-        return readableForm;
-    };
-
-    const getReviewSubheader = (review: Review) => {
-        const firstPart = review.userLastName === null || review.userFirstName === null
-            ? t('product.reviews.anonymusUser')
-            : `${review.userFirstName}-${review.userLastName}`;
-        const datePart = convertDateToHumanReadableFormat(review.timestamp);
-        return `${firstPart}, ${datePart}`;
-    };
 
     const processLeftPage = () => {
         if (pageNumber - 1 > 0 && reviews !== null) {
@@ -141,12 +87,10 @@ export const ReviewDisplay = ({
 
     useEffect(() => {
         fetchLoggedInUserId();
-        console.log('Logged-in User ID:', loggedInUserId);
     }, [fetchLoggedInUserId]);
 
     useEffect(() => {
         getReviewsData();
-        console.log('Reviews:', reviews);
     }, [reloadTriggerer, getReviewsData]);
 
     const handleDeleteReview = async (reviewId: string) => {
@@ -213,117 +157,38 @@ export const ReviewDisplay = ({
                     <>
                         {
                             reviews.map((review) => (
-                                <ReviewDisplayContainer key={`review-${review.id}`}>
-                                    <ReviewTitleWrapper>
-                                        <Text as='h3' size={500} weight='semibold'>{review.title}</Text>
-                                        {
-                                            review.verifiedPurchase && (
-                                                <Tooltip
-                                                    relationship='label'
-                                                    content={t('product.reviews.verifiedPurchase')}
-                                                >
-                                                    <BuildingRetailShield24Regular/>
-                                                </Tooltip>
-                                            )
-                                        }
-                                        {
-                                            loggedInUserId === review.userId && (
-                                                <div style={{display: 'flex', gap: '8px'}}>
-                                                    <Tooltip
-                                                        relationship='label'
-                                                        content={t('product.reviews.editReviewTooltip')}
-                                                    >
-                                                        <Button
-                                                            icon={<Edit24Regular/>}
-                                                            appearance='subtle'
-                                                            onClick={() => handleOpenEditDialog(review)}
-                                                        />
-                                                    </Tooltip>
-                                                    <Tooltip
-                                                        relationship='label'
-                                                        content={t('product.reviews.deleteReviewTooltip')}
-                                                    >
-                                                        <Button
-                                                            icon={<Delete24Regular/>}
-                                                            appearance='subtle'
-                                                            onClick={() => handleDeleteReview(review.id)}
-                                                        />
-                                                    </Tooltip>
-                                                </div>
-                                            )
-                                        }
-                                    </ReviewTitleWrapper>
-                                    <Text as='h4'>
-                                        {getReviewSubheader(review)}
-                                    </Text>
-                                    <Text as='span' style={{fontWeight: 600}}>
-                                        {t('product.reviews.ratingLabel')}: {review.rating}/5
-                                    </Text>
-                                    <Text as='p'>{review.text}</Text>
-                                    <Divider/>
-                                </ReviewDisplayContainer>
+                                <ParticularReviewDisplay 
+                                    key={`review-${review.id}`} 
+                                    review={review}
+                                    loggedInUserId={loggedInUserId}
+                                    handleOpenEditDialog={handleOpenEditDialog}
+                                    handleDeleteReview={handleDeleteReview}
+                                />
                             ))
                         }
-                        <ReviewPaginationWrapper data-testid="pagination-section">
-                            <Button
-                                icon={<ChevronDoubleLeft20Regular/>}
-                                appearance='subtle'
-                                onClick={processLeftPage}
-                                disabled={leftPaginationDisabled}
-                            />
-                            <ReviewPaginationPageDisplay>
-                                {pageNumber}
-                            </ReviewPaginationPageDisplay>
-                            <Button
-                                icon={<ChevronDoubleRight20Regular/>}
-                                appearance='subtle'
-                                onClick={processRightPage}
-                                disabled={rightPaginationDisabled}
-                            />
-                        </ReviewPaginationWrapper>
+                        <ReviewPagination
+                            processLeftPage={processLeftPage}
+                            processRightPage={processRightPage}
+                            pageNumber={pageNumber}
+                            leftPaginationDisabled={leftPaginationDisabled}
+                            rightPaginationDisabled={rightPaginationDisabled}
+                        />
                     </>
                 )
             }
 
-            <Dialog open={isEditDialogOpen} onOpenChange={(_, data) => setIsEditDialogOpen(data.open)}>
-                <DialogSurface>
-                    <DialogTitle>{t('product.reviews.editDialogTitle')}</DialogTitle>
-                    <DialogContent>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                            <Field label={t('product.reviews.titleInputLabel')}>
-                                <Input
-                                    value={editTitle}
-                                    onChange={(e) => setEditTitle(e.target.value)}
-                                />
-                            </Field>
-
-                            <Field label={t('product.reviews.textInputLabel')}>
-                                <Input
-                                    value={editText}
-                                    onChange={(e) => setEditText(e.target.value)}
-                                />
-                            </Field>
-
-                            <Field label={t('product.reviews.ratingLabel')}>
-                                <Input
-                                    type="number"
-                                    value={editRating.toString()}
-                                    onChange={(e) => setEditRating(Number(e.target.value))}
-                                />
-                            </Field>
-                        </div>
-                    </DialogContent>
-
-                    <DialogActions>
-                        <Button appearance='secondary' onClick={handleCloseEditDialog}>
-                            {t('common.cancel')}
-                        </Button>
-                        <Button appearance='primary' onClick={handleSaveEdit}>
-                            {t('common.save')}
-                        </Button>
-                    </DialogActions>
-                </DialogSurface>
-            </Dialog>
+            <ReviewEditDialog 
+                isEditDialogOpen={isEditDialogOpen}
+                setEditRating={setEditRating}
+                setEditText={setEditText}
+                setEditTitle={setEditTitle}
+                handleCloseEditDialog={handleCloseEditDialog}
+                handleSaveEdit={handleSaveEdit}
+                editRating={editRating}
+                editText={editText}
+                editTitle={editTitle} 
+                setIsEditDialogOpen={setIsEditDialogOpen} 
+            />
         </ReviewDisplayWrapper>
     );
 };

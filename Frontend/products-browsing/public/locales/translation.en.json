@@ -22,7 +22,9 @@
             "anonymusUser": "Anonymus user",
             "reviewsTitle": "Product reviews",
             "loadingReviews": "Loading reviews...",
-            "verifiedPurchase": "Purchase verified"
+            "verifiedPurchase": "Purchase verified",
+            "leftPagination": "See previous reviews",
+            "rightPagination": "See next reviews"
         }
     },
     "tiles": {
