@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AddProduct from './addProduct/AddProduct.tsx';
 import ProductsList from './productsList/ProductsList.tsx';
 import ProductImageManagement from './productImageManagement/ProductImageManagement.tsx';
+import ProductsLikes from './productsLikes/ProductsLikes.tsx';
 
 const router = createBrowserRouter([{
   path: 'assets/products/add',
@@ -16,6 +17,9 @@ const router = createBrowserRouter([{
 }, {
   path: 'assets/products/images/:productId',
   element: <ProductImageManagement />
+}, {
+  path: 'assets/products/likes/',
+  element: <ProductsLikes />
 }])
 
 createRoot(document.getElementById('root')!).render(

@@ -111,5 +111,14 @@
     "somethingWentWrong": "Qualcosa è andato storto...",
     "quantityInput": "Inserimento della quantità del prodotto",
     "deleteButton": "Pulsante di cancellazione"
+  },
+  "productsLikes": {
+    "header": "Prodotti che vi sono piaciuti",
+    "rating": "Valutazione",
+    "price": "Prezzo",
+    "loading": "Caricamento...",
+    "loadingError": "Qualcosa è andato storto",
+    "reviews": "recensioni",
+    "noProducts": "Nessun prodotto è ancora piaciuto"
   }
 }

@@ -76,5 +76,14 @@
       "productSuccessfullyAdded": "Image successfully added",
       "uploadFailed": "Something went wrong"
     }
+  },
+  "productsLikes": {
+    "header": "Products You Have Liked",
+    "rating": "Rating",
+    "price": "Price",
+    "loading": "Loading...",
+    "loadingError": "Something went wrong",
+    "reviews": "reviews",
+    "noProducts": "No products liked yet"
   }
 }
