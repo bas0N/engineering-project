@@ -248,9 +248,11 @@ public class LikeServiceImpl implements LikeService {
                 ProductEvent productEvent = productService.getProduct(productUuid, userUuid);
 
                 Product product = productMapper.toProduct(productEvent);
-                List<Image> images = productEvent.getImages().stream()
+                List<Image> images = (productEvent.getImages() != null)
+                        ? productEvent.getImages().stream()
                         .map(imageEvent -> imageMapper.toImage(imageEvent, product))
-                        .toList();
+                        .toList()
+                        : List.of();
 
                 product.setImages(images);
                 log.info("Saving fetched product: {}", product);
