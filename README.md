@@ -9,26 +9,28 @@ This project is the Engineer thesis of Wojciech Basiński, Szymon Kupisz, and Ja
 1. NPM installed, version 10.1.0 or newer
 2. Node.JS installed, version 20.9.0 or newer
 
+#### Main application
+
 - Installation process:
 1. `cd Main`
-2. `npm i`
+2. `npm install`
 3. `cd ../auth-module`
-4. `npm i `
+4. `npm install `
 5. `npm run build`
 6. `cd ../products-browsing`
-7. `npm i `
+7. `npm install `
 8. `npm run build`
 9. `cd ../products-managing`
-10. `npm i `
+10. `npm install `
 11. `npm run build`
 12. `cd ../user-settings`
-13. `npm i `
+13. `npm install `
 14. `npm run build`
 15. `cd ../user-basket`
-16. `npm i `
+16. `npm install `
 17. `npm run build`
 18. `cd ../user-order`
-19. `npm i `
+19. `npm install `
 20. `npm run build`
 
 - Running the frontend part:
@@ -41,3 +43,11 @@ Then, in the last terminal tab remaining, type the following commands:
 2. `npm run dev`
 
 If the application setup was correct, the web application should be available at `http://localhost:5173`.
+
+#### Administrator app
+
+- Instalation process: 
+1. `cd Admin`
+2. `npm install`
+
+To run the application type `npm run dev` in your terminal. The application should be available at `http://localhost:5174`.
