@@ -1,5 +1,5 @@
 import { Text } from "@fluentui/react-components";
-import { useTranslation } from "../../../node_modules/react-i18next";
+import { useTranslation } from "react-i18next";
 import { Page404Container } from "./Page404.styled";
 
 export const Page404 = () => {
