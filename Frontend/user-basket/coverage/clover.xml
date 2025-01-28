@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1737280866901" clover="3.2.0">
-  <project timestamp="1737280866901" name="All files">
-    <metrics statements="74" coveredstatements="74" conditionals="12" coveredconditionals="9" methods="10" coveredmethods="10" elements="96" coveredelements="93" complexity="0" loc="74" ncloc="74" packages="3" files="6" classes="6"/>
+<coverage generated="1738074891463" clover="3.2.0">
+  <project timestamp="1738074891463" name="All files">
+    <metrics statements="80" coveredstatements="80" conditionals="16" coveredconditionals="13" methods="11" coveredmethods="11" elements="107" coveredelements="104" complexity="0" loc="80" ncloc="80" packages="3" files="6" classes="6"/>
     <package name="src">
-      <metrics statements="39" coveredstatements="39" conditionals="8" coveredconditionals="5" methods="5" coveredmethods="5"/>
+      <metrics statements="45" coveredstatements="45" conditionals="12" coveredconditionals="9" methods="6" coveredmethods="6"/>
       <file name="App.styled.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/App.styled.tsx">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -14,7 +14,7 @@
         <line num="32" count="1" type="stmt"/>
       </file>
       <file name="App.tsx" path="/Users/granarax/projects/inzynierka/monorepo/engineering-project/Frontend/user-basket/src/App.tsx">
-        <metrics statements="33" coveredstatements="33" conditionals="8" coveredconditionals="5" methods="5" coveredmethods="5"/>
+        <metrics statements="39" coveredstatements="39" conditionals="12" coveredconditionals="9" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -24,30 +24,36 @@
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
-        <line num="12" count="11" type="stmt"/>
-        <line num="13" count="10" type="cond" truecount="1" falsecount="1"/>
-        <line num="14" count="10" type="stmt"/>
-        <line num="15" count="10" type="stmt"/>
-        <line num="16" count="10" type="stmt"/>
-        <line num="17" count="10" type="stmt"/>
-        <line num="18" count="10" type="stmt"/>
-        <line num="20" count="10" type="stmt"/>
-        <line num="21" count="9" type="stmt"/>
-        <line num="22" count="9" type="stmt"/>
-        <line num="23" count="9" type="stmt"/>
-        <line num="28" count="8" type="stmt"/>
-        <line num="29" count="7" type="stmt"/>
-        <line num="32" count="2" type="stmt"/>
-        <line num="35" count="2" type="stmt"/>
-        <line num="39" count="10" type="stmt"/>
-        <line num="40" count="8" type="stmt"/>
-        <line num="43" count="10" type="stmt"/>
-        <line num="44" count="2" type="stmt"/>
-        <line num="45" count="2" type="stmt"/>
-        <line num="48" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="54" count="1" type="stmt"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="62" count="10" type="stmt"/>
+        <line num="12" count="17" type="stmt"/>
+        <line num="13" count="16" type="cond" truecount="1" falsecount="1"/>
+        <line num="14" count="16" type="stmt"/>
+        <line num="15" count="16" type="stmt"/>
+        <line num="16" count="16" type="stmt"/>
+        <line num="17" count="16" type="stmt"/>
+        <line num="18" count="16" type="stmt"/>
+        <line num="19" count="16" type="stmt"/>
+        <line num="21" count="16" type="stmt"/>
+        <line num="22" count="13" type="stmt"/>
+        <line num="23" count="13" type="stmt"/>
+        <line num="24" count="13" type="stmt"/>
+        <line num="25" count="13" type="stmt"/>
+        <line num="30" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="33" count="7" type="stmt"/>
+        <line num="34" count="7" type="stmt"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="45" count="16" type="stmt"/>
+        <line num="46" count="12" type="stmt"/>
+        <line num="47" count="12" type="stmt"/>
+        <line num="49" count="12" type="stmt"/>
+        <line num="52" count="16" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="57" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="71" count="16" type="stmt"/>
       </file>
     </package>
     <package name="src.components.BasketItems">
@@ -70,12 +76,12 @@
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
-        <line num="13" count="2" type="stmt"/>
-        <line num="28" count="2" type="stmt"/>
-        <line num="33" count="3" type="stmt"/>
-        <line num="35" count="3" type="stmt"/>
-        <line num="37" count="6" type="stmt"/>
-        <line num="64" count="1" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="36" count="6" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.components.BasketSummary">
