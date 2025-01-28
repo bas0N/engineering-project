@@ -111,5 +111,14 @@
       "somethingWentWrong ": "Quelque chose n'a pas fonctionné...",
       "quantityInput ": "Entrée de la quantité du produit",
       "deleteButton ": "Bouton de suppression "
+  },
+  "productsLikes": {
+    "header": "Products You Have Liked",
+    "rating": "Rating",
+    "price": "Price",
+    "loading": "Loading...",
+    "loadingError": "Something went wrong",
+    "reviews": "reviews",
+    "noProducts": "No products liked yet"
   }
 }

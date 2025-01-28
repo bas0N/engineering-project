@@ -111,5 +111,14 @@
     "somethingWentWrong": "Etwas ging schief...",
     "quantityInput": "Eingabe der Menge des Produkts",
     "deleteButton": "Schaltfläche \"Löschen\""
+  },
+  "productsLikes": {
+    "header": "Produkte, die Sie geliked haben",
+    "rating": "Bewertung",
+    "price": "Preis",
+    "loading": "Laden...",
+    "loadingError": "Etwas ging schief",
+    "reviews": "Bewertungen",
+    "noProducts": "Noch keine Produkte gefallen"
   }
 }

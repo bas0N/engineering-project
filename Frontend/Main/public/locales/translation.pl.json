@@ -111,5 +111,14 @@
     "somethingWentWrong": "Coś poszło nie tak...",
     "quantityInput": "Input ilości produktu",
     "deleteButton": "Przycisk usuwania"
+  },
+  "productsLikes": {
+    "header": "Polubione produkty",
+    "rating": "Rating",
+    "price": "Cena",
+    "loading": "Ładowanie...",
+    "loadingError": "Coś poszło nie tak",
+    "reviews": "Recenzje",
+    "noProducts": "Brak polubionych produktów"
   }
 }

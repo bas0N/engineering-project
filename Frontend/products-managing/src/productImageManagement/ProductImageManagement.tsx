@@ -45,7 +45,7 @@ export const ProductImageManagement = () => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
-            })
+            });
             setCurrentImages(result.data.images ?? []);
         } catch {
             dispatchToast(<Toast>
@@ -56,7 +56,10 @@ export const ProductImageManagement = () => {
     }, [dispatchToast, params.productId, t, token]);
 
     useEffect(() => {
-        getImagesData();
+        const execGetImagesData = async() => {
+            await getImagesData();
+        }
+        execGetImagesData();
     }, [getImagesData]);
 
     const handleClosingAddingPanel = async(adding?: string) => {
@@ -72,6 +75,17 @@ export const ProductImageManagement = () => {
                 {t('productImageManagement.noProductFound')}
             </ProductsImageHeader>
         </ProductsImageManagementWrapper>);
+    }
+
+    if(loadingError) {
+        return <ProductsImageManagementWrapper>
+            <ProductsImageHeader as='h2'>
+                {t('productImageManagement.images')}
+            </ProductsImageHeader>
+            <ProductsImageError as='h3'>
+                {t('productImageManagement.error')}
+            </ProductsImageError>
+        </ProductsImageManagementWrapper>
     }
 
     return (<ProductsImageManagementWrapper>
@@ -106,7 +120,7 @@ export const ProductImageManagement = () => {
                 </Button>
             </>)
         }
-    </ProductsImageManagementWrapper>)
+    </ProductsImageManagementWrapper>);
 };
 
 export default ProductImageManagement;
