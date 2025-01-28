@@ -18,6 +18,22 @@ jest.mock('../Search/Search.tsx', () => ({
 
 jest.mock('axios');
 
+jest.mock('react-i18next', () => ({
+    ...jest.requireActual('react-i18next'),
+    useTranslation: () => {
+        return {
+            t: (path: string) => path,
+            i18n: {
+                options: {
+                    supportedLngs: ['en','pl'],
+                },
+                language: 'en',
+                changeLanguage: jest.fn()
+            }
+        }
+    }
+}))
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockedNavigate = jest.fn();
@@ -82,5 +98,20 @@ describe('Navbar', () => {
         });
         const {findByText} = render(<Navbar />);
         expect(await findByText('0'));
+    });
+
+    it('Should be able to change the language', async() => {
+        mockedAxios.get.mockResolvedValueOnce({
+            data: {
+                basketProducts: [{
+                    quantity: 14
+                }]
+            }
+        });
+        const {findByLabelText, findByText} = render(<Navbar />);
+        const languageDropdown = await findByLabelText('navbar.languageDropdown');
+        expect(languageDropdown);
+        fireEvent.click(languageDropdown as HTMLButtonElement);
+        fireEvent.click(await findByText('pl') as HTMLOptionElement);
     });
 });

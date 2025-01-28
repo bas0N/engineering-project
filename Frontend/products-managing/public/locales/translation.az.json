@@ -58,5 +58,23 @@
       "checkout": "Checkout",
       "delete": "Delete"
     }
+  },
+  "productsImageManagement": {
+    "notFound": "Product not found",
+    "addingImage": "Add product image",
+    "error": "Failed to load your data",
+    "addNewImage": "Add new image",
+    "addingProduct": {
+      "header": "Add your product's image",
+      "load": "Load image",
+      "loadProduct": "Image not chosen",
+      "loadingProduct": "Loading...",
+      "productLoaded": "Image loaded",
+      "upload": "Upload image",
+      "imageInput": "Image input",
+      "closeButton": "Close panel",
+      "productSuccessfullyAdded": "Image successfully added",
+      "uploadFailed": "Something went wrong"
+    }
   }
 }

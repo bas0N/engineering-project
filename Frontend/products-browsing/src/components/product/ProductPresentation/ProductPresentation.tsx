@@ -159,7 +159,7 @@ export const ProductPresentation = ({
             {
                 ratingNumber === null || averageRating === null ? <Text>{t('product.noRatings')}</Text>
                 : <>
-                    <ProductRatingDisplay value={averageRating} count={ratingNumber} />
+                    <ProductRatingDisplay value={Math.round(averageRating * 100)/100} count={ratingNumber} />
                     <ProductLikeingSection>
                         <Button 
                             appearance={isLiked ? 'primary' : 'subtle'} 

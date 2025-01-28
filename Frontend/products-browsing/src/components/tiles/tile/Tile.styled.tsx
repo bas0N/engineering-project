@@ -2,7 +2,7 @@ import { Image, Link } from '@fluentui/react-components';
 import styled from 'styled-components';
 
 export const TileContainer = styled(Link)<{height?: number}>`
-    height: calc(${(props) => props.height ?? 40}vh - 20px);
+    height: calc(${(props) => props.height ?? 60}vh - 20px);
     padding: 10px;
     border-radius: 10px;
     background: #333333a0;
