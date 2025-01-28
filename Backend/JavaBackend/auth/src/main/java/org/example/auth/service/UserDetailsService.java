@@ -23,4 +23,6 @@ public interface UserDetailsService {
     ResponseEntity<?> deleteImage(HttpServletRequest request) throws Exception;
 
     ResponseEntity<UserDetailsResponse> getUserDetailsByUUid(String userId);
+
+    ResponseEntity<String> getMyUserId(HttpServletRequest request);
 }

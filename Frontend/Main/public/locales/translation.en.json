@@ -14,10 +14,15 @@
       "signUpButton": "Sign up",
       "failureMessage": "Something went wrong. Try again"
     },
+    "landing": {
+      "header": "Logged in",
+      "desc": "You're now able to use the system"
+    },
     "navbar": {
       "logoutButton": "Logout",
       "signInButton": "Sign in",
-      "settingsButton": "Settings"
+      "settingsButton": "Settings",
+      "languageDropdown": "Change language"
     },
     "page404": {
       "title": "Something went wrong!",
@@ -51,20 +56,24 @@
           "anonymusUser": "Anonymus user",
           "reviewsTitle": "Product reviews",
           "loadingReviews": "Loading reviews...",
-          "verifiedPurchase": "Purchase verified"
+          "verifiedPurchase": "Purchase verified",
+          "leftPagination": "See previous reviews",
+          "rightPagination": "See next reviews",
+          "ratingLabel": "Rating"
       }
     },
     "tiles": {
       "sidebar": {
-        "header": "Search filters",
-        "categories": "Categories",
-        "price": "Price range",
-        "minPrice": "Min price...",
-        "maxPrice": "Max price...",
-        "categoriesDropdownPlaceholder": "Select categories..."
-      },
-      "sidebarOpeningButton": "Open filters",
-      "selectProductAmount": "Select amount of product"
+            "header": "Search filters",
+            "categories": "Categories",
+            "price": "Price range",
+            "minPrice": "Min price...",
+            "maxPrice": "Max price...",
+            "categoriesDropdownPlaceholder": "Select categories...",
+            "closingButton": "Closing button"
+        },
+        "sidebarOpeningButton": "Open filters",
+        "selectProductAmount": "Select amount of product"
     },
     "loading": "Loading...",
     "userSettings": {

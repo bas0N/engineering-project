@@ -1,6 +1,6 @@
 import { axe, toHaveNoViolations } from "jest-axe";
 import axios from 'axios';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import Basket from './App';
 import { BasketItemsProps } from "./components/BasketItems/BasketItems";
 
@@ -26,7 +26,7 @@ jest.mock('./components/BasketItems/BasketItems.tsx', () => ({
 }));
 
 describe('Basket microfrontend', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
     it('Should have no a11y violations', async() => {
@@ -36,10 +36,21 @@ describe('Basket microfrontend', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 
+    it('Should not render anything in case no items in the basket', async() => {
+        const returnData = {data: {basketProducts: null, summaryPrice: 0}};
+        mockedAxios.get.mockResolvedValue(returnData);
+        const {findByText} = render(<Basket />);
+        waitFor(async() => {
+            expect(await findByText('basket.noItems'));
+        })
+    });
+
     it('Should signalize if the loading failed', async() => {
         mockedAxios.get.mockRejectedValueOnce(new Error('testError'));
-        const {findByText} = render(<Basket />);
-        expect(findByText('basket.loadingFailed'));
+        const {getByText} = render(<Basket />);
+        waitFor(() => {
+            expect(getByText('basket.loadingFailed'));
+        });
     });
 
     it('Renders everything accordingly', async() => {
@@ -53,8 +64,8 @@ describe('Basket microfrontend', () => {
         mockedAxios.get.mockResolvedValueOnce(returnData);
         const {findByText, getByText} = render(<Basket />);
         expect(getByText('basket.basketHeader'));
-        expect(findByText('VALUE: 124'));
-        expect(findByText('BasketItems Component'));
+        expect(await findByText('VALUE: 124'));
+        expect(await findByText('BasketItems Component'));
     });
 
     it('Should be able to delete an item', async() => {

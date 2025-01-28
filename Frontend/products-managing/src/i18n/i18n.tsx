@@ -7,6 +7,7 @@ if (!import.meta.env.VITE_BLOCK_I18NEXT){
   i18next
     .use(initReactI18next)
     .use(Backend).init({
+    supportedLngs: ['en', 'it', 'de', 'pl'],
     fallbackLng: 'en',
     backend: {
       loadPath: '/locales/translation.{{lng}}.json'
