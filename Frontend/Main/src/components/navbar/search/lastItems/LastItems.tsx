@@ -49,7 +49,10 @@ export const LastItems = ({items, closeLastItems}: LastItemsProps) => {
     const [hoveredItem, setHoveredItem] = useState<ItemType | null>(null);
     const navigate = useNavigate();
 
-    const navigateToProduct = (productId: string) => navigate(`/products/${productId}`);
+    const navigateToProduct = (productId: string) => {
+        navigate(`/products/${productId}`);
+        closeLastItems();
+    }
 
     const onRelatedItemClick = () => {
         if(hoveredItem !== null){
