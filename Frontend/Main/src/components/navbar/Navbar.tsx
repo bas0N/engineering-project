@@ -41,7 +41,12 @@ export const Navbar = () => {
                     'Authorization': `Bearer ${token}`
                 }
                 });
-                setProductNumber(result.data.basketProducts.map((elem: {quantity: number}) => elem.quantity).reduce((partialSum: number, a: number) => partialSum + a, 0))
+                const basketProducts = result.data.basketProducts;
+                if(basketProducts === null){
+                    setProductNumber(0);
+                } else {
+                    setProductNumber(result.data.basketProducts.map((elem: {quantity: number}) => elem.quantity).reduce((partialSum: number, a: number) => partialSum + a, 0));
+                }
             } catch {
                 dispatchToast(<Toast>
                     <ToastTitle>{t('navbar.failedToLoadBasket')}</ToastTitle>
