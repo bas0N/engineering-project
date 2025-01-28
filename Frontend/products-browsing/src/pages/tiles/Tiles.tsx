@@ -7,6 +7,7 @@ import { Button, Text } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
 import axios from "axios";
 import { ItemType } from "../../components/product/ProductPresentation/ProductPresentation";
+import '../../i18n/i18n';
 
 const Tiles = () => {
 

@@ -15,7 +15,7 @@ import { ItemType } from "../../components/product/ProductPresentation/ProductPr
 import { Recommendations } from "../../components/product/Recommendations/Recommendations";
 import { ReviewForm } from '../../components/product/ReviewForm/ReviewForm';
 import { ReviewDisplay } from '../../components/product/ReviewDisplay/ReviewDisplay';
-import '../../i18n/i18n'
+import '../../i18n/i18n';
 
 const Product = () => {
 

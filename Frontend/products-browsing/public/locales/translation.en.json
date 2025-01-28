@@ -24,7 +24,8 @@
             "loadingReviews": "Loading reviews...",
             "verifiedPurchase": "Purchase verified",
             "leftPagination": "See previous reviews",
-            "rightPagination": "See next reviews"
+            "rightPagination": "See next reviews",
+            "ratingLabel": "Rating"
         }
     },
     "tiles": {

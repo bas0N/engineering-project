@@ -1,111 +1,115 @@
-{
+{  
   "authCard": {
-    "email": "Email",
+    "email": "E-Mail",
     "emailLabel": "Prompt the email...",
-    "goToSignIn": "I have the account",
-    "goToSignUp": "I don't have an account",
-    "password": "Password",
-    "passwordRep": "Repeat password",
-    "passwordRepLabel": "Repeat your password",
-    "passwordLabel": "Enter the password...",
-    "signInButton": "Sign in",
-    "signInHeader": "Sign in",
-    "signUpHeader": "Sign up",
-    "signUpButton": "Sign up",
-    "failureMessage": "Something went wrong. Try again"
+    "goToSignIn": "Ich habe das Konto",
+    "goToSignUp": "Ich habe kein Konto",
+    "password": "Passwort",
+    "passwordRep": "Passwort wiederholen",
+    "passwordRepLabel": "Wiederholen Sie Ihr Passwort",
+    "passwordLabel": "Geben Sie das Passwort ein...",
+    "signInButton": "Anmelden",
+    "signInHeader": "Anmelden",
+    "signUpHeader": "Registrieren",
+    "signUpButton": "Registrieren",
+    "failureMessage": "Etwas ging schief. Try again"
+  },
+  "landing": {
+    "header": "Eingeloggt",
+    "desc": "Sie sind jetzt in der Lage, das System zu nutzen"
   },
   "navbar": {
-    "logoutButton": "Logout",
-    "signInButton": "Sign in",
-    "settingsButton": "Settings"
+    "logoutButton": "Abmelden",
+    "signInButton": "Anmelden",
+    "settingsButton": "Einstellungen"
   },
   "page404": {
-    "title": "Something went wrong!",
-    "description": "It turns out the page you're looking for does not exist. Please check if your URL is correct"
+    "title": "Etwas ging schief!",
+    "description": "Die Seite, nach der Sie suchen, existiert nicht. Bitte überprüfen Sie, ob Ihre URL korrekt ist"
   },
   "searchBox": {
-    "placeholder": "Enter the search...",
-    "noItems": "No items found",
-    "loading": "Loading..."
+    "placeholder": "Geben Sie die Suche ein...",
+    "noItems": "Keine Einträge gefunden",
+    "loading": "Laden..."
   },
   "product": {
-    "addToBasket": "Add to basket",
-    "addedToBasket": "Product added to basket",
-    "failedToAdd": "Failed to add the product to your basket",
+    "addToBasket": "Zum Warenkorb hinzufügen",
+    "addedToBasket": "Produkt zum Warenkorb hinzugefügt",
+    "failedToAdd": "Das Produkt konnte nicht in den Warenkorb gelegt werden",
     "detailsHeader": "Details",
-    "featuresHeader": "Features",
-    "loadingFailed": "Could not load this item. Try again",
-    "noRatings": "No ratings available",
-    "recommendations": "Similar products",
-    "recommendationsUser": "Others browsed through",
-    "noRecommendations": "No recommendations available",
-    "addReview": "Add review",
-    "addReviewHeader": "Review adding",
-    "shareOpinionHeader": "Would you like to share some details?",
-    "opinionPlaceholder": "Elaborate on your opinion...",
-    "opinionTitle": "Put your opinion's title here...",
-    "failedToLoad": "Failed to load the liking info",
-    "closeButtonLabel": "Close review form",
-    "recommendationsFailure": "Failed to retrieve recommendations",
+    "featuresHeader": "Merkmale",
+    "loadingFailed": "Dieses Element konnte nicht geladen werden. Erneut versuchen",
+    "noRatings": "Keine Bewertungen verfügbar",
+    "recommendations": "Ähnliche Produkte",
+    "recommendationsUser": "Andere haben durchgeblättert",
+    "noRecommendations": "Keine Empfehlungen verfügbar",
+    "addReview": "Bewertung hinzufügen",
+    "addReviewHeader": "Bewertung hinzufügen",
+    "shareOpinionHeader": "Möchten Sie einige Details mitteilen?",
+    "opinionPlaceholder": "Erläutern Sie Ihre Meinung...",
+    "opinionTitle": "Geben Sie hier den Titel Ihrer Meinung an...",
+    "failedToLoad": "Die Gefällt-mir-Angaben konnten nicht geladen werden",
+    "closeButtonLabel": "Bewertungsformular schließen",
+    "recommendationsFailure": "Empfehlungen konnten nicht abgerufen werden",
     "reviews": {
-      "anonymusUser": "Anonymus user",
-      "reviewsTitle": "Product reviews",
-      "loadingReviews": "Loading reviews...",
-      "verifiedPurchase": "Purchase verified"
+      "anonymusUser": "Anonymer Benutzer",
+      "reviewsTitle": "Produktbewertungen",
+      "loadingReviews": "Rezensionen laden...",
+      "verifiedPurchase": "Kauf verifiziert"
     }
   },
   "tiles": {
     "sidebar": {
-      "header": "Search filters",
-      "categories": "Categories",
-      "price": "Price range",
-      "minPrice": "Min price...",
+      "header": "Suchfilter",
+      "categories": "Kategorien",
+      "price": "Preisspanne",
+      "minPrice": "Mindestpreis",
       "maxPrice": "Max price...",
-      "categoriesDropdownPlaceholder": "Select categories..."
+      "categoriesDropdownPlaceholder": "Kategorien auswählen..."
     },
-    "sidebarOpeningButton": "Open filters",
-    "selectProductAmount": "Select amount of product"
+    "sidebarOpeningButton": "Filter öffnen",
+    "selectProductAmount": "Menge des Produkts auswählen"
   },
-  "loading": "Loading...",
+  "loading": "Laden...",
   "userSettings": {
-    "header": "User settings",
-    "firstName": "First name...",
-    "lastName": "Last name...",
-    "phoneNumber": "Phone number...",
-    "email": "Email...",
-    "personalDataHeader": "Personal data",
-    "userAddressesHeader": "Your addresses",
-    "addNewAddress": "Add new address",
+    "header": "Benutzereinstellungen",
+    "firstName": "Vorname...",
+    "lastName": "Nachname...",
+    "phoneNumber": "Telefonnummer...",
+    "email": "E-Mail...",
+    "personalDataHeader": "Persönliche Daten",
+    "userAddressesHeader": "Ihre Adressen",
+    "addNewAddress": "Neue Adresse hinzufügen",
     "newAddress": {
-      "streetInput": "Street name...",
-      "cityInput": "City...",
-      "stateInput": "State...",
-      "countryInput": "Country...",
-      "postalCodeInput": "Postal code...",
-      "submitAddingNewAddress": "Add address"
+      "streetInput": "Straßenname...",
+      "cityInput": "Stadt...",
+      "stateInput": "Bundesland...",
+      "countryInput": "Land...",
+      "postalCodeInput": "Postleitzahl...",
+      "submitAddingNewAddress": "Adresse hinzufügen"
     },
-    "emailLabel": "Email: ",
-    "loading": "Loading...",
-    "error": "Something went wrong. Try again",
-    "savingFailed": "Could not save your changes",
-    "submitChangesToPersonalData": "Submit changes",
-    "savedChanges": "Changes saved!",
-    "noAddressesPresent": "No addresses added yet"
+    "emailLabel": "E-Mail: ",
+    "loading": "Laden...",
+    "error": "Etwas ging schief. Versuchen Sie es erneut",
+    "savingFailed": "Ihre Änderungen konnten nicht gespeichert werden",
+    "submitChangesToPersonalData": "Änderungen einreichen",
+    "savedChanges": "Änderungen gespeichert!",
+    "noAddressesPresent": "Noch keine Adressen hinzugefügt"
   },
   "basket": {
-    "basketHeader": "Basket",
+    "basketHeader": "Warenkorb",
     "summary": {
-      "title": "Summary",
-      "order": "Order",
-      "delivery": "Delivery",
-      "total": "Total",
-      "buy": "Buy now"
+      "title": "Zusammenfassung",
+      "order": "Bestellung",
+      "delivery": "Lieferung",
+      "total": "Gesamt",
+      "buy": "Jetzt kaufen"
     },
-    "noItems": "No items present in the basket",
-    "basketLoading": "Loading items...",
-    "loadingFailed": "Items loading failed. Try later",
-    "somethingWentWrong": "Something went wrong...",
-    "quantityInput": "Product's quantity input",
-    "deleteButton": "Delete button"
+    "noItems": "Keine Artikel im Warenkorb vorhanden",
+    "basketLoading": "Artikel Laden...",
+    "loadingFailed": "Laden der Artikel fehlgeschlagen. Versuchen Sie es später",
+    "somethingWentWrong": "Etwas ging schief...",
+    "quantityInput": "Eingabe der Menge des Produkts",
+    "deleteButton": "Schaltfläche \"Löschen\""
   }
 }

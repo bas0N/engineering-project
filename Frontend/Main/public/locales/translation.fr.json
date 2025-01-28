@@ -1,111 +1,115 @@
 {
-  "authCard": {
-    "email": "Email",
-    "emailLabel": "Prompt the email...",
-    "goToSignIn": "I have the account",
-    "goToSignUp": "I don't have an account",
-    "password": "Password",
-    "passwordRep": "Repeat password",
-    "passwordRepLabel": "Repeat your password",
-    "passwordLabel": "Enter the password...",
-    "signInButton": "Sign in",
-    "signInHeader": "Sign in",
-    "signUpHeader": "Sign up",
-    "signUpButton": "Sign up",
-    "failureMessage": "Something went wrong. Try again"
+"authCard": {
+  "email":"Email",
+  "emailLabel":"Ecrire l'email...",
+  "goToSignIn":"J'ai le compte",
+  "goToSignUp":"Je n'ai pas de compte",
+  "password":"Le mot de passe",
+  "passwordRep":"Répéter le mot de passe",
+  "passwordRepLabel":"Répétez votre mot de passe",
+  "passwordLabel":"Entrez le mot de passe...",
+  "signInButton":"S'inscrire",
+  "signInHeader":"S'inscrire",
+  "signUpHeader":"S'enregistrer",
+  "signUpButton":"S'enregistrer",
+  "failureMessage":"Something went wrong. Essayez à nouveau"
   },
-  "navbar": {
-    "logoutButton": "Logout",
-    "signInButton": "Sign in",
-    "settingsButton": "Settings"
+"landing": {
+  "header":"Connecté",
+  "desc":"Vous pouvez maintenant utiliser le système"
   },
-  "page404": {
-    "title": "Something went wrong!",
-    "description": "It turns out the page you're looking for does not exist. Please check if your URL is correct"
+"navbar": {
+  "logoutButton":"Déconnexion",
+  "signInButton":"S'inscrire",
+  "settingsButton":"Paramètres"
   },
-  "searchBox": {
-    "placeholder": "Enter the search...",
-    "noItems": "No items found",
-    "loading": "Loading..."
-  },
-  "product": {
-    "addToBasket": "Add to basket",
-    "addedToBasket": "Product added to basket",
-    "failedToAdd": "Failed to add the product to your basket",
-    "detailsHeader": "Details",
-    "featuresHeader": "Features",
-    "loadingFailed": "Could not load this item. Try again",
-    "noRatings": "No ratings available",
-    "recommendations": "Similar products",
-    "recommendationsUser": "Others browsed through",
-    "noRecommendations": "No recommendations available",
-    "addReview": "Add review",
-    "addReviewHeader": "Review adding",
-    "shareOpinionHeader": "Would you like to share some details?",
-    "opinionPlaceholder": "Elaborate on your opinion...",
-    "opinionTitle": "Put your opinion's title here...",
-    "failedToLoad": "Failed to load the liking info",
-    "closeButtonLabel": "Close review form",
-    "recommendationsFailure": "Failed to retrieve recommendations",
-    "reviews": {
-      "anonymusUser": "Anonymus user",
-      "reviewsTitle": "Product reviews",
-      "loadingReviews": "Loading reviews...",
-      "verifiedPurchase": "Purchase verified"
-    }
-  },
-  "tiles": {
-    "sidebar": {
-      "header": "Search filters",
-      "categories": "Categories",
-      "price": "Price range",
-      "minPrice": "Min price...",
-      "maxPrice": "Max price...",
-      "categoriesDropdownPlaceholder": "Select categories..."
+ "page404": {
+   "title":"Quelque chose n'a pas fonctionné!",
+   "description":"Il s'avère que la page que vous recherchez n'existe pas. Veuillez vérifier si votre URL est correcte"
+   },
+ "searchBox": {
+   "placeholder":"Entrez la recherche...",
+   "noItems":"Aucun élément trouvé",
+   "loading":"Chargement..."
+   },
+ "product": {
+   "addToBasket":"Ajouter au panier",
+   "addedToBasket":"Produit ajouté au panier",
+   "failedToAdd":"Le produit n'a pas pu être ajouté au panier",
+   "detailsHeader":"Détails",
+   "featuresHeader":"Caractéristiques",
+   "loadingFailed":"Impossible de charger cet article. Réessayez",
+   "noRatings":"Aucune évaluation disponible",
+   "recommendations":"Produits similaires",
+   "recommendationsUser":"D'autres personnes ont parcouru l'article",
+   "noRecommendations":"Aucune recommandation disponible",
+   "addReview":"Ajouter un avis",
+   "addReviewHeader":"Ajout d'un avis",
+   "shareOpinionHeader":"Voulez-vous partager quelques détails ?",
+   "opinionPlaceholder":"Développez votre opinion...",
+   "opinionTitle":"Mettez ici le titre de votre opinion...",
+   "failedToLoad":"Échec du chargement des informations relatives à l'appréciation",
+   "closeButtonLabel":"Fermer le formulaire d'évaluation",
+   "recommendationsFailure":"Échec de la récupération des recommandations",
+   "reviews": {
+     "anonymusUser":"Utilisateur anonyme",
+     "reviewsTitle":"Avis sur le produit",
+     "loadingReviews":"Chargement des avis...",
+     "verifiedPurchase":"Achat vérifié"
+     }
+   },
+   "tiles ": {
+    "sidebar ": {
+      "header ": "Search filters",
+      "categories ": "Catégories",
+      "price ": "Gamme de prix",
+      "minPrice ": "Prix minimum...",
+      "maxPrice ": "Prix maximum...",
+      "categoriesDropdownPlaceholder ": "Sélectionner les catégories... "
+      },
+    "sidebarOpeningButton ": "Ouvrir les filtres",
+    "selectProductAmount ": "Sélectionner le montant du produit "
     },
-    "sidebarOpeningButton": "Open filters",
-    "selectProductAmount": "Select amount of product"
-  },
-  "loading": "Loading...",
-  "userSettings": {
-    "header": "User settings",
-    "firstName": "First name...",
-    "lastName": "Last name...",
-    "phoneNumber": "Phone number...",
-    "email": "Email...",
-    "personalDataHeader": "Personal data",
-    "userAddressesHeader": "Your addresses",
-    "addNewAddress": "Add new address",
-    "newAddress": {
-      "streetInput": "Street name...",
-      "cityInput": "City...",
-      "stateInput": "State...",
-      "countryInput": "Country...",
-      "postalCodeInput": "Postal code...",
-      "submitAddingNewAddress": "Add address"
+  "loading ": "Chargement...",
+  "userSettings ": {
+    "header ": "Paramètres de l'utilisateur",
+    "firstName ": "Prénom...",
+    "lastName ": "Nom de famille...",
+    "phoneNumber ": "Numéro de téléphone...",
+    "email ": "Email...",
+    "personalDataHeader ": "Données personnelles",
+    "userAddressesHeader ": "Vos adresses",
+    "addNewAddress ": "Ajouter une nouvelle adresse",
+    "newAddress ": {
+      "streetInput ": "Nom de la rue...",
+      "cityInput ": "Ville...",
+      "stateInput ": "État...",
+      "countryInput ": "Pays...",
+      "postalCodeInput ": "Code postal...",
+      "submitAddingNewAddress ": "Ajouter une adresse "
+      },
+    "emailLabel ": "Email :",
+    "loading ": "Chargement...",
+    "error ": "Quelque chose n'a pas fonctionné. Réessayez ",
+    "savingFailed ": "Impossible d'enregistrer vos modifications",
+    "submitChangesToPersonalData ": "Soumettre les modifications",
+    "savedChanges ": "Modifications enregistrées !",
+    "noAddressesPresent ": "Aucune adresse n'a encore été ajoutée "
     },
-    "emailLabel": "Email: ",
-    "loading": "Loading...",
-    "error": "Something went wrong. Try again",
-    "savingFailed": "Could not save your changes",
-    "submitChangesToPersonalData": "Submit changes",
-    "savedChanges": "Changes saved!",
-    "noAddressesPresent": "No addresses added yet"
-  },
-  "basket": {
-    "basketHeader": "Basket",
-    "summary": {
-      "title": "Summary",
-      "order": "Order",
-      "delivery": "Delivery",
-      "total": "Total",
-      "buy": "Buy now"
-    },
-    "noItems": "No items present in the basket",
-    "basketLoading": "Loading items...",
-    "loadingFailed": "Items loading failed. Try later",
-    "somethingWentWrong": "Something went wrong...",
-    "quantityInput": "Product's quantity input",
-    "deleteButton": "Delete button"
+  "basket ": {
+    "basketHeader ": "Panier",
+    "summary ": {
+      "title ": "Résumé",
+      "order ": "Commande",
+      "delivery ": "Livraison",
+      "total ": "Total",
+      "buy ": "Acheter maintenant "
+      },
+      "noItems ": "Aucun article présent dans le panier",
+      "basketLoading ": "Chargement des articles...",
+      "loadingFailed ": "Le chargement des éléments a échoué. Essayez plus tard ",
+      "somethingWentWrong ": "Quelque chose n'a pas fonctionné...",
+      "quantityInput ": "Entrée de la quantité du produit",
+      "deleteButton ": "Bouton de suppression "
   }
 }

@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom/client'
 //import App from './App.tsx'
 import './index.css'
 import { FluentProvider, webDarkTheme } from '@fluentui/react-components'
-import './i18n/i18n.tsx';
+import './i18n/i18n';
 import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom'
 import { Page404 } from './pages/page404/Page404.tsx'
 import { Wrapper } from './main.styled.tsx'
 import { Navbar } from './components/navbar/Navbar.tsx';
-import './i18n/i18n.tsx'
 
 import { AuthProvider } from 'authComponents/AuthProvider';
 import { Preloader } from './components/preloader/Preloader.tsx';
 import { PageWrapper } from './Wrapper.tsx'
+import App from './App.tsx';
 
 const SignInPanel = React.lazy(() => import('authComponents/SignIn'));
 const SignUpPanel = React.lazy(() => import('authComponents/SignUp'));
@@ -28,7 +28,7 @@ const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <SignInPanel />
+    element: <App />
   },
   {
     path: '/signin',
