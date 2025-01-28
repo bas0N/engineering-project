@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     ProductsWrapper,
@@ -10,16 +10,18 @@ import {
     ProductRating,
     ProductHeader,
     ProductInfo
-} from './ProductsLikes.styled.tsx';
+} from './ProductsLikes.styled';
+import { Spinner, Toast, ToastTitle, Text, useToastController } from '@fluentui/react-components';
+import { useTranslation } from 'react-i18next';
 
-interface ImageResponse {
+export interface ImageResponse {
     thumb: string;
     large: string;
     variant: string;
     hiRes: string;
 }
 
-interface ProductResponse {
+export interface ProductResponse {
     title: string;
     price: string;
     ratingNumber: number;
@@ -31,9 +33,12 @@ interface ProductResponse {
 export const ProductsLikes = () => {
     const [products, setProducts] = useState<ProductResponse[]>([]);
     const [loading, setLoading] = useState(true);
+    const toasterId = import.meta.env.VITE_PREVIEW_MODE ? 'mainToaster' : 'localToaster';
     const token = localStorage.getItem('authToken');
+    const {dispatchToast} = useToastController(toasterId);
+    const {t} = useTranslation();
 
-    const fetchLikedProducts = async () => {
+    const fetchLikedProducts = useCallback(async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}like/my`, {
                 headers: {
@@ -41,26 +46,30 @@ export const ProductsLikes = () => {
                 },
             });
             setProducts(response.data);
-        } catch (error) {
-            console.error('Error fetching liked products:', error);
+        } catch {
+            dispatchToast(<Toast>
+                <ToastTitle>
+                    {t('productsLikes.loadingError')}
+                </ToastTitle>
+            </Toast>, {intent: 'error',position: 'top-end'})
         } finally {
             setLoading(false);
         }
-    };
+    }, [dispatchToast, t, token]);
 
     useEffect(() => {
         fetchLikedProducts();
-    }, []);
+    }, [fetchLikedProducts]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <Spinner label={t('productsLikes.loading')} />;
     }
 
     return (
         <>
-            <ProductHeader>Products You Have Liked</ProductHeader>
+            <ProductHeader>{t('productsLikes.header')}</ProductHeader>
             <ProductsWrapper>
-                {products.map((product, index) => (
+                {products.length > 0 ? products.map((product, index) => (
                     <ProductCard key={index} isActive={product.isActive}>
                         <ProductImage
                             src={product.images[0]?.thumb}
@@ -69,14 +78,16 @@ export const ProductsLikes = () => {
                         <ProductDetails>
                             <ProductTitle>{product.title}</ProductTitle>
                             <ProductInfo>
-                                <strong>Price:</strong> <ProductPrice>${product.price}</ProductPrice>
+                                <Text weight='semibold'>{t('productLikes.price')}:</Text> <ProductPrice>${product.price}</ProductPrice>
                             </ProductInfo>
                             <ProductInfo>
-                                <strong>Rating:</strong> <ProductRating>{product.averageRating} ★ ({product.ratingNumber} reviews)</ProductRating>
+                                <Text weight='semibold'>{t('productsLikes.rating')}:</Text> <ProductRating>{product.averageRating} ★ ({product.ratingNumber} {t('productsLikes.reviews')})</ProductRating>
                             </ProductInfo>
                         </ProductDetails>
                     </ProductCard>
-                ))}
+                )) : <Text align='center' weight='semibold'>
+                    {t('productsLikes.noProducts')}
+                </Text>}
             </ProductsWrapper>
         </>
     );

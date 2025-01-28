@@ -1,3 +1,4 @@
+import { Image } from '@fluentui/react-components';
 import { styled } from 'styled-components';
 
 export const ProductHeader = styled.h1`
@@ -39,7 +40,7 @@ export const ProductCard = styled.div<{ isActive: boolean }>`
   }
 `;
 
-export const ProductImage = styled.img`
+export const ProductImage = styled(Image)`
   width: 100%;
   height: 180px;
   object-fit: cover;

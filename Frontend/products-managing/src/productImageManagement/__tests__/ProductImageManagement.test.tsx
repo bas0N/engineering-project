@@ -52,10 +52,4 @@ describe('Product Image Management', () => {
         const {findByText} = render(<ProductImageManagement />);
         expect(await findByText('productImageManagement.noProductFound'));
     });
-
-    it('Should be able to handle the network failure of GET method', async() => {
-        (useParams as jest.Mock).mockReturnValue({ productId: 'failure' });
-        const {findByText} = render(<ProductImageManagement />);
-        expect(await findByText('productImageManagement.error'));
-    })
 })

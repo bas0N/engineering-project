@@ -107,5 +107,14 @@
     "somethingWentWrong": "Something went wrong...",
     "quantityInput": "Product's quantity input",
     "deleteButton": "Delete button"
+  },
+  "productsLikes": {
+    "header": "Products You Have Liked",
+    "rating": "Rating",
+    "price": "Price",
+    "loading": "Loading...",
+    "loadingError": "Something went wrong",
+    "reviews": "reviews",
+    "noProducts": "No products liked yet"
   }
 }
