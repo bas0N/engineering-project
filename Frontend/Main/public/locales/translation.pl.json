@@ -36,7 +36,7 @@
     "noItems": "Nie znaleziono artykułów",
     "loading": "Ładowanie..."
   },
-  "produkt": {
+  "product": {
     "addToBasket": "Dodaj do koszyka",
     "addedToBasket": "Produkt dodany do koszyka",
     "failedToAdd": "Nie udało się dodać produktu do koszyka",
@@ -234,33 +234,34 @@
       "storePlaceholder": "Wprowadź nazwę sklepu...",
       "pricePlaceholder": "Wprowadź cenę produktu...",
       "goBack": "Wróć",
-      "finalizationHeader": "Finalize product creation",
+      "finalizationHeader": "Finalizacja dodawania produktu",
       "finalizeProductCreation": "Utwórz produkt",
       "productAdded": "Produkt pomyślnie dodany!",
-      "userProductsNavigation": "Check my products",
+      "userProductsNavigation": "Sprawdź moje produkty",
       "productInspection": "Pokaż produkt",
-      "finalizeCreation": "Finalize"
+      "addImages": "Dodaj obrazki",
+      "finalizeCreation": "Finalizuj"
     },
     "productImageManagement": {
-      "notFound": "Product not found",
-      "addingImage": "Add product image",
-      "error": "Failed to load your data",
-      "addNewImage": "Add new image",
-      "images": "Product Images",
+      "notFound": "Produktu nie znaleziono",
+      "addingImage": "Dodaj obrazek do produktu",
+      "error": "Nie udało się załadować danych",
+      "addNewImage": "Dodaj nowy obrazek",
+      "images": "Obrazki produktowe",
       "imagesDisplay": {
-        "header": "Modify your product's images"
+        "header": "Modyfikuj obrazy produktu"
       },
       "addingProduct": {
-          "header": "Add your product's image",
-          "load": "Load image",
-          "loadProduct": "Image not chosen",
-          "loadingProduct": "Loading...",
-          "productLoaded": "Image loaded",
-          "upload": "Upload image",
-          "imageInput": "Image input",
-          "closeButton": "Close panel",
-          "productSuccessfullyAdded": "Image successfully added",
-          "uploadFailed": "Something went wrong"
+          "header": "Dodaj obraz swojego produktu",
+          "load": "Załaduj obraz",
+          "loadProduct": "Obraz nie został wybrany",
+          "loadingProduct": "Ładowanie...",
+          "productLoaded": "Obrazek załadowany",
+          "upload": "Załaduj obrazek",
+          "imageInput": "Wprowadź obrazek",
+          "closeButton": "Zamknij panel",
+          "productSuccessfullyAdded": "Obraz pomyślnie dodany",
+          "uploadFailed": "Coś poszło nie tak"
       }
   }
 }

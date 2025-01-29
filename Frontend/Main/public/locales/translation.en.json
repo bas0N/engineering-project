@@ -246,7 +246,8 @@
       "productAdded": "Product successfully added!",
       "userProductsNavigation": "Check my products",
       "productInspection": "Show the product",
-      "finalizeCreation": "Finalize"
+      "finalizeCreation": "Finalize",
+      "addImages": "Add images"
     },
     "productImageManagement": {
       "notFound": "Product not found",
