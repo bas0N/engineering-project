@@ -94,7 +94,7 @@ const Product = () => {
                         reloadTriggerer={reviewDisplayReloadTriggerer}
                     />
                     <Recommendations 
-                        searchId={'B01GF7ERNC'}
+                        searchId={params.productId as string}
                         type='product'
                     />
                     <Recommendations 

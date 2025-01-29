@@ -161,8 +161,13 @@ export const ProductsDisplay = ({
         <ProductActionsWrapper>
             <Button
                 disabled={selectedProductId === ''} 
-                onClick={() => navigate(`/product/${selectedProductId}`)}>
+                onClick={() => navigate(`/products/${selectedProductId}`)}>
                 {t('productsList.actions.checkout')}
+            </Button>
+            <Button
+                disabled={selectedProductId === ''} 
+                onClick={() => navigate(`/products/images/${selectedProductId}`)}>
+                {t('productsList.actions.goToImages')}
             </Button>
             <Button
                 disabled={selectedProductId === ''} 

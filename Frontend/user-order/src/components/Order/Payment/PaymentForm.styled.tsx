@@ -7,4 +7,13 @@ export const PaymentFormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: fit-content;
+    max-width: 500px;
 `;
+
+export const PaymentCardElementWrapper = styled.div`
+    max-width: 400px;
+    & > * {
+        width: 400px;
+    }
+`
