@@ -36,5 +36,16 @@
             "title": "Enter your card details:",
             "processing": "Processing..."
         }
+    },
+    "orderHistory": {
+        "title": "Order History",
+        "orderId": "Order Id",
+        "name": "Name",
+        "image": "Image",
+        "quantity": "Quantity",
+        "priceUnit": "Price unit",
+        "priceSummary": "Summary",
+        "status": "Status",
+        "totalPrice": "Total price"
     }
 }

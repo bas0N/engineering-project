@@ -26,4 +26,5 @@ export const TileImage = styled(Image)`
     flex: 1;
     max-height: 60%;
     width: auto;
+    max-width: 100%;
 `;

@@ -131,8 +131,8 @@ export default function Order() {
 
     return (
         <OrderWrapper>
-            <Text as="h1">{t('order.header')}</Text>
-            {error && <Text style={{color: 'red'}}>{error}</Text>}
+            <Text as="h1" size={700}>{t('order.header')}</Text>
+            {error && <Text style={{color: 'red'}}>{t(error)}</Text>}
 
             {!clientSecret && basketItems && basketItems.length > 0 && (
                 <>
