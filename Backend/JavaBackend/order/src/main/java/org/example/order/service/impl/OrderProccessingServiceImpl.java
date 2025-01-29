@@ -1,4 +1,4 @@
-package org.example.order.mediator;
+package org.example.order.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +18,7 @@ import org.example.order.mapper.OrderMapper;
 import org.example.order.repository.DeliverRepository;
 import org.example.order.repository.ItemRepository;
 import org.example.order.repository.OrderRepository;
+import org.example.order.service.OrderProccessingService;
 import org.example.order.service.OrderService;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @RequiredArgsConstructor
-public class OrderMediator {
+public class OrderProccessingServiceImpl implements OrderProccessingService {
     private final OrderService orderService;
     private final Utils utils;
     private final OrderRepository orderRepository;
@@ -45,53 +46,10 @@ public class OrderMediator {
     private final DeliverRepository deliverRepository;
 
     public ResponseEntity<?> createOrder(OrderRequest orderRequest, HttpServletRequest request, HttpServletResponse response) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
         OrderResponse orderResponse = orderService.createOrder(orderRequest, request, response);
         String clientSecret = orderService.createStripePayment(orderResponse);
         orderResponse.setClientSecret(clientSecret);
-        return ResponseEntity.status(200).headers(httpHeaders).body(orderResponse);
-    }
-
-
-    public ResponseEntity<?> handleNotify(HttpServletRequest request) {
-        String payload = "";
-        String sigHeader = request.getHeader("Stripe-Signature");
-
-        try (Scanner scanner = new Scanner(request.getInputStream(), "UTF-8")) {
-            payload = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        Event event = null;
-        try {
-            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-        } catch (Exception e) {
-            // Invalid signature
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        switch (event.getType()) {
-            case "payment_intent.succeeded":
-                handlePaymentIntentSucceeded(event);
-                break;
-            default:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    private void handlePaymentIntentSucceeded(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer()
-                .getObject()
-                .orElse(null);
-
-        if (paymentIntent != null) {
-            String orderId = paymentIntent.getDescription().split(":")[1].trim();
-            orderService.updateOrderStatus(orderId, Status.COMPLETED);
-        }
+        return ResponseEntity.ok(orderResponse);
     }
 
     public ResponseEntity<?> getOrderById(String uuid, HttpServletRequest request) {

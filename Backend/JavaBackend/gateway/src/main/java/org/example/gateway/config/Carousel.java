@@ -26,16 +26,14 @@ public class Carousel {
     }
 
     public String getUriAuth() {
-        StringBuilder stringBuilder = new StringBuilder();
-        InstanceInfo instance = instances.get(currentIndex);
-        stringBuilder.append(instance.getIPAddr()).append(":").append(instance.getPort());
-        if (instances.size() - 1 == currentIndex) {
-            currentIndex = 0;
-        } else {
-            currentIndex++;
-        }
-        return stringBuilder.toString();
+        InstanceInfo currentInstance = instances.get(currentIndex);
+        String uri = currentInstance.getIPAddr() + ":" + currentInstance.getPort();
+
+        currentIndex = (currentIndex == instances.size() - 1) ? 0 : currentIndex + 1;
+
+        return uri;
     }
+
 
     private void events() {
         eurekaClient.registerEventListener(eurekaEvent -> {

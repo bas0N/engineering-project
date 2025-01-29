@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories
-@ComponentScan(basePackages = {"org.example.auth", "org.example.exception", "org.example.commonutils"})
+@ComponentScan(basePackages = {"org.example.auth", "org.example.exception", "org.example.commonutils", "org.example.commonkafkaconfig"})
 public class AuthApplication {
 
 	public static void main(String[] args) {

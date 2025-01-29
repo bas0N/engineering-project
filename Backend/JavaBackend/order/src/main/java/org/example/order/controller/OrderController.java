@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.request.UpdateStatusRequest;
-import org.example.order.mediator.OrderMediator;
+import org.example.order.service.impl.OrderProccessingServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,31 +14,26 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderMediator orderMediator;
+    private final OrderProccessingServiceImpl orderProccessingServiceImpl;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest order, HttpServletRequest request, HttpServletResponse response) {
-        return orderMediator.createOrder(order, request, response);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/webhooks/stripe")
-    public ResponseEntity<?> notifyOrder(HttpServletRequest request) {
-        return orderMediator.handleNotify(request);
+        return orderProccessingServiceImpl.createOrder(order, request, response);
     }
 
     @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)
     public ResponseEntity<?> getOrderById(@PathVariable String orderId, HttpServletRequest request) {
-        return orderMediator.getOrderById(orderId, request);
+        return orderProccessingServiceImpl.getOrderById(orderId, request);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getOrdersByClient(HttpServletRequest request) {
-        return orderMediator.getOrdersByClient(request);
+        return orderProccessingServiceImpl.getOrdersByClient(request);
     }
 
     @RequestMapping(path = "/notify", method = RequestMethod.POST)
     public ResponseEntity<?> notify(@RequestBody UpdateStatusRequest updateStatusRequest, HttpServletRequest request) {
-        return orderMediator.updateStatus(updateStatusRequest, request);
+        return orderProccessingServiceImpl.updateStatus(updateStatusRequest, request);
     }
 
 }

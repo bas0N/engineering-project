@@ -37,7 +37,7 @@ public class Utils {
             return null;
         }
 
-        log.info("Extracted token from request: {}", token);
+        log.info("Extracted tokeen from request: {}", token);
         return token;
     }
 

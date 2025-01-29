@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
 import org.example.commonutils.Utils;
 import org.example.order.dto.ListBasketItemDto;
-import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Deliver;

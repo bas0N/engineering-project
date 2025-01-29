@@ -19,6 +19,7 @@
         <module>RegisterEndpointInformation</module>
         <module>common-dto</module>
         <module>common-utils</module>
+        <module>common-kafka-config</module>
     </modules>
 
     <dependencyManagement>

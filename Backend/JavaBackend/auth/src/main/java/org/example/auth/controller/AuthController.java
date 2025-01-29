@@ -37,9 +37,9 @@ public class AuthController {
     @GetMapping("/validate")
     public ResponseEntity<AuthResponse> validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info("--START validateToken");
+            log.info("--START validateToken /validate");
             userService.validateToken(request, response);
-            log.info("--STOP validateToken");
+            log.info("--STOP validateToken /validate");
             return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));
         } catch (ExpiredJwtException e) {
             log.info("Token has expired");

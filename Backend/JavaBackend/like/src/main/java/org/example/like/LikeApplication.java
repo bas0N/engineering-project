@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.example.like", "org.example.exception", "org.example.commonutils"})
+@ComponentScan(basePackages = {"org.example.like", "org.example.exception", "org.example.commonutils", "org.example.commonkafkaconfig"})
 public class LikeApplication {
 
 	public static void main(String[] args) {
