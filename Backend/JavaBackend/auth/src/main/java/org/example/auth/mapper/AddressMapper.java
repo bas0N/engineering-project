@@ -20,13 +20,9 @@ public interface AddressMapper {
     @Mapping(target = "uuid", ignore = true)
     Address toAddress(AddressRequest addressRequest, User user);
 
-    AddressRequest toAddressRequest(Address address);
-
     AddressResponse toAddressResponse(Address address);
 
     List<AddressResponse> toAddressResponseList(List<Address> addresses);
 
     AddressAdminResponse toAddressAdminResponse(Address address);
-
-    List<AddressAdminResponse> toAddressAdminResponseList(List<Address> addresses);
 }

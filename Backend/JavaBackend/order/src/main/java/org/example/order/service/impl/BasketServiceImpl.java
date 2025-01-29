@@ -22,9 +22,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class BasketServiceImpl implements BasketService {
     private final BasketItemsProducer basketItemsEventProducer;
-    private  final BasketItemsConsumer basketItemsEventConsumer;
+    private final BasketItemsConsumer basketItemsEventConsumer;
     private final BasketRemoveProducer basketRemoveProducer;
     private final ListBasketItemsMapper listBasketItemsMapper = ListBasketItemsMapper.INSTANCE;
+
     public ListBasketItemDto getBasket(String basketId) {
         basketItemsEventProducer.sendBasketItemsEvent(basketId);
         CompletableFuture<ListBasketItemEvent> basketItemsFuture = basketItemsEventConsumer.getListBasketItemsDetails(basketId)

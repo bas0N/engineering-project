@@ -79,7 +79,7 @@ public class BasketServiceImpl implements BasketService {
     private BasketItemResponse saveProductToBasket(Basket basket, AddBasketItemRequest basketItemRequest) {
         try {
             BasketProductEvent product = productService.getProductById(basketItemRequest.getProduct());
-            if(product == null){
+            if (product == null) {
                 throw new ResourceNotFoundException(
                         "Product",
                         "ID",
@@ -88,7 +88,7 @@ public class BasketServiceImpl implements BasketService {
                         Map.of("productId", basketItemRequest.getProduct())
                 );
             }
-            if(!product.getIsActive()){
+            if (!product.getIsActive()) {
                 throw new ProductIsUnActive(product.getId());
             }
             AtomicReference<BasketItems> item = new AtomicReference<>(new BasketItems());
@@ -109,7 +109,7 @@ public class BasketServiceImpl implements BasketService {
                     item.get().getQuantity(),
                     product.getPrice(),
                     product.getPrice() * item.get().getQuantity(),
-                    product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                    product.getImageUrls() != null ? product.getImageUrls().getFirst() : null,
                     basket.getUuid()
             );
         } catch (ResourceNotFoundException e) {
@@ -130,6 +130,10 @@ public class BasketServiceImpl implements BasketService {
     public ResponseEntity<?> deleteProductFromBasket(DeleteItemRequest deleteItemRequest, HttpServletRequest request) {
         try {
             Basket basket = getBasket(request);
+            if(basket.getId() == 0) {
+                log.info("Basket is empty or not initialized for user: {}", utils.extractUserIdFromRequest(request));
+                return ResponseEntity.ok("Basket is empty");
+            }
             deleteItem(deleteItemRequest, basket);
             return ResponseEntity.ok("Product deleted from basket");
         } catch (InvalidTokenException e) {
@@ -155,14 +159,11 @@ public class BasketServiceImpl implements BasketService {
 
     private Basket getBasket(HttpServletRequest request) {
         String userId = utils.extractUserIdFromRequest(request);
-        return basketRepository.findByOwnerId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Basket",
-                        "ownerId",
-                        userId,
-                        "BASKET_NOT_FOUND",
-                        Map.of("ownerId", userId)
-                ));
+        return basketRepository.findByOwnerId(userId).orElseGet(() -> {
+            Basket emptyBasket = new Basket();
+            emptyBasket.setOwnerId(userId);
+            return emptyBasket;
+        });
     }
 
     private void deleteItem(DeleteItemRequest deleteItemRequest, Basket basket) {
@@ -196,6 +197,10 @@ public class BasketServiceImpl implements BasketService {
     public ResponseEntity<ListBasketItemDto> getItems(HttpServletRequest request) {
         try {
             Basket basket = getBasket(request);
+            if (basket.getId() == 0) {
+                log.info("Basket is empty or not initialized for user: {}", utils.extractUserIdFromRequest(request));
+                return ResponseEntity.ok(new ListBasketItemDto());
+            }
             ListBasketItemDto listBasketItemDTO = buildBasketItemDto(basket);
             return ResponseEntity.ok(listBasketItemDTO);
         } catch (InvalidTokenException e) {
@@ -246,7 +251,7 @@ public class BasketServiceImpl implements BasketService {
                             product.getId(),
                             product.getName(),
                             item.getQuantity(),
-                            product.getImageUrls()!=null ? product.getImageUrls().getFirst() : null,
+                            product.getImageUrls() != null ? product.getImageUrls().getFirst() : null,
                             product.getPrice(),
                             product.getPrice() * item.getQuantity(),
                             product.getIsActive()

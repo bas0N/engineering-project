@@ -1,14 +1,16 @@
 package org.example.gateway.entity;
 
+import lombok.Getter;
 import org.coffeecode.entity.HttpMethod;
 import org.coffeecode.entity.Role;
 
 import java.util.Objects;
 
+@Getter
 public class Endpoint {
-    private  String url;
-    private HttpMethod httpMethod;
-    private Role role;
+    private final String url;
+    private final HttpMethod httpMethod;
+    private final Role role;
 
     public Endpoint(String url, HttpMethod httpMethod, Role role) {
         this.url = url;
@@ -16,26 +18,16 @@ public class Endpoint {
         this.role = role;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Endpoint endpoint = (Endpoint) o;
-        return Objects.equals(url, endpoint.url) &&
-                httpMethod == endpoint.httpMethod &&
-                Objects.equals(role, endpoint.role);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !this.getClass().equals(obj.getClass())) {
+            return false;
+        }
+        Endpoint otherEndpoint = (Endpoint) obj;
+        return Objects.equals(this.url, otherEndpoint.url) && this.httpMethod == otherEndpoint.httpMethod && Objects.equals(this.role, otherEndpoint.role);
     }
 
     @Override

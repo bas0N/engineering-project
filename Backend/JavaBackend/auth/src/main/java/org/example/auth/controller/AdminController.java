@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AdminController {
     private final AdminService adminService;
-    @DeleteMapping("/delete-account/{userUuid}")
-    public ResponseEntity<?> deleteAccount(@PathVariable String userUuid) {
-        return adminService.deleteAccount(userUuid);
-    }
 
     @GetMapping("/user-details/{userId}")
     public ResponseEntity<UserAdminDetailsResponse> userDetails(@PathVariable Long userId) {

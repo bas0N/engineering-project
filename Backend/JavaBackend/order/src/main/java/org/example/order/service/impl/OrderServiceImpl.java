@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.commondto.UserDetailInfoEvent;
 import org.example.commonutils.Utils;
 import org.example.order.dto.ListBasketItemDto;
-import org.example.order.dto.notify.Notify;
 import org.example.order.dto.request.OrderRequest;
 import org.example.order.dto.response.OrderResponse;
 import org.example.order.entity.Deliver;
@@ -96,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.setUuid(UUID.randomUUID().toString());
                 finalOrder.getOrderItems().add(orderItem);
             });
-            finalOrder.setSummaryPrice(basketItems.getSummaryPrice()+deliverRepository.findByUuid(order.getDeliverId()).orElseThrow().getPrice());
+            finalOrder.setSummaryPrice(basketItems.getSummaryPrice() + deliverRepository.findByUuid(order.getDeliverId()).orElseThrow().getPrice());
             orderRepository.saveAndFlush(finalOrder);
             Order savedOrder = orderRepository.findByUuidWithItems(finalOrder.getUuid())
                     .orElseThrow(() -> new RuntimeException("Order not found after saving"));
@@ -104,13 +103,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new RuntimeException();
         }
-    }
-
-    @Override
-    public void completeOrder(Notify notify) {
-        Order order = orderRepository.findByUuid(notify.getOrder().getOrderId()).orElseThrow();
-        order.setStatus(Status.COMPLETED);
-        orderRepository.saveAndFlush(order);
     }
 
     @Override

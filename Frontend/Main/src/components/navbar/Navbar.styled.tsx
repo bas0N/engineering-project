@@ -1,4 +1,4 @@
-import { Badge, Button } from '@fluentui/react-components';
+import { Badge, Button, Dropdown } from '@fluentui/react-components';
 import styled from "styled-components";
 
 export const NavbarContainer = styled.nav`
@@ -27,4 +27,9 @@ export const NavbarButton = styled(Button).attrs({appearance: 'transparent'})`
     color: white;
     padding: 10px 20px;
     text-decoration: none;
+`;
+
+export const LanguagesDropdown = styled(Dropdown)`
+    min-width: fit-content !important;
+    padding: 0px 10px;
 `;

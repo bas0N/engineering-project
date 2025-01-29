@@ -1,6 +1,6 @@
 import { axe, toHaveNoViolations } from "jest-axe";
 import { render } from '@testing-library/react';
-import { BasketItem } from "../../../Order.types";
+import { BasketItem } from "../../Order/Order.types";
 import { BasketItemsList } from "../BasketItemList"
 
 expect.extend(toHaveNoViolations);
@@ -20,6 +20,6 @@ describe('Basket Item List', () => {
     it('Should have no a11y violations', async() => {
         const {container, getByText} = render(<BasketItemsList items={MOCK_ITEMS} />);
         expect(await axe(container)).toHaveNoViolations();
-        expect(getByText('Items in your basket:'));
+        expect(getByText('order.basketItemList.title'));
     });
 })

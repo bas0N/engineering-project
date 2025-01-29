@@ -63,7 +63,6 @@ export const Recommendations = ({
                 averageRating: elem.average_rating,
                 ratingNumber: elem.rating_number
             }) as ItemTypeRecommendations);
-            console.log(data, recomsRaw);
             setProducts(data);
         };
         getData();

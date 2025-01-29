@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AddBasketItemRequest {
     private String product;
-    
+
     @Min(value = 1, message = "Quantity must be greater than 0")
     private long quantity;
 }

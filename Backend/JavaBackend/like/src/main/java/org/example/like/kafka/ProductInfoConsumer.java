@@ -3,17 +3,11 @@ package org.example.like.kafka;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.ProductEvent;
-import org.example.commondto.UserDetailInfoEvent;
-import org.example.like.entity.Image;
-import org.example.like.entity.Product;
-import org.example.like.repository.ProductRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;

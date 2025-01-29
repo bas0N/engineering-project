@@ -8,10 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.product.entity.ImageReview;
-import org.springframework.data.annotation.Id;
-
-import java.util.List;
 
 @Setter
 @Getter

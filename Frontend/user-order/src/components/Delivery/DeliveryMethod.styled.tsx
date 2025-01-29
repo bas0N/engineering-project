@@ -1,17 +1,15 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { Text } from "@fluentui/react-components";
+import styled from "styled-components";
 
-export const useDeliveryMethodsStyles = makeStyles({
-    container: {
-        ...shorthands.padding('16px'),
-        ...shorthands.borderRadius('8px'),
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        display: 'flex',
-        flexDirection: 'column',
-        rowGap: '8px',
-        marginBottom: '20px',
-    },
-    label: {
-        fontWeight: 600,
-        marginBottom: '8px'
-    }
-});
+export const DeliveryMethodsContainer = styled.div`
+    padding: 16px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+`;
+
+export const DeliveryMethodsLabel = styled(Text)`
+    font-weight: 600;
+    padding-bottom: 8px;
+`;

@@ -19,6 +19,7 @@ import java.util.Objects;
 @Slf4j
 public class ImageServiceImpl implements ImageService {
     private final CloudinaryService cloudinaryService;
+
     @Override
     public String uploadImage(MultipartFile imageFile) throws IOException {
         if (imageFile == null) {

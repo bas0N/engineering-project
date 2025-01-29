@@ -15,21 +15,26 @@ export default function Basket() {
   const [basketItems, setBasketItems] = useState<BasketItemType[]|null>(null);
   const [basketPrice, setBasketPrice] = useState(0);
   const [loadingFailed, setLoadingFailed] = useState(false);
+  const [noItems, setNoItems] = useState(false);
   const { dispatchToast } = useToastController(toasterId);
 
   const getBasketStuff = useCallback(async() => {
     try {
+      setNoItems(false);
       setLoadingFailed(false);
       const result = await axios.get(`${import.meta.env.VITE_API_URL}basket`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      setBasketItems(result.data.basketProducts);
-      setBasketPrice(result.data.summaryPrice);
+      if(result.data.basketProducts === null){
+        setNoItems(true);
+      } else {
+        setBasketItems(result.data.basketProducts);
+        setBasketPrice(result.data.summaryPrice);
+      }
 
-    } catch (error){
-      console.log(error);
+    } catch {
       dispatchToast(<Toast>
         <ToastTitle>{t('basket.somethingWentWrong')}</ToastTitle>
       </Toast>, {position: 'top-end', intent: 'error'});
@@ -38,7 +43,10 @@ export default function Basket() {
   }, [dispatchToast, t, token])
 
   useEffect(() => {
-    getBasketStuff();
+    const execBasketStuff = async() => {
+      await getBasketStuff();
+    }
+    execBasketStuff();
   }, [getBasketStuff]);
 
   const deleteItemCallback = async(itemId: string) => {
@@ -71,7 +79,11 @@ export default function Basket() {
           (
             <Text>{t('basket.loadingFailed')}</Text>
           )
-          : basketItems !== null ? (<>
+          : 
+          noItems ? (
+            <Text size={400} align='center'>{t('basket.noItems')}</Text>
+          ) : 
+          basketItems !== null ? (<>
             <BasketItems 
               items={basketItems as BasketItemType[]} 
               deleteItemCallback={deleteItemCallback}

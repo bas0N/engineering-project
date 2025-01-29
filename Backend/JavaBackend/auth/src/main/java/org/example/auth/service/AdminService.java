@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 public interface AdminService {
-    ResponseEntity<?> deleteAccount(String userUuid);
 
     ResponseEntity<UserAdminDetailsResponse> getUserById(Long userId);
 

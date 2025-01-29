@@ -5,10 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.auth.service.JwtService;
-import org.example.exception.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -94,6 +92,5 @@ public class JwtServiceImpl implements JwtService {
         }
         return null;
     }
-
 
 }

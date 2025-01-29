@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl implements UserService {
     private final UserProducer userProducer;
     private final UserConsumer userConsumer;
+
     public UserDetailInfoEvent getUserInfo(String userId) {
         userProducer.sendUserEvent(userId);
         CompletableFuture<UserDetailInfoEvent> userInfoFuture = userConsumer.getUserDetails(userId)

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.commondto.ProductEvent;
 import org.example.commonutils.Utils;
 import org.example.exception.exceptions.*;
+import org.example.like.dto.IsLikeResponse;
 import org.example.like.dto.ProductResponse;
 import org.example.like.entity.Image;
 import org.example.like.entity.Like;
@@ -127,10 +128,9 @@ public class LikeServiceImpl implements LikeService {
         try {
             Optional<Product> productOpt = productRepository.findByUuid(productUuid);
             Product product = null;
-            if(productOpt.isEmpty()) {
+            if (productOpt.isEmpty()) {
                 return ResponseEntity.ok(0L);
-            }
-            else{
+            } else {
                 product = productOpt.get();
             }
             Long likeCount = likeRepository.countByProductId(product.getId());
@@ -212,14 +212,20 @@ public class LikeServiceImpl implements LikeService {
             );
         }
     }
+
     @Override
-    public ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request) {
+    public ResponseEntity<IsLikeResponse> isLiked(String productId, HttpServletRequest request) {
         try {
             String userId = utils.extractUserIdFromRequest(request);
 
-            boolean isLiked = likeRepository.existsByUserIdAndProductId(userId, productId);
-
-            return ResponseEntity.ok(isLiked);
+            Like like = likeRepository.findByUserIdAndProductId(userId, productId)
+                    .orElse(null);
+            if(like == null) {
+                return ResponseEntity.ok(new IsLikeResponse(false, null));
+            }
+            else {
+                return ResponseEntity.ok(new IsLikeResponse(true, like.getUuid()));
+            }
         } catch (InvalidTokenException e) {
             log.error("Invalid token while checking like status for productId: {}", productId, e);
             throw new UnauthorizedException(
@@ -248,9 +254,11 @@ public class LikeServiceImpl implements LikeService {
                 ProductEvent productEvent = productService.getProduct(productUuid, userUuid);
 
                 Product product = productMapper.toProduct(productEvent);
-                List<Image> images = productEvent.getImages().stream()
+                List<Image> images = (productEvent.getImages() != null)
+                        ? productEvent.getImages().stream()
                         .map(imageEvent -> imageMapper.toImage(imageEvent, product))
-                        .toList();
+                        .toList()
+                        : List.of();
 
                 product.setImages(images);
                 log.info("Saving fetched product: {}", product);

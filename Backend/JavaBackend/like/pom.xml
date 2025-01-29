@@ -117,6 +117,12 @@
 			<version>2.5</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.example</groupId>
+			<artifactId>common-kafka-config</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

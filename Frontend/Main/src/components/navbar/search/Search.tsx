@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "../../../../node_modules/react-i18next";
+import { useTranslation } from "react-i18next";
 import { 
     ItemsSearchBox, 
     ItemsSearchButton, 
@@ -9,7 +9,7 @@ import {
 } from "./Search.styled";
 import { SearchRegular } from "@fluentui/react-icons";
 import { ItemType, LastItems } from "./lastItems/LastItems";
-import { Spinner } from "@fluentui/react-components";
+import { InputOnChangeData, SearchBoxChangeEvent, Spinner } from "@fluentui/react-components";
 import axios from 'axios';
 import Fuse from 'fuse.js';
 import { useNavigate } from "react-router-dom";
@@ -48,7 +48,6 @@ export const Search = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(results);
             setItems(results.data.content as ItemType[]);
         };
         getSearchData();
@@ -73,10 +72,13 @@ export const Search = () => {
             <SearchContainer>
                 <ItemsSearchBox
                     value={search} 
-                    onChange={(_, data) => handleSearchBox(data.value)} 
+                    onChange={(_: SearchBoxChangeEvent, data: InputOnChangeData) => handleSearchBox(data.value)} 
                     placeholder={t('searchBox.placeholder')}
                 />
-                <ItemsSearchButton onClick={handleSearchButton}>
+                <ItemsSearchButton 
+                    aria-label={t('searchBox.searchButton')}
+                    onClick={handleSearchButton}
+                >
                     <SearchRegular />
                 </ItemsSearchButton>
             </SearchContainer>
@@ -88,7 +90,10 @@ export const Search = () => {
                             closeLastItems={closeLastItems}
                         />
                     ) : search.length > 0 ? (!isLoading ? (
-                        <NoItemsBanner>{t('searchBox.noItems')}</NoItemsBanner>
+                        <>
+                            {/* @ts-expect-error */}
+                            <NoItemsBanner>{t('searchBox.noItems')}</NoItemsBanner>
+                        </>
                     ) :  <Spinner label={t('searchBox.loading')}/>) : null)
                 }
             </SearchResponseWrapper>

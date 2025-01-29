@@ -34,18 +34,12 @@ public class AuthController {
         return ResponseEntity.ok(userService.login(loginRequest));
     }
 
-    @GetMapping("/logged-in")
-    public ResponseEntity<?> loggedIn(HttpServletResponse response, HttpServletRequest request) {
-        userService.loggedIn(request, response);
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS, null, null));
-    }
-
     @GetMapping("/validate")
     public ResponseEntity<AuthResponse> validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
-            log.info("--START validateToken");
+            log.info("--START validateToken /validate");
             userService.validateToken(request, response);
-            log.info("--STOP validateToken");
+            log.info("--STOP validateToken /validate");
             return ResponseEntity.ok(new AuthResponse(Code.PERMIT, null, null));
         } catch (ExpiredJwtException e) {
             log.info("Token has expired");
@@ -81,6 +75,11 @@ public class AuthController {
     @DeleteMapping("/delete-my-account")
     public ResponseEntity<?> deleteMyAccount(HttpServletRequest request) {
         return userService.deleteMyAccount(request);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<String> verify(@RequestParam("token") String token) {
+        return userService.verify(token);
     }
 
 }

@@ -10,13 +10,12 @@ import org.example.order.entity.Deliver;
 import org.example.order.entity.Order;
 import org.example.order.entity.OrderItems;
 import org.example.order.enums.Status;
-import org.example.order.mediator.OrderMediator;
+import org.example.order.service.impl.OrderProccessingServiceImpl;
 import org.example.order.repository.DeliverRepository;
 import org.example.order.repository.ItemRepository;
 import org.example.order.repository.OrderRepository;
 import org.example.order.service.impl.BasketServiceImpl;
 import org.example.order.service.impl.DeliverServiceImpl;
-import org.example.order.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +43,9 @@ import static org.mockito.Mockito.when;
 @Transactional
 public class OrderServiceTest {
     @MockBean
-    private OrderServiceImpl orderService;
+    private org.example.order.service.impl.OrderServiceImpl orderService;
     @Autowired
-    private OrderMediator orderMediator;
+    private OrderProccessingServiceImpl orderProccessingServiceImpl;
     @Autowired
     private DeliverServiceImpl deliverService;
     @Autowired
@@ -100,7 +99,7 @@ public class OrderServiceTest {
         when(orderService.createStripePayment(mockOrderResponse)).thenReturn("client-secret-123");
 
         // Act
-        ResponseEntity<?> responseEntity = orderMediator.createOrder(orderRequest, request, response);
+        ResponseEntity<?> responseEntity = orderProccessingServiceImpl.createOrder(orderRequest, request, response);
 
         // Assert
         assertNotNull(responseEntity);
@@ -135,7 +134,7 @@ public class OrderServiceTest {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("userId", userId);
-        ResponseEntity<?> responseEntity = orderMediator.getOrderById(orderUuid, request);
+        ResponseEntity<?> responseEntity = orderProccessingServiceImpl.getOrderById(orderUuid, request);
 
         // Act
 
@@ -176,7 +175,7 @@ public class OrderServiceTest {
         request.addHeader("userId", userId);
 
         // Act
-        ResponseEntity<?> responseEntity = orderMediator.getOrdersByClient(request);
+        ResponseEntity<?> responseEntity = orderProccessingServiceImpl.getOrdersByClient(request);
 
         // Assert
         assertNotNull(responseEntity);
@@ -204,7 +203,7 @@ public class OrderServiceTest {
         request.addHeader("userId", userId);
 
         // Act
-        ResponseEntity<?> responseEntity = orderMediator.updateStatus(updateStatusRequest, request);
+        ResponseEntity<?> responseEntity = orderProccessingServiceImpl.updateStatus(updateStatusRequest, request);
 
         // Assert
         assertNotNull(responseEntity);

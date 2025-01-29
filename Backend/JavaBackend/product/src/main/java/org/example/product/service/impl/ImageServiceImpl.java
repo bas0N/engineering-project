@@ -25,38 +25,6 @@ public class ImageServiceImpl implements ImageService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public List<Image> uploadImages(List<ImageRequest> imagesFiles) {
-        return imagesFiles.stream().map(imageRequest -> {
-            try {
-                return new Image(
-                        uploadImage(imageRequest.getThumb()),
-                        uploadImage(imageRequest.getLarge()),
-                        imageRequest.getVariant() == null ? null : imageRequest.getVariant(),
-                        uploadImage(imageRequest.getHiRes())
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).toList();
-    }
-
-    @Override
-    public void deleteImage(String imageUrl) throws Exception {
-        cloudinaryService.deleteImage(extractPublicIdFromUrl(imageUrl));
-    }
-
-    @Override
-    public List<ImageReview> uploadReviewImages(List<ImageReviewRequest> imagesFiles) {
-        return imagesFiles.stream().map(imageRequest -> {
-            try {
-                return new ImageReview(uploadImage(imageRequest.getSmall_image_file()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).toList();
-    }
-
-    @Override
     public ImageUploadResponse addImage(String productId, MultipartFile hi_Res, MultipartFile large, MultipartFile thumb, String variant) {
         try {
             return new ImageUploadResponse(

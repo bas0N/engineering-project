@@ -10,7 +10,6 @@ import org.example.auth.mapper.UserMapper;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
 import org.example.auth.service.AdminService;
-import org.example.exception.exceptions.ApiRequestException;
 import org.example.exception.exceptions.InvalidParameterException;
 import org.example.exception.exceptions.ResourceNotFoundException;
 import org.example.exception.exceptions.UnExpectedError;
@@ -31,11 +30,6 @@ public class AdminServiceImpl implements AdminService {
     private final AddressRepository addressRepository;
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private final UserDeActiveProducer userDeActiveProducer;
-
-    @Override
-    public ResponseEntity<?> deleteAccount(String userUuid) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<UserAdminDetailsResponse> getUserById(Long userId) {
@@ -114,6 +108,11 @@ public class AdminServiceImpl implements AdminService {
         } catch (Exception e) {
             log.error("Unexpected error while fetching users with filters: email={}, firstName={}, lastName={}, enabled={}, role={}",
                     email, firstName, lastName, enabled, role, e);
+            assert email != null;
+            assert firstName != null;
+            assert lastName != null;
+            assert enabled != null;
+            assert role != null;
             throw new UnExpectedError(
                     "An unexpected error occurred while fetching users",
                     e,

@@ -7,7 +7,6 @@ import {
     BasketItemManagement,
     BasketItemPrice,
     BasketItemTitle,
-    BasketItemQuantity,
     BasketItemDeleteButton,
 } from './BasketItems.styled';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,7 @@ export type BasketItemType = {
     summaryPrice: number;
 };
 
-interface BasketItemsProps {
+export interface BasketItemsProps {
     items: BasketItemType[];
     deleteItemCallback: (id: string) => void;
 }
@@ -31,7 +30,6 @@ export const BasketItems = ({
 }: BasketItemsProps) => {
 
     const {t} = useTranslation();
-    console.log(items);
 
     return (<BasketItemsWrapper>
         {items.length > 0 ?
@@ -55,11 +53,9 @@ export const BasketItems = ({
                     </BasketItemPrice>
                 </BasketItemDescription>
                 <BasketItemManagement>
-                    <BasketItemQuantity 
-                        aria-label={t('basket.quantityInput')}
-                        type='number' 
-                        value={item.quantity.toString()} 
-                    />
+                    <Text>
+                        {item.quantity}
+                    </Text>
                     <BasketItemDeleteButton 
                         aria-label={t('basket.deleteButton')}
                         onClick={() => deleteItemCallback(item.uuid)}

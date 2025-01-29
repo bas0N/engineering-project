@@ -1,20 +1,26 @@
 import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import {Button, Text} from "@fluentui/react-components";
 import {useState} from "react";
-import {usePaymentFormStyles} from "./PaymentForm.styled.tsx";
+import {PaymentCardElementWrapper, PaymentFormContainer} from "./PaymentForm.styled";
+import { useTranslation } from "react-i18next";
 
-interface PaymentFormProps {
+export interface PaymentFormProps {
     clientSecret: string;
     onPaymentSuccess: () => void;
     onError: (errorMsg: string) => void;
     payLabel: string;
 }
 
-export function PaymentForm({ clientSecret, onPaymentSuccess, onError, payLabel }: PaymentFormProps) {
+export const PaymentForm = ({ 
+    clientSecret, 
+    onPaymentSuccess, 
+    onError, 
+    payLabel 
+}: PaymentFormProps) => {
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);
-    const styles = usePaymentFormStyles();
+    const {t} = useTranslation();
 
     const handlePayment = async () => {
         if (!stripe || !elements) return;
@@ -35,12 +41,14 @@ export function PaymentForm({ clientSecret, onPaymentSuccess, onError, payLabel 
     }
 
     return (
-        <div className={styles.container}>
-            <Text>Enter your card details:</Text>
-            <CardElement />
+        <PaymentFormContainer>
+            <Text>{t('paymentForm.title')}</Text>
+            <PaymentCardElementWrapper>
+                <CardElement/>
+            </PaymentCardElementWrapper>
             <Button appearance="primary" disabled={processing} onClick={handlePayment}>
-                {processing ? 'Processing...' : payLabel}
+                {processing ? t('paymentForm.processing') : payLabel}
             </Button>
-        </div>
+        </PaymentFormContainer>
     );
 }

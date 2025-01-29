@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointConfiguration {
+public class   ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointConfiguration {
     @Value("${api-gateway.url}")
     private String GATEWAY_URL;
 

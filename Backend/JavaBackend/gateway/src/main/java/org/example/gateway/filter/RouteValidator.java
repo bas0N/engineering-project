@@ -19,7 +19,8 @@ public class RouteValidator {
             new Endpoint("/auth/register", HttpMethod.POST, Role.GUEST),
             new Endpoint("/auth/login", HttpMethod.POST, Role.GUEST),
             new Endpoint("/auth/validate", HttpMethod.GET, Role.GUEST),
-            new Endpoint("/auth/authorize", HttpMethod.GET, Role.GUEST)
+            new Endpoint("/auth/authorize", HttpMethod.GET, Role.GUEST),
+            new Endpoint("/auth/verify", HttpMethod.GET, Role.GUEST)
     )
     );
     private final Set<Endpoint> adminEndpoints = new HashSet<>(List.of(
@@ -29,30 +30,32 @@ public class RouteValidator {
             new Endpoint("/api/v1/product/admin/**", HttpMethod.DELETE, Role.ADMIN)
     ));
 
-    public void addEndpoints(List<Endpoint> endpointList) {
-        for (Endpoint endpoint : endpointList) {
-            if (endpoint.getRole().name().equals(Role.ADMIN.name())) {
-                adminEndpoints.add(endpoint);
-            }
-            if (endpoint.getRole().name().equals(Role.GUEST.name())) {
-                openApiEndpoints.add(endpoint);
+    public void addEndpoints(List<Endpoint> endpoints) {
+        for (Endpoint ep : endpoints) {
+            String roleName = ep.getRole().name();
+            if (Role.ADMIN.name().equals(roleName)) {
+                adminEndpoints.add(ep);
+            } else if (Role.GUEST.name().equals(roleName)) {
+                openApiEndpoints.add(ep);
             }
         }
     }
 
-    public Predicate<org.springframework.http.server.reactive.ServerHttpRequest> isAdmin =
-            request -> adminEndpoints
+    public Predicate<ServerHttpRequest> isAdmin =
+            req -> adminEndpoints
                     .stream()
-                    .anyMatch(value -> pathMatcher.match(value.getUrl(), request.getURI().getPath())
-                            && request.getMethod().name().equals(value.getHttpMethod().name()));
+                    .anyMatch(endpoint -> pathMatcher.match(endpoint.getUrl(), req.getURI().getPath())
+                            && req.getMethod().name().equals(endpoint.getHttpMethod().name()));
 
     public Predicate<ServerHttpRequest> isSecure =
-            request -> openApiEndpoints
+            req -> openApiEndpoints
                     .stream()
-                    .noneMatch(value -> request.getURI()
+                    .noneMatch(endpoint -> req.getURI()
                             .getPath()
-                            .contains(value.getUrl())
-                            && request.getMethod().name().equals(value.getHttpMethod().name()));
+                            .contains(endpoint.getUrl())
+                            && req.getMethod().name().equals(endpoint.getHttpMethod().name()));
+
+
 
 
 }

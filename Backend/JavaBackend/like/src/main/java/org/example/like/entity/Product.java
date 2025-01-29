@@ -3,9 +3,7 @@ package org.example.like.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.awt.*;
 import java.util.List;
-import java.util.UUID;
 
 @Setter
 @Getter

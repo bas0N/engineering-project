@@ -1,33 +1,34 @@
-import { makeStyles, shorthands } from "@fluentui/react-components";
+import { Image, Text } from "@fluentui/react-components";
+import styled from "styled-components";
 
-export const useBasketItemsListStyles = makeStyles({
-    container: {
-        ...shorthands.padding('16px'),
-        ...shorthands.borderRadius('8px'),
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        marginBottom: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        rowGap: '12px',
-    },
-    header: {
-        fontWeight: 600,
-        marginBottom: '8px'
-    },
-    item: {
-        display: 'flex',
-        columnGap: '12px',
-        alignItems: 'center',
-    },
-    image: {
-        width: '60px',
-        height: '60px',
-        objectFit: 'cover',
-        borderRadius: '4px',
-    },
-    details: {
-        display: 'flex',
-        flexDirection: 'column',
-        rowGap: '4px'
-    },
-});
+export const BasketItemListContainer = styled.div`
+    padding: 16px;
+    padding-bottom: 36px;
+    display: flex;
+    gap: 12px;
+    flex-direction: column;
+`;
+
+export const BasketItemHeader = styled(Text)`
+    font-weight: 600;
+    padding-bottom: 8px;
+`;
+
+export const BasketItemWrapper = styled.div`
+    display: flex:
+    gap: 12px;
+    align-items: center;
+`;
+
+export const BasketItemDetails = styled.div`
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+`;
+
+export const BasketItemImage = styled(Image)`
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px
+`;

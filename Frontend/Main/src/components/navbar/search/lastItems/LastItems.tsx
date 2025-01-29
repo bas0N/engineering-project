@@ -39,16 +39,20 @@ export type ItemType = {
     }[],
 }
 
-interface LastItemsProps {
+export interface LastItemsProps {
     items: ItemType[];
     closeLastItems: () => void;
 }
+
 export const LastItems = ({items, closeLastItems}: LastItemsProps) => {
 
     const [hoveredItem, setHoveredItem] = useState<ItemType | null>(null);
     const navigate = useNavigate();
 
-    const navigateToProduct = (productId: string) => navigate(`/products/${productId}`);
+    const navigateToProduct = (productId: string) => {
+        navigate(`/products/${productId}`);
+        closeLastItems();
+    }
 
     const onRelatedItemClick = () => {
         if(hoveredItem !== null){
@@ -74,7 +78,7 @@ export const LastItems = ({items, closeLastItems}: LastItemsProps) => {
            {
                 hoveredItem !== null && (
                     <LastItemsRelatedContainer onClick={onRelatedItemClick}>
-                        <LastItemsRelatedItemImage src={hoveredItem.images[0].large} alt={hoveredItem.title} /> 
+                        <LastItemsRelatedItemImage src={hoveredItem.images[0]?.large ?? ''} alt={hoveredItem.title} /> 
                         <Text 
                             as='h3'
                             align="center" 

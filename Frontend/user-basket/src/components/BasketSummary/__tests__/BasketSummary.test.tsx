@@ -1,7 +1,8 @@
 import { axe, toHaveNoViolations } from "jest-axe";
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BasketSummary } from "../BasketSummary";
+import { useNavigate } from "react-router-dom";
 
 expect.extend(toHaveNoViolations);
 
@@ -19,6 +20,8 @@ describe('Basket Summary', () => {
     });
 
     it('renders the component correctly', () => {
+        const mockedNavigate = jest.fn();
+        (useNavigate as jest.Mock).mockReturnValue(mockedNavigate);
         render(<BasketSummary orderValue={MOCK_ORDER_VALUE} />);
     
         expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('basket.summary.title');
@@ -32,7 +35,11 @@ describe('Basket Summary', () => {
         const totalLabel = screen.getByText('basket.summary.total');
         expect(totalLabel).toBeInTheDocument();
 
-        const buyButton = screen.getByRole('button', { name: 'basket.summary.buy' });
+        const buyButton = screen.getByRole('button', { name: 'basket.summary.buy' }) as HTMLButtonElement;
         expect(buyButton).toBeInTheDocument();
+
+        fireEvent.click(buyButton);
+        expect(mockedNavigate).toHaveBeenCalled();
+        
       });
 });

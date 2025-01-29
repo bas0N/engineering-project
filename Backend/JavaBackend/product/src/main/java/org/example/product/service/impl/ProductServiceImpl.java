@@ -178,13 +178,6 @@ public class ProductServiceImpl implements ProductService {
                 );
             }
 
-//            Map<String, String> detailsAsStringMap = addProductRequest.getDetails().entrySet()
-//                    .stream()
-//                    .collect(Collectors.toMap(
-//                            entry -> entry.getKey().name(),
-//                            Map.Entry::getValue
-//                    ));
-
             Product product = productMapper.toProduct(addProductRequest, generateUuid(), userId);
 
             Product savedProduct = productRepository.save(product);
@@ -314,6 +307,7 @@ public class ProductServiceImpl implements ProductService {
 
 
             if (userId == null || !userId.equals(product.getUserId())) {
+                assert userId != null;
                 throw new UnauthorizedException(
                         "You are not authorized to delete this product",
                         "UNAUTHORIZED",
@@ -548,15 +542,15 @@ public class ProductServiceImpl implements ProductService {
 
             Page<Product> productPage = productRepository.findByUserId(userId, pageable);
 
-            if (productPage.isEmpty()) {
-                throw new ResourceNotFoundException(
-                        "Product",
-                        "userId",
-                        userId,
-                        "PRODUCTS_NOT_FOUND",
-                        Map.of("userId", userId)
-                );
-            }
+//            if (productPage.isEmpty()) {
+//                throw new ResourceNotFoundException(
+//                        "Product",
+//                        "userId",
+//                        userId,
+//                        "PRODUCTS_NOT_FOUND",
+//                        Map.of("userId", userId)
+//                );
+//            }
 
             Page<ProductResponse> productResponsePage = productPage.map(productMapper::toProductResponse);
 

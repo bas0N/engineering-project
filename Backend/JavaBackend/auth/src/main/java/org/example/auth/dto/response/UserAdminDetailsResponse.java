@@ -25,4 +25,6 @@ public class UserAdminDetailsResponse {
     private Role role;
     private boolean lock;
     private boolean enabled;
+    private boolean isActive;
+
 }

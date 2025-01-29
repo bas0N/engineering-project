@@ -2,6 +2,7 @@ package org.example.like.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.like.dto.IsLikeResponse;
 import org.example.like.dto.ProductResponse;
 import org.example.like.response.LikeResponse;
 import org.example.like.service.LikeService;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping( "/api/v1/like")
+@RequestMapping("/api/v1/like")
 public class LikeController {
     private final LikeService likeService;
 
@@ -37,7 +38,7 @@ public class LikeController {
     }
 
     @RequestMapping(path = "/isLiked/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<Boolean> isLiked(@PathVariable String productId, HttpServletRequest request) {
+    public ResponseEntity<IsLikeResponse> isLiked(@PathVariable String productId, HttpServletRequest request) {
         return likeService.isLiked(productId, request);
     }
 

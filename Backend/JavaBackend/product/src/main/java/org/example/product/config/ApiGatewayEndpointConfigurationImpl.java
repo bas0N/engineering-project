@@ -15,7 +15,7 @@ public class ApiGatewayEndpointConfigurationImpl implements ApiGatewayEndpointCo
     private String GATEWAY_URL;
 
     @PostConstruct
-    public void startOperation(){
+    public void startOperation() {
         initMap();
         register();
     }

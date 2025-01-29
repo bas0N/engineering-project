@@ -16,13 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeliverController {
     private final DeliverService deliverService;
+
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getDeliver(){
+    public ResponseEntity<?> getDeliver() {
         return deliverService.getAllDeliver();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createDeliverOrder(@RequestBody DeliverRequest deliverRequest){
+    public ResponseEntity<?> createDeliverOrder(@RequestBody DeliverRequest deliverRequest) {
         return deliverService.createDeliverOrder(deliverRequest);
     }
 }

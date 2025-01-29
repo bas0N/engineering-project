@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "VITE_PREVIEW_MODE=true vite preview",
+    "preview": "set VITE_PREVIEW_MODE=true && vite preview",
     "preview:windows": "set VITE_PREVIEW_MODE=true && vite preview",
     "test": "VITE_BLOCK_I18NEXT=true jest --env=jsdom --coverage"
   },

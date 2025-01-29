@@ -16,15 +16,15 @@ import java.util.Map;
 public class ProductResponse {
     private String parentAsin;
     private List<String> categories;
-    private List<Image> images; // to
+    private List<Image> images;
     private String mainCategory;
-    private Integer ratingNumber; //to
-    private String store; //to
-    private String title; //to
+    private Integer ratingNumber;
+    private String store;
+    private String title;
     private String price;
-    private Double averageRating; //to
-    //private UserResponse owner;
+    private Double averageRating;
     private List<String> features;
     private List<String> description;
     private Map<String, String> details;
+    private Boolean isActive;
 }

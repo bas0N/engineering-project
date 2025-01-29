@@ -1,6 +1,7 @@
 package org.example.like.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.like.dto.IsLikeResponse;
 import org.example.like.dto.ProductResponse;
 import org.example.like.response.LikeResponse;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,6 @@ public interface LikeService {
 
     ResponseEntity<String> removeLike(String likeId, HttpServletRequest request);
 
-    ResponseEntity<Boolean> isLiked(String productId, HttpServletRequest request);
+    ResponseEntity<IsLikeResponse> isLiked(String productId, HttpServletRequest request);
 }
 
