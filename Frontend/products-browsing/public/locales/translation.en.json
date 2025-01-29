@@ -17,6 +17,7 @@
         "opinionPlaceholder": "Elaborate on your opinion...",
         "opinionTitle": "Put your opinion's title here...",
         "failedToLoad": "Failed to load the liking info",
+        "failedToLikeAction": "Failed to perform liking activity",
         "closeButtonLabel": "Close review form",
         "reviews": {
             "anonymusUser": "Anonymus user",

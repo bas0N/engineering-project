@@ -63,7 +63,7 @@ export default function OrderHistory() {
 
     return (
         <OrderHistoryContainer>
-            <OrderHistoryHeader>{t('orderHistory.title')}</OrderHistoryHeader>
+            <OrderHistoryHeader align='center'>{t('orderHistory.title')}</OrderHistoryHeader>
             {orders.length === 0 ? (
                 <Text>{t('orderHistory.noOrders')}</Text>
             ) : (

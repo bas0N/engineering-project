@@ -1,7 +1,7 @@
 import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import {Button, Text} from "@fluentui/react-components";
 import {useState} from "react";
-import {PaymentFormContainer} from "./PaymentForm.styled";
+import {PaymentCardElementWrapper, PaymentFormContainer} from "./PaymentForm.styled";
 import { useTranslation } from "react-i18next";
 
 export interface PaymentFormProps {
@@ -43,7 +43,9 @@ export const PaymentForm = ({
     return (
         <PaymentFormContainer>
             <Text>{t('paymentForm.title')}</Text>
-            <CardElement />
+            <PaymentCardElementWrapper>
+                <CardElement/>
+            </PaymentCardElementWrapper>
             <Button appearance="primary" disabled={processing} onClick={handlePayment}>
                 {processing ? t('paymentForm.processing') : payLabel}
             </Button>

@@ -59,6 +59,7 @@ export const ProductPresentation = ({
     const [productNumber, setProductNumber] = useState(0);
     const [numberOfLikes, setNumberOfLikes] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
+    const [likeId, setLikeId] = useState('');
     const { dispatchToast } = useToastController(toasterId);
 
     const {t} = useTranslation();
@@ -82,7 +83,10 @@ export const ProductPresentation = ({
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                setIsLiked(isLikedResult.data);
+                setIsLiked(isLikedResult.data.isLiked);
+                if(isLikedResult.data.isLiked){
+                    setLikeId(isLikedResult.data.likeId);
+                }
             } catch {
                 dispatchToast(<Toast>
                     <ToastTitle>{t('product.failedToLoad')}</ToastTitle>
@@ -97,22 +101,27 @@ export const ProductPresentation = ({
     const likeProduct = async() => {
         try {
             if(isLiked){
-                await axios.delete(`${import.meta.env.VITE_API_URL}like/remove/${productId}`, {
+                await axios.delete(`${import.meta.env.VITE_API_URL}like/remove/${likeId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL}like/${productId}`, {}, {
+                const result = await axios.post(`${import.meta.env.VITE_API_URL}like/${productId}`, {}, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                setLikeId(result.data.likeId);
             }
             setIsLiked((liked) => !liked);
             await getLikesNumberInfo();
-        } catch (error) { 
-            console.log(error);
+        } catch { 
+            dispatchToast(<Toast>
+                    <ToastTitle>{t('product.failedToLikeAction')}</ToastTitle>
+                </Toast>, 
+                {position: 'top-end', intent: 'error'}
+            );
         }
     }
 

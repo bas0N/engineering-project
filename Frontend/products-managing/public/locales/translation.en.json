@@ -56,14 +56,19 @@
         "actions": {
             "columnHeader": "Action",
             "checkout": "Checkout",
-            "delete": "Delete"
+            "delete": "Delete",
+            "goToImages": "Manage images"
         }
     },
-    "productsImageManagement": {
+    "productImageManagement": {
         "notFound": "Product not found",
         "addingImage": "Add product image",
         "error": "Failed to load your data",
         "addNewImage": "Add new image",
+        "images": "Product images",
+        "imagesDisplay":{
+            "header": "Your images"
+        },
         "addingProduct": {
             "header": "Add your product's image",
             "load": "Load image",
