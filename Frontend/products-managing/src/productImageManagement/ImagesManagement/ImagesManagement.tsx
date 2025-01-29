@@ -39,12 +39,8 @@ export const ImagesManagement = ({
 
     const deleteImage = async(ind: number) => {
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL}product/${productId}/image`,
+            await axios.delete(`${import.meta.env.VITE_API_URL}product/${productId}/image/${ind}`,
             {
-                data: {
-                    productId: productId,
-                    order: ind
-                },
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -80,7 +76,7 @@ export const ImagesManagement = ({
                         <Button 
                             aria-label={t('productImageManagement.imagesDisplay.deleteImage')}
                             appearance='subtle'
-                            onClick={() => deleteImage(ind)}
+                            onClick={() => deleteImage(ind+1)}
                         >
                             <DeleteRegular />
                         </Button>
