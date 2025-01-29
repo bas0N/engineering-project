@@ -80,7 +80,7 @@ mvn clean install -DskipTests
 ## 11. Set Up Environment Variables, inside folder /Backend create .env file
 nano .env
 
-## 12. Paste this into .env file - it is required to have cloudinary 
+## 12. Paste this into .env file
 # Security
 JWT_SECRET=VGhpcy1pcy1hbi1leGFtcGxlLWJhc2U2NC1zdHJpbmc=
 
