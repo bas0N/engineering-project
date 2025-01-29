@@ -6,6 +6,7 @@ import org.example.auth.entity.Role;
 import org.example.auth.entity.User;
 import org.example.auth.repository.UserRepository;
 import org.example.exception.exceptions.ApiRequestException;
+import org.example.exception.exceptions.InvalidParameterException;
 import org.example.exception.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,22 @@ public class AdminServiceTest {
         assertEquals(mockResponse.isLock(), actualResponse.isLock());
     }
 
+    @Test
+    void getUserById_Failure_UserNotFound() {
+        // Arrange
+        Long nonExistentUserId = 999L; // ID that does not exist
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            adminService.getUserById(nonExistentUserId);
+        });
+
+        assertEquals("User", exception.getResourceName());
+        assertEquals("id", exception.getFieldName());
+        assertEquals("USER_NOT_FOUND", exception.getErrorCode());
+    }
+
+
 
     @Test
     void getAllUsers_Success() {
@@ -128,7 +145,6 @@ public class AdminServiceTest {
         assertEquals("test2@example.com", users.get(1).getEmail());
     }
 
-
     @Test
     void changeRole_Success() {
         // Arrange
@@ -149,6 +165,21 @@ public class AdminServiceTest {
     }
 
     @Test
+    void changeRole_Failure_UserNotFound() {
+        // Arrange
+        Long nonExistentUserId = 999L;
+        Role newRole = Role.ADMIN;
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            adminService.changeRole(nonExistentUserId, newRole);
+        });
+
+        assertEquals("USER_NOT_FOUND", exception.getErrorCode());
+    }
+
+
+    @Test
     void deleteUser_Success() {
         // Arrange
         User user = new User();
@@ -164,5 +195,16 @@ public class AdminServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    void deleteUser_Failure_UserNotFound() {
+        // Arrange
+        Long nonExistentUserId = 999L;
 
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            adminService.deleteUser(nonExistentUserId);
+        });
+
+        assertEquals("USER_NOT_FOUND", exception.getErrorCode());
+    }
 }

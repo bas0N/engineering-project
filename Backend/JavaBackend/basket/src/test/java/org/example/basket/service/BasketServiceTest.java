@@ -44,16 +44,16 @@ import static org.mockito.Mockito.*;
 @Transactional
 public class BasketServiceTest {
     @Autowired
-    private BasketServiceImpl basketService; // Use the actual service implementation
+    private BasketServiceImpl basketService;
 
     @Autowired
-    private BasketRepository basketRepository; // Use real H2 repository
+    private BasketRepository basketRepository;
 
     @Autowired
-    private BasketItemRepository basketItemRepository; // Use real H2 repository
+    private BasketItemRepository basketItemRepository;
 
     @MockBean
-    private ProductService productService; // Use @MockBean to properly mock ProductService
+    private ProductService productService;
 
     @MockBean
     private Utils utils;

@@ -13,6 +13,7 @@ import org.example.auth.entity.Operation;
 import org.example.auth.entity.User;
 import org.example.auth.repository.AddressRepository;
 import org.example.auth.repository.UserRepository;
+import org.example.exception.exceptions.InvalidParameterException;
 import org.example.exception.exceptions.ResourceNotFoundException;
 import org.example.exception.exceptions.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +115,6 @@ public class UserDetailsServiceTest {
         assertEquals("12345678901", updatedUser.getPhoneNumber());
     }
 
-
     @Test
     void updateUserAddresses_Success_CreateUpdateDelete() {
         String email = "test@example.com";
@@ -165,6 +165,22 @@ public class UserDetailsServiceTest {
                 "Delete St".equals(address.getStreet())
         ));
     }
+
+
+    @Test
+    void getUserDetails_Failure_UserNotFound() {
+        // Arrange
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", "non-existent-user-uuid");
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userDetailsService.getUserDetails(request);
+        });
+
+        assertEquals("USER_NOT_FOUND", exception.getErrorCode());
+    }
+
     @Test
     void uploadImage_Success_NewImage() throws Exception {
         String email = "test@example.com";
@@ -189,6 +205,24 @@ public class UserDetailsServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertInstanceOf(ImageResponse.class, response.getBody());
     }
+
+    @Test
+    void uploadImage_Failure_UserNotFound() throws Exception {
+        // Arrange
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", "non-existent-user-uuid");
+
+        MultipartFile mockFile = mock(MultipartFile.class);
+        when(mockFile.getOriginalFilename()).thenReturn("test-image.jpg");
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userDetailsService.uploadImage(request, mockFile);
+        });
+
+        assertEquals("USER_NOT_FOUND", exception.getErrorCode());
+    }
+
 
     @Test
     void deleteImage_Success() throws Exception {
@@ -218,6 +252,27 @@ public class UserDetailsServiceTest {
 
         verify(imageService, times(1)).deleteImage("https://example.com/image.jpg");
     }
+
+    @Test
+    void deleteImage_Failure_NoImageToDelete() throws Exception {
+        // Arrange
+        String email = "test@example.com";
+        String password = "password123";
+        UserRegisterRequest registerRequest = new UserRegisterRequest(email, password);
+        userService.register(registerRequest);
+
+        User user = userRepository.findUserByEmail(email).orElseThrow();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", user.getUuid());
+
+        // Act
+        ResponseEntity<?> response = userDetailsService.deleteImage(request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("No image to delete", response.getBody());
+    }
+
     @Test
     void getUserDetails_Success() {
         // Arrange

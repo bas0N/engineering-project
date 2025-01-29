@@ -159,6 +159,23 @@ public class ProductServiceTest {
         assertEquals("Health and Personal Care", productResponse.getMainCategory());
     }
 
+    @Test
+    void getProductById_Failure_ExceptionCheck() {
+        // Arrange
+        String nonExistentProductId = "non-existent-product";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        when(productRepository.findByParentAsin(nonExistentProductId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            productService.getProductById(nonExistentProductId, request);
+        });
+
+        assertNotNull(exception);
+    }
+
+
 
     @Test
     void createProduct_Success() {
@@ -181,6 +198,29 @@ public class ProductServiceTest {
         assertNotNull(response.getBody());
         verify(productRepository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void createProduct_Failure_ExceptionCheck() {
+        // Arrange
+        String userId = "non-existent-user";
+        AddProductRequest addProductRequest = new AddProductRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        when(utils.extractUserIdFromRequest(any(HttpServletRequest.class))).thenReturn(userId);
+        when(userService.getUserDetailInfo(userId)).thenThrow(new ResourceNotFoundException("User", "ID", userId));
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            productService.createProduct(addProductRequest, request);
+        });
+
+        // Print exception details
+        System.out.println("Exception thrown: " + exception.getClass().getName());
+        System.out.println("Exception message: " + exception.getMessage());
+
+        assertNotNull(exception);
+    }
+
 
 
 
@@ -239,6 +279,24 @@ public class ProductServiceTest {
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void updateProduct_Failure_ExceptionCheck() {
+        // Arrange
+        String productId = "non-existent-product";
+        UpdateProductRequest updateProductRequest = new UpdateProductRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        when(productRepository.findByParentAsin(productId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            productService.updateProduct(productId, updateProductRequest, request);
+        });
+
+        assertNotNull(exception);
+    }
+
 
 
     @Test
@@ -300,6 +358,27 @@ public class ProductServiceTest {
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void addImageToProduct_Failure_ExceptionCheck() throws Exception {
+        // Arrange
+        String productId = "non-existent-product";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        MultipartFile hiRes = mock(MultipartFile.class);
+        MultipartFile large = mock(MultipartFile.class);
+        MultipartFile thumb = mock(MultipartFile.class);
+
+        when(productRepository.findByParentAsin(productId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            productService.addImageToProduct(productId, hiRes, large, thumb, "variant", request);
+        });
+
+        assertNotNull(exception);
+    }
+
 
     @Test
     void updateImage_Success() throws Exception {

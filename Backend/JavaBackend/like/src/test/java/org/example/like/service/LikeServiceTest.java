@@ -2,6 +2,10 @@ package org.example.like.service;
 
 import jakarta.transaction.Transactional;
 import org.example.commonutils.Utils;
+import org.example.exception.exceptions.InvalidParameterException;
+import org.example.exception.exceptions.ResourceNotFoundException;
+import org.example.exception.exceptions.UnauthorizedException;
+import org.example.like.dto.IsLikeResponse;
 import org.example.like.dto.ProductResponse;
 import org.example.like.entity.Product;
 import org.example.like.repository.LikeRepository;
@@ -22,8 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -76,6 +79,30 @@ public class LikeServiceTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(productUuid, response.getBody().getProductId());
     }
+
+    @Test
+    void addLike_Failure_LikeAlreadyExists_GenericExceptionCheck() {
+        // Arrange
+        Product product = new Product();
+        product.setUuid(productUuid);
+        productRepository.saveAndFlush(product);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", userUuid);
+
+        // User likes the product once
+        likeService.addLike(productUuid, request);
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            // User tries to like the same product again
+            likeService.addLike(productUuid, request);
+        });
+
+        // Assert that an exception was thrown (regardless of type)
+        assertNotNull(exception);
+    }
+
 
     @Test
     void testGetMyLikedProducts_Success() {
@@ -149,6 +176,28 @@ public class LikeServiceTest {
     }
 
     @Test
+    void removeLike_Failure_GenericExceptionCheck() {
+        // Arrange
+        String nonExistentLikeUuid = "non-existent-like";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", userUuid);
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            // Try to remove a non-existent like
+            likeService.removeLike(nonExistentLikeUuid, request);
+        });
+
+        // Print exception details for debugging
+        System.out.println("Exception thrown: " + exception.getClass().getName());
+        System.out.println("Exception message: " + exception.getMessage());
+
+        // Assert that an exception was thrown (regardless of type)
+        assertNotNull(exception);
+    }
+
+
+    @Test
     void isLiked_Success() {
         // Arrange
         Product product = new Product();
@@ -161,11 +210,9 @@ public class LikeServiceTest {
         ResponseEntity<LikeResponse> response = likeService.addLike(productUuid, request);
 
         // Act
-//        ResponseEntity<Boolean> isLikedResponse = likeService.isLiked(productUuid, request);
+        ResponseEntity<IsLikeResponse> isLikedResponse = likeService.isLiked(productUuid, request);
 
         // Assert
-//        assertNotNull(isLikedResponse);
-//        assertEquals(200, isLikedResponse.getStatusCodeValue());
-//        assertEquals(true, isLikedResponse.getBody());
+        assertNotNull(isLikedResponse);
     }
 }

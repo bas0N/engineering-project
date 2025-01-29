@@ -30,8 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -109,6 +108,46 @@ public class OrderServiceTest {
         assertEquals("order-123", responseBody.getUuid());
         assertEquals("client-secret-123", responseBody.getClientSecret());
     }
+
+    @Test
+    void createOrder_Failure_ExceptionCheck() {
+        // Arrange
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setBasketId(null); // Invalid case: Missing basketId
+        orderRequest.setDeliverId("deliver-123");
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.addHeader("userId", ""); // Invalid case: Empty userId
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            orderProccessingServiceImpl.createOrder(orderRequest, request, response);
+        });
+
+        assertNotNull(exception);
+    }
+
+    @Test
+    void updateStatus_Failure_ExceptionCheck() {
+        // Arrange
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setOrderId("non-existent-order");
+        updateStatusRequest.setStatus(Status.COMPLETED);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("userId", userId);
+
+        // Act & Assert
+        Exception exception = assertThrows(Exception.class, () -> {
+            orderProccessingServiceImpl.updateStatus(updateStatusRequest, request);
+        });
+
+
+        assertNotNull(exception);
+    }
+
+
 
     @Test
     void getOrderById_Success() {
@@ -243,5 +282,4 @@ public class OrderServiceTest {
         assertNotNull(responseEntity);
         assertEquals(200, responseEntity.getStatusCodeValue());
     }
-
 }

@@ -45,9 +45,8 @@ public class LikeServiceImpl implements LikeService {
             String userUuid = utils.extractUserIdFromRequest(request);
 
             if (likeRepository.existsByUserIdAndProductId(userUuid, productUuid)) {
-                throw new InvalidParameterException(
-                        "Like already exists for user and product.",
-                        "LIKE_ALREADY_EXISTS",
+                throw new LikeAlreadyExistsException(
+                        "Like already exists for user and product",
                         Map.of("userUuid", userUuid, "productUuid", productUuid)
                 );
             }
