@@ -187,7 +187,7 @@
     "title": "Titolo",
     "numberOfRatings": "Numero di valutazioni",
     "averageRating": "Valutazione media",
-    "store": "Store",
+    "store": "Negozio",
     "deletionError": "Impossibile eliminare l'elemento selezionato",
     "loadingError": "Impossibile caricare gli elementi",
     "deletionSuccessful": "Eliminato con successo l'elemento selezionato",
@@ -199,68 +199,69 @@
     }
   },
   "addProduct": {
-    "title": "Product adding",
-    "titlePlaceholder": "Product title...",
-    "descriptionPlaceholder": "Product description...",
+    "title": "Aggiunta di un prodotto",
+    "titlePlaceholder": "Titolo del prodotto...",
+    "descriptionPlaceholder": "Descrizione del prodotto...",
     "categories": {
-        "header": "Product categories",
-        "newCategoryPlaceholder": "Enter new category..."
+        "header": "Categorie di prodotti",
+        "newCategoryPlaceholder": "Inserisci nuova categoria..."
     },
     "features": {
-        "header": "Product features",
-        "newFeaturePlaceholder": "Enter new feature...",
-        "moveUpLabel": "Move the feature up",
-        "movedownLabel": "Move the feature down",
-        "deleteLabel": "Delete feature"
+        "header": "Caratteristiche del prodotto",
+        "newFeaturePlaceholder": "Inserisci nuova caratteristica...",
+        "moveUpLabel": "Sposta la caratteristica in alto",
+        "movedownLabel": "Sposta la caratteristica in basso",
+        "deleteLabel": "Elimina elemento"
     },
     "details": {
-        "header": "Details",
-        "detailNamePlaceholder": "Select detail name...",
-        "detailValuePlaceholder": "Detail value...",
+        "header": "Dettagli",
+        "NomeDettaglioPlaceholder": "Seleziona il nome del dettaglio...",
+        "dettaglioValorePlaceholder": "Valore del dettaglio...",
         "addDetailLabel": "Add",
-        "editLabel": "Edit detail",
-        "deleteLabel": "Delete detail"
+        "editLabel": "Modifica dettaglio",
+        "deleteLabel": "Elimina dettaglio"
     },
     "finalization": {
-        "title": "Title",
-        "description": "Description",
-        "categories": "Categories",
-        "details": "Details",
-        "features": "Features"
+        "title": "Titolo",
+        "description": "Descrizione",
+        "categories": "Categorie",
+        "details": "Dettagli",
+        "features": "Caratteristiche"
     },
-    "store": "Selling store",
-    "price": "Product price",
-    "mainCategory": "Select main category",
-    "storePlaceholder": "Enter store name...",
-    "pricePlaceholder": "Enter product's price...",
-    "goBack": "Go back",
-    "finalizationHeader": "Finalize product creation",
-    "finalizeProductCreation": "Create product",
-    "productAdded": "Product successfully added!",
-    "userProductsNavigation": "Check my products",
-    "productInspection": "Show the product",
-    "finalizeCreation": "Finalize"
+    "store": "Negozio di vendita",
+    "price": "Prezzo del prodotto",
+    "mainCategory": "Seleziona la categoria principale",
+    "storePlaceholder": "Inserire il nome del negozio...",
+    "pricePlaceholder": "Inserire il prezzo del prodotto...",
+    "goBack": "Torna indietro",
+    "finalizationHeader": "Finalizza la creazione del prodotto",
+    "finalizeProductCreation": "Crea prodotto",
+    "addImages": "Aggiungi immagini",
+    "productAdded": "Prodotto aggiunto con successo!",
+    "userProductsNavigation": "Controlla i miei prodotti",
+    "productInspection": "Mostra il prodotto",
+    "finalizeCreation": "Finalizza"
   },
   "productImageManagement": {
-    "notFound": "Product not found",
-    "addingImage": "Add product image",
-    "error": "Failed to load your data",
-    "addNewImage": "Add new image",
-    "images": "Product Images",
+    "notFound": "Prodotto non trovato",
+    "addingImage": "Aggiungi immagine del prodotto",
+    "error": "Fallito il caricamento dei dati",
+    "addNewImage": "Aggiungi una nuova immagine",
+    "images": "Immagini del prodotto",
     "imagesDisplay": {
-      "header": "Modify your product's images"
+      "header": "Modifica le immagini del prodotto"
     },
     "addingProduct": {
-        "header": "Add your product's image",
-        "load": "Load image",
-        "loadProduct": "Image not chosen",
-        "loadingProduct": "Loading...",
-        "productLoaded": "Image loaded",
-        "upload": "Upload image",
-        "imageInput": "Image input",
-        "closeButton": "Close panel",
-        "productSuccessfullyAdded": "Image successfully added",
-        "uploadFailed": "Something went wrong"
+      "header": "Aggiungi l'immagine del tuo prodotto",
+      "load": "Carica l'immagine",
+      "loadProduct": "Immagine non scelta",
+      "loadingProduct": "Caricamento...",
+      "productLoaded": "Immagine caricata",
+      "upload": "Carica immagine",
+      "imageInput": "Ingresso immagine",
+      "closeButton": "Chiudi pannello",
+      "productSuccessfullyAdded": "Immagine aggiunta con successo",
+      "uploadFailed": "Qualcosa è andato storto"
     }
 }
 }
