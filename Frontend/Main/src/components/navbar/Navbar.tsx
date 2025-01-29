@@ -4,9 +4,10 @@ import {
     Option, 
     Toast, 
     ToastTitle, 
+    Tooltip, 
     useToastController 
 } from '@fluentui/react-components';
-import { Cart24Regular } from '@fluentui/react-icons';
+import { Cart24Regular, FolderListFilled, SettingsFilled, SquareAddFilled, ThumbLikeFilled } from '@fluentui/react-icons';
 import { 
     NavbarContainer, 
     BasketButton, 
@@ -86,11 +87,34 @@ export const Navbar = () => {
                     </BasketButtonBadge>
                 </BasketButton>
             </Link>
-                    <Link href='/settings'>
-                        <NavbarButton appearance='subtle'>
-                            {t('navbar.settingsButton')}
-                        </NavbarButton>
-                    </Link>
+                    <Tooltip content={t('navbar.settingsButton')} relationship='label'>
+                        <Link href='/settings'>
+                            <NavbarButton appearance='subtle' aria-label={t('navbar.settingsButton')}>
+                                <SettingsFilled />
+                            </NavbarButton>
+                        </Link>
+                    </Tooltip>
+                    <Tooltip content={t('navbar.addProductsButton')} relationship='label'>
+                        <Link href='/products/add'>
+                            <NavbarButton appearance='subtle' aria-label={t('navbar.addProductsButton')}>
+                                <SquareAddFilled />
+                            </NavbarButton>
+                        </Link>
+                    </Tooltip>
+                    <Tooltip content={t('navbar.myProductsButton')} relationship='label'>
+                        <Link href='/products/mine'>
+                            <NavbarButton appearance='subtle' aria-label={t('navbar.myProductsButton')}>
+                                <FolderListFilled />
+                            </NavbarButton>
+                        </Link>
+                    </Tooltip>
+                    <Tooltip content={t('navbar.likesButton')} relationship='label'>
+                        <Link href='/products/likes'>
+                            <NavbarButton appearance='subtle' aria-label={t('navbar.likesButton')}>
+                                <ThumbLikeFilled />
+                            </NavbarButton>
+                        </Link>
+                    </Tooltip>
                     <NavbarButton onClick={handleLogout} appearance='subtle'>
                         {t('navbar.logoutButton')}
                     </NavbarButton>

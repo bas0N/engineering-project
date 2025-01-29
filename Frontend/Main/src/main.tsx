@@ -25,6 +25,7 @@ const ProductsList = React.lazy(() => import('productsManaging/ProductsList'));
 const Order = React.lazy(() => import('userOrder/UserOrder'));
 const OrderHistory = React.lazy(() => import('userOrder/OrderHistory'));
 const ProductsLikes = React.lazy(() => import('productsManaging/ProductsLikes'));
+const ProductImages = React.lazy(() => import('productsManaging/ProductImages'));
 
 const routes: RouteObject[] = [
   {
@@ -62,6 +63,10 @@ const routes: RouteObject[] = [
   {
     path: '/products/mine',
     element: <ProductsList />
+  },
+  {
+    path: '/products/images/:productId',
+    element: <ProductImages />
   },
   {
     path: '/order/',

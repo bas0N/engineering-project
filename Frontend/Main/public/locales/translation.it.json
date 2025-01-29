@@ -21,7 +21,11 @@
   "navbar": {
     "logoutButton": "Disconnessione",
     "signInButton": "Accesso",
-    "settingsButton": "Impostazioni"
+    "settingsButton": "Impostazioni",
+    "languageDropdown": "Change language",
+    "addProductsButton": "Add product",
+    "myProductsButton": "My products",
+    "likesButton": "Likes button"
   },
   "page404": {
     "title": "Qualcosa è andato storto!",
@@ -49,13 +53,19 @@
     "opinionPlaceholder": "Approfondisci la tua opinione...",
     "opinionTitle": "Scrivi qui il titolo della tua opinione...",
     "failedToLoad": "Non è riuscito a caricare le informazioni sul gradimento",
+    "failedToLikeAction": "Failed to perform liking activity",
     "closeButtonLabel": "Chiudi il modulo di revisione",
     "recommendationsFailure": "Fallito il recupero delle raccomandazioni",
     "reviews": {
       "anonymusUser": "Utente anonimo",
       "reviewsTitle": "Recensioni sul prodotto",
       "loadingReviews": "Caricamento delle recensioni...",
-      "verifiedPurchase": "Acquisto verificato"
+      "verifiedPurchase": "Acquisto verificato",
+      "ratingLabel": "Rating",
+      "titleInputLabel": "Review title",
+      "textInputLabel": "Review content",
+      "editReviewTooltip": "Edit this review",
+      "deleteReviewTooltip": "Delete this review"
     }
   },
   "tiles": {
@@ -120,5 +130,137 @@
     "loadingError": "Qualcosa è andato storto",
     "reviews": "recensioni",
     "noProducts": "Nessun prodotto è ancora piaciuto"
-  }
+  },
+  "order": {
+    "paymentDone": "Pagamento riuscito",
+    "loading": "Caricamento...",
+    "header": "Il tuo ordine",
+    "creatingOrder": "Creazione ordine...",
+    "placeOrder": "Effettua ordine",
+    "payNow": "Paga ora",
+    "orderHistory": {
+        "loading": "Caricamento ordini...",
+        "title": "Cronologia ordini",
+        "noOrders": "Nessun ordine trovato",
+        "orderId": "ID ordine",
+        "name": "Nome",
+        "image": "Immagine",
+        "quantity": "Quantità",
+        "priceUnit": "Price Unit",
+        "priceSummary": "Price Summary",
+        "totalPrice": "Prezzo totale",
+        "status": "Status",
+        "loadingError": "Failed to fetch orders"
+    },
+    "address": {
+        "everythingRequired": "Tutti i campi sono obbligatori",
+        "statePlaceholder": "Inserire lo stato",
+        "cityPlaceholder": "Inserire la città",
+        "streetPlaceholder": "Inserisci via",
+        "countryPlaceholder": "Inserisci il paese"
+    },
+    "basketItemList": {
+        "title": "Articoli nel carrello",
+        "quantity": "Quantity",
+        "price": "prezzo"
+    },
+    "paymentForm": {
+        "title": "Inserisci i dati della tua carta:",
+        "processing": "Elaborazione..."
+    }
+  },
+  "orderHistory": {
+    "title": "Storico ordini",
+    "orderId": "Order Id",
+    "name": "Nome",
+    "image": "Immagine",
+    "quantity": "Quantità",
+    "priceUnit": "Unità di prezzo",
+    "priceSummary": "Sintesi",
+    "status": "Status",
+    "totalPrice": "Prezzo totale"
+  },
+  "productsList": {
+    "header": "I tuoi prodotti",
+    "loading": "Loading...",
+    "price": "Prezzo",
+    "title": "Titolo",
+    "numberOfRatings": "Numero di valutazioni",
+    "averageRating": "Valutazione media",
+    "store": "Store",
+    "deletionError": "Impossibile eliminare l'elemento selezionato",
+    "loadingError": "Impossibile caricare gli elementi",
+    "deletionSuccessful": "Eliminato con successo l'elemento selezionato",
+    "actions": {
+        "columnHeader": "Action",
+        "checkout": "Checkout",
+        "delete": "Delete",
+        "goToImages": "Manage images"
+    }
+  },
+  "addProduct": {
+    "title": "Product adding",
+    "titlePlaceholder": "Product title...",
+    "descriptionPlaceholder": "Product description...",
+    "categories": {
+        "header": "Product categories",
+        "newCategoryPlaceholder": "Enter new category..."
+    },
+    "features": {
+        "header": "Product features",
+        "newFeaturePlaceholder": "Enter new feature...",
+        "moveUpLabel": "Move the feature up",
+        "movedownLabel": "Move the feature down",
+        "deleteLabel": "Delete feature"
+    },
+    "details": {
+        "header": "Details",
+        "detailNamePlaceholder": "Select detail name...",
+        "detailValuePlaceholder": "Detail value...",
+        "addDetailLabel": "Add",
+        "editLabel": "Edit detail",
+        "deleteLabel": "Delete detail"
+    },
+    "finalization": {
+        "title": "Title",
+        "description": "Description",
+        "categories": "Categories",
+        "details": "Details",
+        "features": "Features"
+    },
+    "store": "Selling store",
+    "price": "Product price",
+    "mainCategory": "Select main category",
+    "storePlaceholder": "Enter store name...",
+    "pricePlaceholder": "Enter product's price...",
+    "goBack": "Go back",
+    "finalizationHeader": "Finalize product creation",
+    "finalizeProductCreation": "Create product",
+    "productAdded": "Product successfully added!",
+    "userProductsNavigation": "Check my products",
+    "productInspection": "Show the product",
+    "finalizeCreation": "Finalize"
+  },
+  "productImageManagement": {
+    "notFound": "Product not found",
+    "addingImage": "Add product image",
+    "error": "Failed to load your data",
+    "addNewImage": "Add new image",
+    "images": "Product Images",
+    "imagesDisplay": {
+      "header": "Modify your product's images"
+    },
+    "addingProduct": {
+        "header": "Add your product's image",
+        "load": "Load image",
+        "loadProduct": "Image not chosen",
+        "loadingProduct": "Loading...",
+        "productLoaded": "Image loaded",
+        "upload": "Upload image",
+        "imageInput": "Image input",
+        "closeButton": "Close panel",
+        "productSuccessfullyAdded": "Image successfully added",
+        "uploadFailed": "Something went wrong"
+    }
+}
 }
