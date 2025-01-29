@@ -18,3 +18,4 @@ declare module 'productsManaging/ProductsList'
 declare module 'userOrder/UserOrder'
 declare module 'userOrder/OrderHistory'
 declare module 'productsManaging/ProductsLikes'
+declare module 'productsManaging/ProductImages';

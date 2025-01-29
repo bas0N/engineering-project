@@ -21,7 +21,11 @@
   "navbar": {
     "logoutButton": "Logout",
     "signInButton": "Logowanie",
-    "settingsButton": "Settings"
+    "settingsButton": "Settings",
+    "languageDropdown": "Change language",
+    "addProductsButton": "Add product",
+    "myProductsButton": "My products",
+    "likesButton": "Likes button"
   },
   "page404": {
     "title": "Coś poszło nie tak!",
@@ -49,13 +53,19 @@
     "opinionPlaceholder": "Rozpisz się...",
     "opinionTitle": "Tytuł recenzji...",
     "failedToLoad": "Nie udało się załadować informacji o polubieniu",
+    "failedToLikeAction": "Nie udało się polike'ować/odlike'ować produktu",
     "closeButtonLabel": "Zamknij formularz recenzji",
     "recommendationsFailure": "Nie udało się pobrać rekomendacji",
     "reviews": {
       "anonymusUser": "Anonim",
       "reviewsTitle": "Recenzje produktu",
       "loadingReviews": "Ładowanie recenzji...",
-      "verifiedPurchase": "Zakup zweryfikowany"
+      "verifiedPurchase": "Zakup zweryfikowany",
+      "ratingLabel": "Rating",
+      "titleInputLabel": "Review title",
+      "textInputLabel": "Review content",
+      "editReviewTooltip": "Edit this review",
+      "deleteReviewTooltip": "Delete this review"
     }
   },
   "tiles": {
@@ -77,7 +87,7 @@
     "lastName": "Nazwisko...",
     "phoneNumber": "Numer telefonu...",
     "email": "Email...",
-    "personalDataHeader": "PersonalData",
+    "personalDataHeader": "Dane osobowe",
     "userAddressesHeader": "Adresy użytkownika",
     "addNewAddress": "Dodaj nowy adres",
     "newAddress": {
@@ -114,11 +124,143 @@
   },
   "productsLikes": {
     "header": "Polubione produkty",
-    "rating": "Rating",
+    "rating": "Oceny",
     "price": "Cena",
     "loading": "Ładowanie...",
     "loadingError": "Coś poszło nie tak",
     "reviews": "Recenzje",
     "noProducts": "Brak polubionych produktów"
+  },
+  "order": {
+    "paymentDone": "Płatność powiodła się",
+    "loading": "Loading...",
+    "header": "Your Order",
+    "creatingOrder": "Creating Order...",
+    "placeOrder": "Place Order",
+    "payNow": "Pay Now",
+    "orderHistory": {
+        "loading": "Ładowanie zamówień...",
+        "title": "Order History",
+        "noOrders": "Nie znaleziono zamówień",
+        "orderId": "Order ID",
+        "name": "Name",
+        "image": "Image",
+        "quantity": "Quantity",
+        "priceUnit": "Price Unit",
+        "priceSummary": "Price Summary",
+        "totalPrice": "Total Price",
+        "status": "Status",
+        "loadingError": "Nie udało się pobrać zamówień"
+    },
+    "address": {
+        "everythingRequired": "Wszystkie pola są wymagane",
+        "statePlaceholder": "Enter state",
+        "cityPlaceholder": "Enter city",
+        "streetPlaceholder": "Enter street",
+        "countryPlaceholder": "Enter country"
+    },
+    "basketItemList": {
+        "title": "Items in your basket",
+        "quantity": "ilość",
+        "price": "cena"
+    },
+    "paymentForm": {
+        "title": "Wprowadź dane swojej karty:",
+        "processing": "Przetwarzanie..."
+    }
+  },
+  "orderHistory": {
+        "title": "Historia zamówień",
+        "orderId": "ID zamówienia",
+        "name": "Nazwa",
+        "image": "Obrazek",
+        "quantity": "Ilość",
+        "priceUnit": "Jednostka",
+        "priceSummary": "Podsumowanie",
+        "status": "Status",
+        "totalPrice": "Cena całkowita"
+    },
+    "productsList": {
+      "header": "Twoje produkty",
+      "loading": "Loading...",
+      "price": "Cena",
+      "title": "Title",
+      "numberOfRatings": "Number of ratings",
+      "averageRating": "Średnia ocena",
+      "store": "Store",
+      "deletionError": "Nie można usunąć wybranego elementu",
+      "loadingError": "Nie udało się załadować elementów",
+      "deletionSuccessful": "Pomyślnie usunięto wybrany element",
+      "actions": {
+          "columnHeader": "Action",
+          "checkout": "Checkout",
+          "delete": "Usuń",
+          "goToImages": "Manage images"
+      }
+    },
+    "addProduct": {
+      "title": "Dodawanie produktu",
+      "titlePlaceholder": "Tytuł produktu...",
+      "descriptionPlaceholder": "Opis produktu...",
+      "categories": {
+          "header": "Kategorie produktów",
+          "newCategoryPlaceholder": "Wprowadź nową kategorię..."
+      },
+      "features": {
+          "header": "Cechy produktu",
+          "newFeaturePlaceholder": "Wprowadź nową cechę...",
+          "moveUpLabel": "Przenieś cechę w górę",
+          "movedownLabel": "Przenieś cechę w dół",
+          "deleteLabel": "Usuń cechę"
+      },
+      "details": {
+          "header": "Detale",
+          "detailNamePlaceholder": "Wybierz nazwę detalu...",
+          "detailValuePlaceholder": "Wartość detalu...",
+          "addDetailLabel": "Dodaj",
+          "editLabel": "Edytuj",
+          "deleteLabel": "Usuń szczegół"
+      },
+      "finalization": {
+          "title": "Tytuł",
+          "description": "Opis",
+          "categories": "Categories",
+          "details": "Detaile",
+          "features": "Cechy"
+      },
+      "store": "Sklep sprzedaży",
+      "price": "Cena produktu",
+      "mainCategory": "Wybierz kategorię główną",
+      "storePlaceholder": "Wprowadź nazwę sklepu...",
+      "pricePlaceholder": "Wprowadź cenę produktu...",
+      "goBack": "Wróć",
+      "finalizationHeader": "Finalize product creation",
+      "finalizeProductCreation": "Utwórz produkt",
+      "productAdded": "Produkt pomyślnie dodany!",
+      "userProductsNavigation": "Check my products",
+      "productInspection": "Pokaż produkt",
+      "finalizeCreation": "Finalize"
+    },
+    "productImageManagement": {
+      "notFound": "Product not found",
+      "addingImage": "Add product image",
+      "error": "Failed to load your data",
+      "addNewImage": "Add new image",
+      "images": "Product Images",
+      "imagesDisplay": {
+        "header": "Modify your product's images"
+      },
+      "addingProduct": {
+          "header": "Add your product's image",
+          "load": "Load image",
+          "loadProduct": "Image not chosen",
+          "loadingProduct": "Loading...",
+          "productLoaded": "Image loaded",
+          "upload": "Upload image",
+          "imageInput": "Image input",
+          "closeButton": "Close panel",
+          "productSuccessfullyAdded": "Image successfully added",
+          "uploadFailed": "Something went wrong"
+      }
   }
 }
