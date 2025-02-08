@@ -1,5 +1,4 @@
 from flask import Blueprint, app, jsonify, request, current_app
-from . import listeners
 
 main_routes = Blueprint('main_routes', __name__)
 
